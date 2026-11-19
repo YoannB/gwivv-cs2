@@ -2,13 +2,14 @@ import { expect, test, type Page } from "@playwright/test";
 import { COMMENTS, COMMENTS_ENABLED } from "../../constants/site";
 import { COOKIE_CONSENT } from "../../lib/cookies";
 import { blockDisqus } from "./support/disqus";
+import { hasEntries } from "./support/entries";
 import { cookieBanner } from "./support/home";
 import { lp } from "./support/locale-path";
 
 // Comments under collection entries (docs/articles.md → Comments). Needs a build that saw a
 // shortname: CI sets a FAKE NEXT_PUBLIC_DISQUS_SHORTNAME, and every request to Disqus is
 // intercepted and aborted (support/disqus.ts), so the specs check what the page TRIES to load.
-// Relies on the demo articles `writing-articles` and `architecture-tour`. No comments under an
+// Relies on two article entries (the former demo slugs below): skipped while content/articles/ is empty. No comments under an
 // archived entry: tests/unit/collection-entry-archive.test.tsx (the demo publishes no archive).
 
 const ENTRY = lp("fr", "/articles/ecrire-un-article");
@@ -23,6 +24,10 @@ const embedUrl = () => `https://${COMMENTS?.shortname}.disqus.com/embed.js`;
 
 test.describe("Comments (Disqus)", () => {
     test.skip(!COMMENTS_ENABLED, "comments off (no shortname or no collection with comments)");
+    test.skip(
+        !hasEntries("articles"),
+        "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+    );
 
     test("the cookie banner offers the comments purpose", async ({ page }) => {
         await blockDisqus(page);

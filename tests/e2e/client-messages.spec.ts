@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { ARTICLES_ENABLED } from "../../constants/site";
 import { CLIENT_MESSAGES } from "../../i18n/client-messages";
 import { coversPath } from "../../lib/client-messages";
+import { hasEntries } from "./support/entries";
 import { DEFAULT_LOCALE, lp } from "./support/locale-path";
 import { localized } from "./support/pathnames";
 
@@ -20,7 +21,7 @@ test.describe("Client messages", () => {
             });
             await page.goto(localized(DEFAULT_LOCALE, href));
             await expect(page.locator("#app-splash")).toHaveClass(/is-leaving/);
-            if (href === "/articles") {
+            if (href === "/articles" && hasEntries("articles")) {
                 await page.locator(".article-feed .article-teaser__title a").first().click();
                 await expect(page.locator(".article-body")).toBeVisible();
             }

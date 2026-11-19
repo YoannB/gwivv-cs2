@@ -10,7 +10,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # AGENTS.md — router for autonomous coding agents
 
-Axons = Next.js 16 (App Router, Turbopack) + React 19 + TS boilerplate for SEO AI apps;
+GWIVV = personal site of a Counter-Strike 2 player (profile + the Sage Range canvas mini-game),
+built from the Axons reference app (git remote `upstream`, README → Taking an update of the base app).
+Next.js 16 (App Router, Turbopack) + React 19 + TS;
 Material UI 9 isolated behind a neutral API; `next-intl` 4; OpenRouter via one unified
 Route Handler; Vitest + Playwright + Storybook 10; Node 24; Netlify (OpenNext adapter).
 One plain Next.js app, one source per concern: identity/config in `constants/site.ts`, copy in

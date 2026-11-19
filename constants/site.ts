@@ -26,11 +26,12 @@ import { normalizeSiteUrl } from "../lib/site-url";
 // messages/<locale>.json, the colour tokens in styles/tokens.css, the favicon in app/icon.svg and
 // the logo drawing in components/ui/Logo.tsx.
 
-export const SITE_NAME = "Axons";
+export const SITE_NAME = "GWIVV";
 /** Root metadata fallbacks (pages set their own localized title/description). */
-export const DEFAULT_TITLE = "Axons — Next.js AI/SEO boilerplate";
-export const DEFAULT_DESCRIPTION = "Next.js 16 boilerplate for SEO and AI (OpenRouter), deployable on Netlify.";
-export const GITHUB_URL = "https://github.com/YoannB/axons";
+export const DEFAULT_TITLE = "GWIVV — Counter-Strike 2 player";
+export const DEFAULT_DESCRIPTION =
+    "GWIVV, Counter-Strike 2 player: profile, statistics, highlights, loadout and the Sage Range.";
+export const GITHUB_URL = "";
 // Never ends with "/" (lib/site-url.ts): consumers append paths to it.
 export const SITE_URL: string = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;
@@ -46,9 +47,9 @@ export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
 // Site chrome switches. A one-page tool can drop the header nav (the footer and the HTML sitemap
 // still list every page) and the GitHub links.
 export const HEADER_NAV_ENABLED: boolean = true;
-export const GITHUB_LINK_ENABLED: boolean = true;
+export const GITHUB_LINK_ENABLED: boolean = false;
 /** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented. */
-export const BRAND_ACCENT_FROM: number = 1;
+export const BRAND_ACCENT_FROM: number = 2;
 
 /** MUI colours of one theme mode (hex): primary/secondary main and the text drawn ON the primary. */
 export interface PaletteMode {
@@ -59,8 +60,8 @@ export interface PaletteMode {
 // MUI palette per mode (buttons, chips, focus rings…), read by components/ui/material/theme.ts.
 // The CSS tokens (--accent-1, --bg-0, --btn-fg…) live in styles/tokens.css: keep both in step.
 export const PALETTE: { readonly dark: PaletteMode; readonly light: PaletteMode } = {
-    dark: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
-    light: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
+    dark: { primary: "#F97316", secondary: "#FFBF55", contrastText: "#101010" },
+    light: { primary: "#C2410C", secondary: "#B45309", contrastText: "#fff" },
 };
 
 /**
