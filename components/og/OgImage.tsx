@@ -4,10 +4,10 @@ import { titleSize, type OgImageProps, type OgTheme } from "@/lib/og/model";
 // Colours of the social image, as 6-digit hex: the dark tokens of styles/tokens.css + the MUI
 // accents (PALETTE.dark). Satori reads no CSS variable, so keep them in step when rebranding.
 export const OG_THEME: OgTheme = {
-    background: "#070b16",
-    surface: "#131a30",
-    text: "#eaf0ff",
-    muted: "#9fb0d0",
+    background: "#101010",
+    surface: "#191919",
+    text: "#F2F0EB",
+    muted: "#B8B4AC",
     accent1: PALETTE.dark.primary,
     accent2: PALETTE.dark.secondary,
 };

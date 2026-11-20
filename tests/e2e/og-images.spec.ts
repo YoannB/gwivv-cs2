@@ -1,5 +1,6 @@
 import { expect, test, type APIRequestContext } from "@playwright/test";
 import { ARTICLES_ENABLED } from "../../constants/site";
+import { hasEntries } from "./support/entries";
 import { lp } from "./support/locale-path";
 import { localized } from "./support/pathnames";
 
@@ -55,6 +56,10 @@ test.describe("Social images", () => {
 
     test.describe("article entry", () => {
         test.skip(!ARTICLES_ENABLED, "articles section disabled (ARTICLES_ENABLED = false)");
+        test.skip(
+            !hasEntries("articles"),
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         const entries = [
             { locale: "fr", path: "/articles/ecrire-un-article" },
             { locale: "en", path: "/articles/writing-an-article" },

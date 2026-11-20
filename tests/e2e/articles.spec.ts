@@ -1,8 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import { ARTICLES_ENABLED } from "../../constants/site";
 import { blockDisqus } from "./support/disqus";
+import { hasEntries } from "./support/entries";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption } from "./support/home";
 
+// The entry checks below need the former demo entries; they skip while content/articles/ is
+// empty (hasEntries) and must be rewritten for the site's own entries.
 // v0.4.0 articles: listing -> article -> language switch onto the TRANSLATED slug, SEO tags,
 // sitemap and the home "latest articles" block. Relies on the two demo articles shipped in
 // content/articles/ (translated in every supported locale; a site that replaces the demo content
@@ -19,6 +22,8 @@ async function ready(page: Page) {
     }
 }
 
+const HAS_ENTRIES = hasEntries("articles");
+
 test.describe("Articles", () => {
     // A site that turned the section off (constants/site.ts) has nothing to check here.
     test.skip(!ARTICLES_ENABLED, "articles section disabled (ARTICLES_ENABLED = false)");
@@ -29,6 +34,10 @@ test.describe("Articles", () => {
     });
 
     test("list -> article -> language switch on the translated slug", async ({ page }) => {
+        test.skip(
+            !HAS_ENTRIES,
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         await page.goto("/fr/articles");
         await ready(page);
         await expect(page.getByRole("heading", { level: 1, name: "Articles" })).toBeVisible();
@@ -50,6 +59,10 @@ test.describe("Articles", () => {
     });
 
     test("the default rules show no New and no Archive badge", async ({ page }) => {
+        test.skip(
+            !HAS_ENTRIES,
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         await page.goto("/fr/articles");
         await ready(page);
         await expect(page.locator(".article-feed .article-teaser")).toHaveCount(2);
@@ -57,6 +70,10 @@ test.describe("Articles", () => {
     });
 
     test("canonical, hreflang and JSON-LD of the article page", async ({ page }) => {
+        test.skip(
+            !HAS_ENTRIES,
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         await page.goto("/fr/articles/visite-de-l-architecture");
         const canonical = page.locator('link[rel="canonical"]');
         await expect(canonical).toHaveAttribute("href", /\/fr\/articles\/visite-de-l-architecture$/);
@@ -84,6 +101,10 @@ test.describe("Articles", () => {
     });
 
     test("home shows the latest articles with a link to the list", async ({ page }) => {
+        test.skip(
+            !HAS_ENTRIES,
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         await page.goto("/fr");
         await ready(page);
         const block = page.locator("#latest-articles");
@@ -94,6 +115,10 @@ test.describe("Articles", () => {
     });
 
     test("the sitemap lists every article translation", async ({ request }) => {
+        test.skip(
+            !HAS_ENTRIES,
+            "no entry in content/articles/ (rewrite these expectations for the site's own entries)",
+        );
         const xml = await (await request.get("/sitemap.xml")).text();
         expect(xml).toContain("/fr/articles/ecrire-un-article</loc>");
         expect(xml).toContain("/articles/writing-an-article</loc>");
