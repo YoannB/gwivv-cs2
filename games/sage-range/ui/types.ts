@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import type { Difficulty } from "../core/config";
 import type { Boards } from "../core/leaderboard";
-import type { NameError } from "../core/names";
 import type { SubmissionPayload } from "../core/submission";
 
 /** Every visible string of the game, already translated. `{placeholders}` are filled by the game. */
@@ -64,9 +63,11 @@ export interface SageRangeLabels {
     shareCopied: string;
     shareText: string;
     submitTitle: string;
-    nameLabel: string;
-    nameHint: string;
-    nameError: Record<NameError, string>;
+    profileLabel: string;
+    profilePlaceholder: string;
+    profileHint: string;
+    profileInvalid: string;
+    nameBlocked: string;
     submit: string;
     submitting: string;
     submitted: string;
@@ -90,8 +91,8 @@ export interface SageRangeStorage {
 }
 
 export type SubmitResult =
-    | { ok: true; rank: number | null; score: number; boards: Boards }
-    | { ok: false; error: "name" | "rejected" | "duplicate" | "rate" | "unavailable" };
+    | { ok: true; rank: number | null; score: number; name: string; boards: Boards }
+    | { ok: false; error: "identity" | "name" | "rejected" | "duplicate" | "rate" | "unavailable" };
 
 /** Global top scores, provided by the host (transport and server are the host's business). */
 export interface SageRangeLeaderboard {

@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "A decision and precision trainer. Targets rise on three rails; some must fall, others must be left alone. Read them, hold until the right moment, then take them down, ideally with one shot to the head.",
             "rulesTitle": "Rules of engagement",
-            "ruleValid": "Orange target: hostile. Two body hits or one head hit takes it down.",
+            "ruleValid": "Orange target: hostile. Unarmoured it falls to one hit; armour (vest, helmet) takes two hits where it covers.",
             "ruleDecoy": "Grey target with the crossed mark: a decoy. Shooting it costs dearly; letting it go scores.",
             "ruleWait": "A full ring means ready, not open: the target opens a moment later, at an unpredictable instant. A shot before that is a penalty, and some decoys only reveal themselves when they open.",
             "ruleHead": "Speed and head hits multiply your points; a streak of right decisions multiplies them again.",
@@ -109,9 +109,9 @@
                 "elite": "Elite"
             },
             "difficultyHint": {
-                "recruit": "Large still targets, one window at a time, 1.2 s to strike. To learn the rules.",
-                "regular": "Smaller targets that strafe, a few disguised decoys, under a second to strike.",
-                "elite": "Small strafing targets, many disguised decoys, two windows can overlap, 0.7 s to strike. Built to be very hard, yet within human reach."
+                "recruit": "Large still targets, no armour: one hit is enough. One window at a time, 1.2 s to strike.",
+                "regular": "Vests: two body hits, one to the head. Smaller targets that strafe, a few disguised decoys, under a second.",
+                "elite": "Vests and helmets: two hits anywhere. Small strafing targets, many disguised decoys, two windows can overlap, 0.7 s. Very hard, yet within human reach."
             },
             "start": "Start training",
             "controlsTitle": "Controls",
@@ -158,13 +158,6 @@
             "shareCopied": "Copied to clipboard",
             "shareText": "I scored {score} on Sage Range ({difficulty}). Can you beat it?",
             "submitTitle": "You made the global top 10",
-            "nameLabel": "Your tag",
-            "nameHint": "3 to 16 characters: letters, digits, _ . -. Shown publicly with your score.",
-            "nameError": {
-                "length": "Your tag needs 3 to 16 characters.",
-                "chars": "Only letters, digits and _ . - are allowed.",
-                "blocked": "Pick another tag, this one is not allowed."
-            },
             "submit": "Save my score",
             "submitting": "Verifying the session…",
             "submitted": "Ranked #{rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "Replayed and verified in your browser.",
             "beatIt": "Beat this score",
             "backToRange": "Back to the range",
-            "sharedInvalid": "This link does not hold a valid session (it may be cut, or made under older rules)."
+            "sharedInvalid": "This link does not hold a valid session (it may be cut, or made under older rules).",
+            "profileLabel": "Your Steam profile link",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Your Steam name and avatar appear on the board, linked to your profile.",
+            "profileInvalid": "This is not a Steam profile link we can read (steamcommunity.com/id/… or /profiles/…).",
+            "nameBlocked": "This Steam name is not allowed on the board."
         }
     },
     "showcase": {

@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "Un entrenamiento de decisión y precisión. Los blancos se levantan sobre tres raíles; unos deben caer, otros deben respetarse. Léelos, espera el momento justo y derríbalos, a ser posible de un disparo a la cabeza.",
             "rulesTitle": "Reglas de enfrentamiento",
-            "ruleValid": "Blanco naranja: hostil. Dos impactos en el cuerpo o uno en la cabeza lo derriban.",
+            "ruleValid": "Blanco naranja: hostil. Sin protección cae de un impacto; la protección (chaleco, casco) aguanta dos impactos donde cubre.",
             "ruleDecoy": "Blanco gris tachado: un señuelo. Dispararle cuesta caro; dejarlo pasar suma.",
             "ruleWait": "Anillo lleno significa listo, no abierto: el blanco se abre un instante después, en un momento imprevisible. Disparar antes penaliza, y algunos señuelos solo se revelan al abrirse.",
             "ruleHead": "La rapidez y los disparos a la cabeza multiplican tus puntos; una racha de buenas decisiones los multiplica aún más.",
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Blancos grandes e inmóviles, una ventana cada vez, 1,2 s para disparar. Para aprender las reglas.",
-                "regular": "Blancos más pequeños que se mueven, algunos señuelos disfrazados, menos de un segundo para disparar.",
-                "elite": "Blancos pequeños en movimiento, muchos señuelos disfrazados, dos ventanas pueden coincidir, 0,7 s para golpear. Muy difícil, pero al alcance humano."
+                "recruit": "Blancos grandes e inmóviles, sin protección: basta un impacto. Una ventana cada vez, 1,2 s para disparar.",
+                "regular": "Chalecos: dos impactos en el cuerpo, uno en la cabeza. Blancos más pequeños que se mueven, algunos señuelos disfrazados, menos de un segundo.",
+                "elite": "Chalecos y cascos: dos impactos en cualquier parte. Blancos pequeños en movimiento, muchos señuelos disfrazados, dos ventanas pueden coincidir, 0,7 s. Muy difícil, pero al alcance humano."
             },
             "start": "Empezar el entrenamiento",
             "controlsTitle": "Controles",
@@ -158,13 +158,6 @@
             "shareCopied": "Copiado al portapapeles",
             "shareText": "He hecho {score} en Sage Range ({difficulty}). ¿Lo superas?",
             "submitTitle": "Entras en el top 10 mundial",
-            "nameLabel": "Tu alias",
-            "nameHint": "De 3 a 16 caracteres: letras, cifras, _ . -. Se muestra públicamente con tu puntuación.",
-            "nameError": {
-                "length": "Tu alias debe tener de 3 a 16 caracteres.",
-                "chars": "Solo se permiten letras, cifras y _ . -.",
-                "blocked": "Elige otro alias, este no está permitido."
-            },
             "submit": "Guardar mi puntuación",
             "submitting": "Verificando la sesión…",
             "submitted": "Puesto n.º {rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "Repetida y verificada en tu navegador.",
             "beatIt": "Supera esta puntuación",
             "backToRange": "Volver a la galería",
-            "sharedInvalid": "Este enlace no contiene una sesión válida (puede estar cortado o venir de reglas antiguas)."
+            "sharedInvalid": "Este enlace no contiene una sesión válida (puede estar cortado o venir de reglas antiguas).",
+            "profileLabel": "Enlace de tu perfil de Steam",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Tu nombre y tu avatar de Steam aparecen en la clasificación, con un enlace a tu perfil.",
+            "profileInvalid": "No es un enlace de perfil de Steam legible (steamcommunity.com/id/… o /profiles/…).",
+            "nameBlocked": "Este nombre de Steam no está permitido en la clasificación."
         }
     },
     "showcase": {

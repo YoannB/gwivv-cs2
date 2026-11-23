@@ -19,7 +19,7 @@ const storage: SageRangeStorage = {
 };
 
 const API = "/api/range/scores";
-const SUBMIT_ERRORS = ["name", "rejected", "duplicate", "rate", "unavailable"] as const;
+const SUBMIT_ERRORS = ["identity", "name", "rejected", "duplicate", "rate", "unavailable"] as const;
 
 const leaderboard: SageRangeLeaderboard = {
     async load() {
@@ -39,10 +39,17 @@ const leaderboard: SageRangeLeaderboard = {
             error?: string;
             rank?: number | null;
             score?: number;
+            name?: string;
             boards?: unknown;
         };
         if (res.ok && body.status === "ok") {
-            return { ok: true, rank: body.rank ?? null, score: body.score ?? 0, boards: parseBoards(body.boards) };
+            return {
+                ok: true,
+                rank: body.rank ?? null,
+                score: body.score ?? 0,
+                name: body.name ?? "",
+                boards: parseBoards(body.boards),
+            };
         }
         const error = SUBMIT_ERRORS.find((e) => e === body.error) ?? "unavailable";
         return { ok: false, error };

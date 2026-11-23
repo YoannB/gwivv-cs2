@@ -12,7 +12,7 @@ import {
     type Difficulty,
 } from "./config";
 import { createGame, stepGame, type GameState, type Shot } from "./engine";
-import { validateName } from "./names";
+import { IDENTITY_MAX } from "./saved";
 import { summarize, type Summary } from "./summary";
 
 /** Wire format: shots as [tick, x, y] triples, the most compact JSON. */
@@ -20,25 +20,26 @@ export interface SubmissionPayload {
     version: number;
     difficulty: Difficulty;
     seed: number;
-    name: string;
+    /** Who played, as typed (this site: a Steam profile link); the host resolves and checks it. */
+    identity: string;
     shots: [number, number, number][];
 }
 
 export interface Submission {
     readonly difficulty: Difficulty;
     readonly seed: number;
-    readonly name: string;
+    readonly identity: string;
     readonly shots: readonly Shot[];
 }
 
-export type SubmissionError = "malformed" | "version" | "difficulty" | "seed" | "name" | "shots";
+export type SubmissionError = "malformed" | "version" | "difficulty" | "seed" | "identity" | "shots";
 
-export function toPayload(state: GameState, name: string): SubmissionPayload {
+export function toPayload(state: GameState, identity: string): SubmissionPayload {
     return {
         version: RULES_VERSION,
         difficulty: state.config.id,
         seed: state.seed,
-        name,
+        identity,
         shots: state.log.map((s) => [s.t, s.x, s.y]),
     };
 }
@@ -54,11 +55,11 @@ export function parseSubmission(
     if (b.version !== RULES_VERSION) return { ok: false, reason: "version" };
     if (!isDifficulty(b.difficulty)) return { ok: false, reason: "difficulty" };
     if (!isInt(b.seed, 0, 0xffffffff)) return { ok: false, reason: "seed" };
-    const name = validateName(b.name);
-    if (!name.ok) return { ok: false, reason: "name" };
+    const identity = typeof b.identity === "string" ? b.identity.trim() : "";
+    if (identity.length === 0 || identity.length > IDENTITY_MAX) return { ok: false, reason: "identity" };
     const shots = parseShots(b.shots, DIFFICULTY_CONFIGS[b.difficulty].durationTicks);
     if (!shots) return { ok: false, reason: "shots" };
-    return { ok: true, submission: { difficulty: b.difficulty, seed: b.seed, name: name.name, shots } };
+    return { ok: true, submission: { difficulty: b.difficulty, seed: b.seed, identity, shots } };
 }
 
 /** The log as the engine accepts it: in range, in order, never faster than the trigger allows. */

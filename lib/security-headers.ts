@@ -79,7 +79,11 @@ export function buildSecurityHeaders(opts: {
                     ...disqus("script"),
                 ].join(" "),
                 ["style-src 'self' 'unsafe-inline'", ...disqus("style")].join(" "),
-                ["img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com", ...disqus("img")].join(" "),
+                // *.steamstatic.com: Steam avatars on the Sage Range leaderboard.
+                [
+                    "img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com https://*.steamstatic.com",
+                    ...disqus("img"),
+                ].join(" "),
                 [
                     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https://dinkem.gg",
                     ...disqus("frame"),

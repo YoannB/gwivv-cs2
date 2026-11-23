@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "Ein Training für Entscheidung und Präzision. Ziele tauchen auf drei Schienen auf; manche müssen fallen, andere müssen verschont werden. Lies sie, warte auf den richtigen Moment und schalte sie aus, am besten mit einem Treffer am Kopf.",
             "rulesTitle": "Einsatzregeln",
-            "ruleValid": "Oranges Ziel: feindlich. Zwei Körpertreffer oder ein Kopftreffer schalten es aus.",
+            "ruleValid": "Oranges Ziel: feindlich. Ungeschützt fällt es nach einem Treffer; Schutz (Weste, Helm) hält dort, wo er deckt, zwei Treffer aus.",
             "ruleDecoy": "Graues, durchgestrichenes Ziel: ein Köder. Ein Treffer kostet viel; es stehen zu lassen bringt Punkte.",
             "ruleWait": "Ein voller Ring heißt bereit, nicht offen: Das Ziel öffnet sich einen Moment später, zu einem unvorhersehbaren Zeitpunkt. Ein Schuss davor wird bestraft, und manche Köder zeigen sich erst beim Öffnen.",
             "ruleHead": "Tempo und Kopftreffer vervielfachen deine Punkte; eine Serie richtiger Entscheidungen noch einmal.",
@@ -109,9 +109,9 @@
                 "elite": "Elite"
             },
             "difficultyHint": {
-                "recruit": "Große, unbewegte Ziele, immer nur ein Fenster, 1,2 s zum Schießen. Zum Lernen der Regeln.",
-                "regular": "Kleinere, bewegte Ziele, einige getarnte Köder, unter einer Sekunde zum Schießen.",
-                "elite": "Kleine, bewegte Ziele, viele getarnte Köder, zwei Fenster können sich überschneiden, 0,7 s zum Treffen. Sehr schwer, aber menschlich machbar."
+                "recruit": "Große, unbewegte Ziele ohne Schutz: ein Treffer genügt. Immer nur ein Fenster, 1,2 s zum Schießen.",
+                "regular": "Westen: zwei Körpertreffer, einer am Kopf. Kleinere, bewegte Ziele, einige getarnte Köder, unter einer Sekunde.",
+                "elite": "Westen und Helme: überall zwei Treffer. Kleine, bewegte Ziele, viele getarnte Köder, zwei Fenster können sich überschneiden, 0,7 s. Sehr schwer, aber menschlich machbar."
             },
             "start": "Training starten",
             "controlsTitle": "Steuerung",
@@ -158,13 +158,6 @@
             "shareCopied": "In die Zwischenablage kopiert",
             "shareText": "Ich habe {score} in Sage Range ({difficulty}) erreicht. Schaffst du mehr?",
             "submitTitle": "Du bist in der weltweiten Top 10",
-            "nameLabel": "Dein Name",
-            "nameHint": "3 bis 16 Zeichen: Buchstaben, Ziffern, _ . -. Wird öffentlich mit deiner Punktzahl angezeigt.",
-            "nameError": {
-                "length": "Dein Name braucht 3 bis 16 Zeichen.",
-                "chars": "Nur Buchstaben, Ziffern und _ . - sind erlaubt.",
-                "blocked": "Wähle einen anderen Namen, dieser ist nicht erlaubt."
-            },
             "submit": "Punktzahl speichern",
             "submitting": "Sitzung wird geprüft…",
             "submitted": "Platz {rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "In deinem Browser nachgespielt und geprüft.",
             "beatIt": "Diese Punktzahl schlagen",
             "backToRange": "Zurück zum Schießstand",
-            "sharedInvalid": "Dieser Link enthält keine gültige Sitzung (vielleicht abgeschnitten oder nach alten Regeln erstellt)."
+            "sharedInvalid": "Dieser Link enthält keine gültige Sitzung (vielleicht abgeschnitten oder nach alten Regeln erstellt).",
+            "profileLabel": "Link zu deinem Steam-Profil",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Dein Steam-Name und dein Avatar erscheinen in der Rangliste, verlinkt mit deinem Profil.",
+            "profileInvalid": "Das ist kein lesbarer Steam-Profillink (steamcommunity.com/id/… oder /profiles/…).",
+            "nameBlocked": "Dieser Steam-Name ist in der Rangliste nicht erlaubt."
         }
     },
     "showcase": {

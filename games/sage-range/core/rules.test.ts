@@ -117,16 +117,19 @@ describe("format", () => {
 describe("saved data", () => {
     it("reads stored data defensively", () => {
         expect(parseSaved(null)).toBe(EMPTY_SAVED);
-        expect(parseSaved({ best: null, name: "idiot" })).toEqual({ best: {}, name: "" });
-        expect(parseSaved({ best: { recruit: 120, regular: -4, elite: 2.5, god: 9 }, name: "Ace" })).toEqual({
-            best: { recruit: 120 },
-            name: "Ace",
-        });
+        expect(parseSaved({ best: null, identity: 4 })).toEqual({ best: {}, identity: "" });
+        expect(parseSaved({ best: {}, identity: "x".repeat(301) })).toEqual({ best: {}, identity: "" });
+        expect(
+            parseSaved({
+                best: { recruit: 120, regular: -4, elite: 2.5, god: 9 },
+                identity: " steamcommunity.com/id/ace ",
+            }),
+        ).toEqual({ best: { recruit: 120 }, identity: "steamcommunity.com/id/ace" });
     });
 
     it("keeps the best score per difficulty", () => {
         const first = recordScore(EMPTY_SAVED, "elite", 300);
-        expect(first).toEqual({ saved: { best: { elite: 300 }, name: "" }, newBest: true });
+        expect(first).toEqual({ saved: { best: { elite: 300 }, identity: "" }, newBest: true });
         expect(recordScore(first.saved, "elite", 300)).toEqual({ saved: first.saved, newBest: false });
         expect(recordScore(first.saved, "elite", 0).newBest).toBe(false);
     });

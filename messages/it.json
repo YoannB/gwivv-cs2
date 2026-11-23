@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "Un allenamento di decisione e precisione. I bersagli si alzano su tre binari; alcuni devono cadere, altri vanno risparmiati. Leggili, aspetta il momento giusto, poi abbattili, possibilmente con un colpo alla testa.",
             "rulesTitle": "Regole d'ingaggio",
-            "ruleValid": "Bersaglio arancione: ostile. Due colpi al corpo o uno alla testa lo abbattono.",
+            "ruleValid": "Bersaglio arancione: ostile. Senza protezione cade con un colpo; la protezione (giubbotto, elmetto) regge due colpi dove copre.",
             "ruleDecoy": "Bersaglio grigio barrato: un'esca. Colpirla costa caro; lasciarla passare fa punti.",
             "ruleWait": "Anello pieno significa pronto, non aperto: il bersaglio si apre un attimo dopo, in un istante imprevedibile. Sparare prima è penalizzato, e alcune esche si rivelano solo all'apertura.",
             "ruleHead": "Velocità e colpi alla testa moltiplicano i tuoi punti; una serie di decisioni giuste li moltiplica ancora.",
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Bersagli grandi e fermi, una finestra alla volta, 1,2 s per sparare. Per imparare le regole.",
-                "regular": "Bersagli più piccoli che si muovono, qualche esca camuffata, meno di un secondo per sparare.",
-                "elite": "Bersagli piccoli in movimento, molte esche camuffate, due finestre possono sovrapporsi, 0,7 s per colpire. Durissimo, ma alla portata umana."
+                "recruit": "Bersagli grandi e fermi, senza protezione: basta un colpo. Una finestra alla volta, 1,2 s per sparare.",
+                "regular": "Giubbotti: due colpi al corpo, uno alla testa. Bersagli più piccoli che si muovono, qualche esca camuffata, meno di un secondo.",
+                "elite": "Giubbotti ed elmetti: due colpi ovunque. Bersagli piccoli in movimento, molte esche camuffate, due finestre possono sovrapporsi, 0,7 s. Durissimo, ma alla portata umana."
             },
             "start": "Inizia l'allenamento",
             "controlsTitle": "Comandi",
@@ -158,13 +158,6 @@
             "shareCopied": "Copiato negli appunti",
             "shareText": "Ho fatto {score} su Sage Range ({difficulty}). Riesci a battermi?",
             "submitTitle": "Sei nella top 10 mondiale",
-            "nameLabel": "Il tuo nickname",
-            "nameHint": "Da 3 a 16 caratteri: lettere, cifre, _ . -. Mostrato pubblicamente con il tuo punteggio.",
-            "nameError": {
-                "length": "Il nickname deve avere da 3 a 16 caratteri.",
-                "chars": "Sono ammessi solo lettere, cifre e _ . -.",
-                "blocked": "Scegli un altro nickname, questo non è ammesso."
-            },
             "submit": "Salva il punteggio",
             "submitting": "Verifica della sessione…",
             "submitted": "Posizione n. {rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "Rigiocata e verificata nel tuo browser.",
             "beatIt": "Batti questo punteggio",
             "backToRange": "Torna al poligono",
-            "sharedInvalid": "Questo link non contiene una sessione valida (forse è troncato o creato con regole precedenti)."
+            "sharedInvalid": "Questo link non contiene una sessione valida (forse è troncato o creato con regole precedenti).",
+            "profileLabel": "Link del tuo profilo Steam",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Il tuo nome e il tuo avatar Steam compaiono in classifica, con un link al tuo profilo.",
+            "profileInvalid": "Non è un link di profilo Steam leggibile (steamcommunity.com/id/… o /profiles/…).",
+            "nameBlocked": "Questo nome Steam non è ammesso in classifica."
         }
     },
     "showcase": {

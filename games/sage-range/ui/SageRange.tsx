@@ -142,7 +142,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
             const summary = summarize(game);
             const { saved: next, newBest } = recordScore(store.get(), summary.difficulty, summary.score);
             if (newBest) store.set(next);
-            const finished = encodeRun(runFromGame(game, store.get().name));
+            const finished = encodeRun(runFromGame(game));
             ownRuns.set(finished, { game, summary, newBest, testRun: testHook() !== undefined });
             setScreen({ kind: "idle" });
             goTo(`#r=${finished}`);
@@ -195,7 +195,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
 
     const returnLink = renderReturnLink({ className: "sr-btn sr-btn--ghost", children: labels.returnToProfile });
     const common = { labels, locale, saved, boards, leaderboard, onBoards: setBoards, returnLink };
-    const onName = (name: string) => store.set({ ...store.get(), name });
+    const onIdentity = (identity: string) => store.set({ ...store.get(), identity });
 
     let phase: string;
     let body: ReactNode;
@@ -240,7 +240,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
             <ResultsScreen
                 {...common}
                 summary={own.summary}
-                onName={onName}
+                onIdentity={onIdentity}
                 mode={{
                     kind: "own",
                     game: own.game,
@@ -258,7 +258,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
             <ResultsScreen
                 {...common}
                 summary={shared.summary}
-                onName={onName}
+                onIdentity={onIdentity}
                 mode={{
                     kind: "shared",
                     name: shared.run.name,
@@ -294,7 +294,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                     <ResultsScreen
                         {...common}
                         summary={shared.summary}
-                        onName={onName}
+                        onIdentity={onIdentity}
                         mode={{ kind: "shared", name: shared.run.name, onBeat: toMenu, onMenu: toMenu }}
                     />
                 ) : null}

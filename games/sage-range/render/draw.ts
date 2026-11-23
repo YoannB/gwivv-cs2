@@ -173,15 +173,27 @@ function silhouette(ctx: CanvasRenderingContext2D, t: Target): void {
     ctx.arc(t.x, t.y - t.headDy, t.headR, 0, Math.PI * 2);
 }
 
-/** Inner details: a vest plate on the torso and a band across the head. */
+/** Armour, drawn only when worn: a vest plate on the torso, a helmet shell over the head. */
 function gear(ctx: CanvasRenderingContext2D, t: Target, color: string): void {
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.lineWidth = Math.max(1.5, t.size * 0.05);
-    ctx.beginPath();
-    ctx.roundRect(t.x - t.bodyA * 0.55, t.y - t.bodyB * 0.7, t.bodyA * 1.1, t.bodyB * 1.2, t.corner * 0.5);
-    ctx.moveTo(t.x - t.headR, t.y - t.headDy - t.headR * 0.15);
-    ctx.lineTo(t.x + t.headR, t.y - t.headDy - t.headR * 0.15);
-    ctx.stroke();
+    if (t.vest) {
+        ctx.beginPath();
+        ctx.roundRect(t.x - t.bodyA * 0.6, t.y - t.bodyB * 0.75, t.bodyA * 1.2, t.bodyB * 1.25, t.corner * 0.5);
+        ctx.moveTo(t.x - t.bodyA * 0.6, t.y - t.bodyB * 0.2);
+        ctx.lineTo(t.x + t.bodyA * 0.6, t.y - t.bodyB * 0.2);
+        ctx.stroke();
+    }
+    if (t.helmet) {
+        const hy = t.y - t.headDy;
+        ctx.beginPath();
+        ctx.arc(t.x, hy, t.headR * 1.08, Math.PI * 1.08, Math.PI * 1.92);
+        ctx.lineTo(t.x + t.headR * 1.15, hy - t.headR * 0.05);
+        ctx.lineTo(t.x - t.headR * 1.15, hy - t.headR * 0.05);
+        ctx.closePath();
+        ctx.fill();
+    }
 }
 
 function drawTarget(ctx: CanvasRenderingContext2D, t: Target, tick: number, nowMs: number): void {

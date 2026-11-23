@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "Um treino de decisão e precisão. Alvos surgem em três trilhos; alguns devem cair, outros devem ser poupados. Leia-os, espere o momento certo e derrube-os, de preferência com um tiro na cabeça.",
             "rulesTitle": "Regras de combate",
-            "ruleValid": "Alvo laranja: hostil. Dois acertos no corpo ou um na cabeça o derrubam.",
+            "ruleValid": "Alvo laranja: hostil. Sem proteção cai com um tiro; a proteção (colete, capacete) aguenta dois tiros onde cobre.",
             "ruleDecoy": "Alvo cinza riscado: um chamariz. Atirar nele custa caro; deixá-lo passar pontua.",
             "ruleWait": "Anel cheio significa pronto, não aberto: o alvo abre um instante depois, num momento imprevisível. Atirar antes é penalizado, e alguns chamarizes só se revelam ao abrir.",
             "ruleHead": "Rapidez e tiros na cabeça multiplicam seus pontos; uma sequência de decisões certas os multiplica de novo.",
@@ -109,9 +109,9 @@
                 "elite": "Elite"
             },
             "difficultyHint": {
-                "recruit": "Alvos grandes e parados, uma janela por vez, 1,2 s para atirar. Para aprender as regras.",
-                "regular": "Alvos menores que se movem, alguns chamarizes disfarçados, menos de um segundo para atirar.",
-                "elite": "Alvos pequenos em movimento, muitos chamarizes disfarçados, duas janelas podem coincidir, 0,7 s para acertar. Muito difícil, mas ao alcance humano."
+                "recruit": "Alvos grandes e parados, sem proteção: um tiro basta. Uma janela por vez, 1,2 s para atirar.",
+                "regular": "Coletes: dois tiros no corpo, um na cabeça. Alvos menores que se movem, alguns chamarizes disfarçados, menos de um segundo.",
+                "elite": "Coletes e capacetes: dois tiros em qualquer lugar. Alvos pequenos em movimento, muitos chamarizes disfarçados, duas janelas podem coincidir, 0,7 s. Muito difícil, mas ao alcance humano."
             },
             "start": "Iniciar o treino",
             "controlsTitle": "Controles",
@@ -158,13 +158,6 @@
             "shareCopied": "Copiado para a área de transferência",
             "shareText": "Fiz {score} no Sage Range ({difficulty}). Consegue superar?",
             "submitTitle": "Você entrou no top 10 mundial",
-            "nameLabel": "Seu apelido",
-            "nameHint": "De 3 a 16 caracteres: letras, números, _ . -. Exibido publicamente com sua pontuação.",
-            "nameError": {
-                "length": "Seu apelido precisa ter de 3 a 16 caracteres.",
-                "chars": "Apenas letras, números e _ . - são permitidos.",
-                "blocked": "Escolha outro apelido, este não é permitido."
-            },
             "submit": "Salvar minha pontuação",
             "submitting": "Verificando a sessão…",
             "submitted": "Posição n.º {rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "Reproduzida e verificada no seu navegador.",
             "beatIt": "Superar esta pontuação",
             "backToRange": "Voltar ao estande",
-            "sharedInvalid": "Este link não contém uma sessão válida (pode estar cortado ou vir de regras antigas)."
+            "sharedInvalid": "Este link não contém uma sessão válida (pode estar cortado ou vir de regras antigas).",
+            "profileLabel": "Link do seu perfil Steam",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Seu nome e seu avatar Steam aparecem na classificação, com um link para o seu perfil.",
+            "profileInvalid": "Este não é um link de perfil Steam legível (steamcommunity.com/id/… ou /profiles/…).",
+            "nameBlocked": "Este nome Steam não é permitido na classificação."
         }
     },
     "showcase": {

@@ -20,6 +20,8 @@ function target(over: Partial<Target> = {}): Target {
         headR: 21,
         headDy: 69,
         travel: 0,
+        vest: true,
+        helmet: false,
         hp: 2,
         phase: "open",
         phaseStart: 0,
@@ -172,6 +174,20 @@ describe("stepGame", () => {
         expect(events[0]).toMatchObject({ type: "kill", headshot: false });
         expect(t.hitAt).toBe(10);
         expect(state.stats).toMatchObject({ hits: 2, headHits: 0, kills: 1, ttdTicks: 10, ttdCount: 1 });
+    });
+
+    it("drops an unarmoured target with one body hit", () => {
+        const state = arena(target({ vest: false }));
+        expect(stepGame(state, [BODY])[0]).toMatchObject({ type: "kill", headshot: false });
+    });
+
+    it("needs two head hits through a helmet", () => {
+        const t = target({ helmet: true });
+        const state = arena(t);
+        expect(stepGame(state, [HEAD])).toEqual([{ type: "hit", ...HEAD, headshot: true }]);
+        for (let i = 1; i < FIRE_COOLDOWN_TICKS; i += 1) stepGame(state, []);
+        expect(stepGame(state, [HEAD])[0]).toMatchObject({ type: "kill", headshot: true });
+        expect(state.stats.headHits).toBe(2);
     });
 
     it("kills with one head hit, rewarding speed and streak", () => {

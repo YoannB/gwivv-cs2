@@ -1,13 +1,22 @@
 // Global top scores, one board per difficulty. Pure: the storage (server side) and the transport
 // (client side) are injected by the host site; this module only reads, ranks and inserts.
 import { RULES_VERSION, isDifficulty, type Difficulty } from "./config";
-import { validateName } from "./names";
+import { cleanDisplayName } from "./names";
 import type { Summary } from "./summary";
 
 export const BOARD_SIZE = 10;
 
-export interface BoardEntry {
+/** Who played, as the host resolved it (this site: a Steam profile). */
+export interface Player {
+    /** Display name (e.g. Steam persona name). */
     readonly name: string;
+    /** https URL of an avatar picture, or null. */
+    readonly avatar: string | null;
+    /** https URL of the player's public profile, or null. Identifies the player on the boards. */
+    readonly url: string | null;
+}
+
+export interface BoardEntry extends Player {
     readonly score: number;
     /** 0..1 */
     readonly accuracy: number;
@@ -16,7 +25,7 @@ export interface BoardEntry {
     readonly timeToDamageMs: number | null;
     /** Calendar day of the session, YYYY-MM-DD (UTC). */
     readonly day: string;
-    /** Fingerprint of the session (core/share.ts runId): a run ranks once, under one tag. */
+    /** Fingerprint of the session (core/share.ts runId): a run ranks once, under one player. */
     readonly run: string;
 }
 
@@ -31,13 +40,17 @@ export function emptyBoards(): Boards {
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const RUN = /^[0-9a-f]{8}$/;
+/** Strict https URL with no quote, space or parenthesis (safe in an href and in CSS url()). */
+const SAFE_URL = /^https:\/\/[A-Za-z0-9.-]+(\/[A-Za-z0-9._~%/-]*)?$/;
+const isUrlOrNull = (v: unknown): v is string | null => v === null || (typeof v === "string" && SAFE_URL.test(v));
 const isRatio = (v: unknown): v is number => typeof v === "number" && v >= 0 && v <= 1;
 
 function parseEntry(raw: unknown): BoardEntry | null {
     if (typeof raw !== "object" || raw === null) return null;
     const e = raw as Record<string, unknown>;
-    const name = validateName(e.name);
-    if (!name.ok) return null;
+    const name = cleanDisplayName(e.name);
+    if (name === null) return null;
+    if (!isUrlOrNull(e.avatar) || !isUrlOrNull(e.url)) return null;
     if (typeof e.score !== "number" || !Number.isInteger(e.score) || e.score < 0) return null;
     if (!isRatio(e.accuracy) || !isRatio(e.headshotRate)) return null;
     const ttd = e.timeToDamageMs;
@@ -45,7 +58,9 @@ function parseEntry(raw: unknown): BoardEntry | null {
     if (typeof e.day !== "string" || !DAY.test(e.day)) return null;
     if (typeof e.run !== "string" || !RUN.test(e.run)) return null;
     return {
-        name: name.name,
+        name,
+        avatar: e.avatar,
+        url: e.url,
         score: e.score,
         accuracy: e.accuracy,
         headshotRate: e.headshotRate,
@@ -67,6 +82,8 @@ export function parseBoards(raw: unknown): Boards {
     return boards;
 }
 
+const playerKey = (p: Player) => (p.url ?? `name:${p.name}`).toLowerCase();
+
 /** Best score first; on a tie the earlier day keeps its place. */
 function sortBoard(entries: BoardEntry[]): BoardEntry[] {
     return entries.sort((a, b) => b.score - a.score || a.day.localeCompare(b.day));
@@ -79,9 +96,11 @@ export function qualifies(board: readonly BoardEntry[], score: number): boolean 
     return score > board[board.length - 1].score;
 }
 
-export function entryFrom(name: string, summary: Summary, day: string, run: string): BoardEntry {
+export function entryFrom(player: Player, summary: Summary, day: string, run: string): BoardEntry {
     return {
-        name,
+        name: player.name,
+        avatar: player.avatar,
+        url: player.url,
         score: summary.score,
         accuracy: summary.accuracy,
         headshotRate: summary.headshotRate,
@@ -92,10 +111,10 @@ export function entryFrom(name: string, summary: Summary, day: string, run: stri
 }
 
 /**
- * Inserts an entry. One line per name and difficulty: a name that already holds a better or equal
- * score keeps it (rank of that line returned), a better score replaces it. Rank is 1-based, null
+ * Inserts an entry. One line per player (profile URL, else name) and difficulty: a player who already
+ * holds a better or equal score keeps it (rank of that line returned), a better score replaces it. Rank is 1-based, null
  * when the entry does not make the board. A run already on any board (a shared link replayed
- * under another tag) is refused as a duplicate.
+ * under another profile) is refused as a duplicate.
  */
 export function insertEntry(
     boards: Boards,
@@ -103,8 +122,8 @@ export function insertEntry(
     entry: BoardEntry,
 ): { boards: Boards; rank: number | null; changed: boolean; duplicate: boolean } {
     const board = boards[difficulty];
-    const key = entry.name.toLowerCase();
-    const own = board.find((e) => e.name.toLowerCase() === key);
+    const key = playerKey(entry);
+    const own = board.find((e) => playerKey(e) === key);
     if (own && own.score >= entry.score) {
         return { boards, rank: board.indexOf(own) + 1, changed: false, duplicate: false };
     }

@@ -8,6 +8,8 @@ export {
     parseBoards,
     type BoardEntry,
     type Boards,
+    type Player,
 } from "./core/leaderboard";
+export { cleanDisplayName } from "./core/names";
 export { runId } from "./core/share";
 export { isHuman, parseSubmission, verify, type SubmissionPayload } from "./core/submission";

@@ -20,7 +20,7 @@ a leaderboard adapter, the backdrop URL and a `renderReturnLink` for the host's 
 | `core/summary.ts`            | End figures: score + precision bonus, reaction time, time to damage, head precision, grade |
 | `core/submission.ts`         | Leaderboard payload (seed + accepted shot log), validation, `replay`, `verify`             |
 | `core/leaderboard.ts`        | Boards per difficulty: parse, rank, insert (one line per tag)                              |
-| `core/names.ts`              | Tag validation and the multilingual insult filter                                          |
+| `core/names.ts`              | Display-name cleaning (any script, bounded) and the multilingual insult filter             |
 | `core/share.ts`              | Session ↔ URL code (`#r=`), run fingerprint (`runId`, one board line per run)              |
 | `core/saved.ts`, `format.ts` | Browser-saved data (bests, last tag); tiny formatting helpers                              |
 | `render/`                    | Canvas drawing and effects (render-only, real time, never part of a replay)                |
@@ -40,8 +40,10 @@ a dashed ring fills (identity visible: orange = hostile, grey with a no-shoot ma
 HIDDEN extra hold (the opening cannot be anticipated: reaction time stays a reaction), opens (solid
 ring draining), then sinks. Openings are staggered (`maxOpen`, `openGapTicks`) so every window stays
 humanly reachable; windows are 1.2 s / 0.95 s / 0.7 s. The server refuses sessions whose average
-reaction time is below `MIN_HUMAN_REACTION_MS` over enough targets. Hostile: two body
-hits or one head hit. Shooting before it opens = early shot; shooting a decoy = heavy penalty;
+reaction time is below `MIN_HUMAN_REACTION_MS` over enough targets. Hostile targets wear the
+difficulty's armour (`armor` in `core/config.ts`): none on Recruit (one hit anywhere), a vest on
+Regular (two body hits, one head hit), vest and helmet on Elite (two hits anywhere); a protected zone
+takes two hits, an unprotected one falls to one. Shooting before it opens = early shot; shooting a decoy = heavy penalty;
 letting a decoy go = points; letting a hostile go = streak lost. Kill points = base + head bonus +
 speed bonus (falls to 0 at the end of the window), times the streak multiplier; the end bonus
 rewards accuracy and head precision. Mimic decoys (Regular, Elite) look hostile until they open:
@@ -70,6 +72,12 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
   The server REPLAYS the submitted seed and shot log and ranks only its own score; the IP is used
   for the in-memory rate limit only and never stored. Replay proves a score matches a legal shot
   sequence, not that a human fired it.
+- Player identity: the player pastes their Steam profile link (`/id/<vanity>` or
+  `/profiles/<SteamID64>`). `lib/steam-profile.ts` (pure) parses it and the public XML view
+  (`steamcommunity.com/…/?xml=1`, no API key); the route fetches that view and ranks the entry under
+  the persona name (cleaned and filtered by the game) with the medium avatar and the canonical
+  profile URL; one board line per profile. The link is not proof of ownership: a demo board,
+  moderated by hand. Avatars load from `*.steamstatic.com` (`img-src` in `lib/security-headers.ts`).
 - Touch-only devices (`(hover: none) and (pointer: coarse)`) get an explanatory screen; the switch
   is CSS-only (no hydration mismatch).
 - Tests: `tests/e2e/range.spec.ts` uses the test hook `window.__SAGE_RANGE_TEST__` (seed, short

@@ -1,11 +1,11 @@
 // A finished session as a short URL-safe code (`#r=<code>`): the seed and the accepted shots,
-// plus the player's tag when there is one. Anyone opening the link REPLAYS the session with the
+// plus the player's display name when there is one. Anyone opening the link REPLAYS the session with the
 // engine, so a shared score is verified, never trusted. Binary layout (then base64url):
-//   version u8 · difficulty u8 · seed u32 · shot count u16 · tag length u8 · tag ASCII
+//   version u8 · difficulty u8 · seed u32 · shot count u16 · name length u8 · name UTF-8
 //   · per shot: tick delta (varint) · x u16 · y u16
 import { DIFFICULTIES, DIFFICULTY_CONFIGS, RULES_VERSION, type Difficulty } from "./config";
 import type { GameState, Shot } from "./engine";
-import { validateName } from "./names";
+import { cleanDisplayName } from "./names";
 import { parseShots } from "./submission";
 
 export interface SharedRun {
@@ -42,12 +42,11 @@ function fromBase64Url(code: string): number[] | null {
 }
 
 export function encodeRun(run: SharedRun): string {
-    const name = validateName(run.name);
-    const tag = name.ok ? name.name : "";
+    const tag = [...new TextEncoder().encode(cleanDisplayName(run.name) ?? "")];
     const bytes: number[] = [RULES_VERSION, DIFFICULTIES.indexOf(run.difficulty)];
     bytes.push((run.seed >>> 24) & 255, (run.seed >>> 16) & 255, (run.seed >>> 8) & 255, run.seed & 255);
     bytes.push((run.shots.length >> 8) & 255, run.shots.length & 255, tag.length);
-    for (const c of tag) bytes.push(c.charCodeAt(0));
+    bytes.push(...tag);
     let last = 0;
     for (const shot of run.shots) {
         let delta = shot.t - last;
@@ -77,7 +76,7 @@ export function decodeRun(code: string): SharedRun | null {
     const tagLength = bytes[8];
     let i = 9 + tagLength;
     if (i > bytes.length) return null;
-    const tag = String.fromCharCode(...bytes.slice(9, i));
+    const tag = new TextDecoder().decode(new Uint8Array(bytes.slice(9, i)));
     const triples: [number, number, number][] = [];
     let t = 0;
     for (let n = 0; n < count; n += 1) {
@@ -97,8 +96,7 @@ export function decodeRun(code: string): SharedRun | null {
     if (i !== bytes.length) return null;
     const shots = parseShots(triples, DIFFICULTY_CONFIGS[difficulty].durationTicks);
     if (!shots) return null;
-    const name = validateName(tag);
-    return { difficulty, seed, shots, name: name.ok ? name.name : "" };
+    return { difficulty, seed, shots, name: cleanDisplayName(tag) ?? "" };
 }
 
 /** Short fingerprint of a session (FNV-1a over its code without the tag): one run, one board line. */

@@ -2,7 +2,7 @@
 // reads is an integer (arena units, ticks), so a session replays bit for bit from its seed and its
 // shot log. Bumping RULES_VERSION retires every leaderboard entry made under the previous rules.
 
-export const RULES_VERSION = 2;
+export const RULES_VERSION = 3;
 
 /** Simulation rate: one tick = 1/60 s. */
 export const TICKS_PER_SECOND = 60;
@@ -17,7 +17,7 @@ export const EMERGE_TICKS = 18;
 export const RETREAT_TICKS = 12;
 /** Minimum gap between two accepted shots (100 ms): a trigger, not a hose. */
 export const FIRE_COOLDOWN_TICKS = 6;
-/** Hit points of a valid target: one head hit or two body hits. */
+/** Hit points of a valid target. An unprotected zone takes both at once; armour takes one per hit. */
 export const TARGET_HP = 2;
 /** A shot within this many sizes of an open target counts as aimed at it (reaction time). */
 export const AIM_RADIUS_FACTOR = 2;
@@ -79,6 +79,8 @@ export interface DifficultyConfig {
     readonly speed: readonly [number, number];
     /** Strafe amplitude around the spawn point, arena units. */
     readonly travel: number;
+    /** Armour of hostile targets: a vest makes body hits take two, a helmet does the same for the head. */
+    readonly armor: { readonly vest: boolean; readonly helmet: boolean };
 }
 
 export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> = {
@@ -97,6 +99,7 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         openGapTicks: 30,
         speed: [0, 0],
         travel: 0,
+        armor: { vest: false, helmet: false },
     },
     regular: {
         id: "regular",
@@ -113,6 +116,7 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         openGapTicks: 24,
         speed: [0, 3],
         travel: 90,
+        armor: { vest: true, helmet: false },
     },
     elite: {
         id: "elite",
@@ -129,6 +133,7 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         openGapTicks: 24,
         speed: [2, 5],
         travel: 130,
+        armor: { vest: true, helmet: true },
     },
 };
 

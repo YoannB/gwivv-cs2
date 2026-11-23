@@ -5,8 +5,7 @@ import type { Difficulty } from "../core/config";
 import type { GameState } from "../core/engine";
 import { fill, formatNumber, formatPercent } from "../core/format";
 import { qualifies, type Boards } from "../core/leaderboard";
-import { NAME_MAX, validateName } from "../core/names";
-import type { SavedData } from "../core/saved";
+import { IDENTITY_MAX, type SavedData } from "../core/saved";
 import { toPayload } from "../core/submission";
 import type { Summary } from "../core/summary";
 import { Board, DifficultyPicker, ShareButton, TargetIcon } from "./parts";
@@ -157,7 +156,7 @@ export function ResultsScreen({
     boards,
     leaderboard,
     onBoards,
-    onName,
+    onIdentity,
     returnLink,
 }: {
     labels: SageRangeLabels;
@@ -168,7 +167,7 @@ export function ResultsScreen({
     boards: BoardsState;
     leaderboard?: SageRangeLeaderboard;
     onBoards: (b: Boards) => void;
-    onName: (name: string) => void;
+    onIdentity: (identity: string) => void;
     returnLink: ReactNode;
 }) {
     const armed = useArmed();
@@ -235,10 +234,10 @@ export function ResultsScreen({
                     labels={labels}
                     locale={locale}
                     game={mode.game}
-                    initialName={saved?.name ?? ""}
+                    initialIdentity={saved?.identity ?? ""}
                     leaderboard={leaderboard}
                     onBoards={onBoards}
-                    onName={onName}
+                    onIdentity={onIdentity}
                     onSubmitted={mode.onSubmitted}
                 />
             ) : null}
@@ -294,22 +293,22 @@ function SubmitScore({
     labels,
     locale,
     game,
-    initialName,
+    initialIdentity,
     leaderboard,
     onBoards,
-    onName,
+    onIdentity,
     onSubmitted,
 }: {
     labels: SageRangeLabels;
     locale: string;
     game: GameState;
-    initialName: string;
+    initialIdentity: string;
     leaderboard: SageRangeLeaderboard;
     onBoards: (b: Boards) => void;
-    onName: (name: string) => void;
+    onIdentity: (identity: string) => void;
     onSubmitted: (name: string) => void;
 }) {
-    const [name, setName] = useState(initialName);
+    const [identity, setIdentity] = useState(initialIdentity);
     const [status, setStatus] = useState<
         { kind: "idle" | "sending" } | { kind: "error"; message: string } | { kind: "done"; rank: number | null }
     >({ kind: "idle" });
@@ -317,28 +316,27 @@ function SubmitScore({
 
     const submit = async (e: FormEvent) => {
         e.preventDefault();
-        const checked = validateName(name);
-        if (!checked.ok) {
-            setStatus({ kind: "error", message: labels.nameError[checked.reason] });
+        const value = identity.trim();
+        if (value.length === 0 || value.length > IDENTITY_MAX) {
+            setStatus({ kind: "error", message: labels.profileInvalid });
             return;
         }
         setStatus({ kind: "sending" });
-        onName(checked.name);
-        const result = await leaderboard.submit(toPayload(game, checked.name)).catch(() => null);
+        onIdentity(value);
+        const result = await leaderboard.submit(toPayload(game, value)).catch(() => null);
         if (!result || !result.ok) {
-            const message =
-                result?.error === "name"
-                    ? labels.nameError.blocked
-                    : result?.error === "duplicate"
-                      ? labels.submitDuplicate
-                      : labels.submitError;
-            setStatus({ kind: "error", message });
+            const messages: Record<string, string> = {
+                identity: labels.profileInvalid,
+                name: labels.nameBlocked,
+                duplicate: labels.submitDuplicate,
+            };
+            setStatus({ kind: "error", message: (result && messages[result.error]) || labels.submitError });
             return;
         }
         setEntries(result.boards);
         onBoards(result.boards);
         setStatus({ kind: "done", rank: result.rank });
-        onSubmitted(checked.name);
+        onSubmitted(result.name);
     };
 
     if (status.kind === "done") {
@@ -358,16 +356,19 @@ function SubmitScore({
         <form className="sr-panel sr-submit" onSubmit={submit}>
             <h2 className="sr-heading">{labels.submitTitle}</h2>
             <label className="sr-field">
-                <span>{labels.nameLabel}</span>
+                <span>{labels.profileLabel}</span>
                 <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    maxLength={NAME_MAX}
-                    autoComplete="nickname"
+                    type="url"
+                    inputMode="url"
+                    value={identity}
+                    onChange={(e) => setIdentity(e.target.value)}
+                    maxLength={IDENTITY_MAX}
+                    placeholder={labels.profilePlaceholder}
+                    autoComplete="url"
                     spellCheck={false}
                 />
             </label>
-            <p className="sr-muted">{labels.nameHint}</p>
+            <p className="sr-muted">{labels.profileHint}</p>
             {status.kind === "error" ? (
                 <p className="sr-error" role="alert">
                     {status.message}

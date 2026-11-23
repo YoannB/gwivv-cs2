@@ -242,7 +242,7 @@ html:has(.sr[data-phase="play"]) {
     display: grid;
     grid-template-columns: 28px minmax(0, 1fr) auto auto;
     gap: 10px;
-    align-items: baseline;
+    align-items: center;
     padding: 6px 8px;
     border-radius: 8px;
 }
@@ -257,10 +257,30 @@ html:has(.sr[data-phase="play"]) {
     font-weight: 700;
     color: var(--sr-grey);
 }
+.sr-board__player {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+}
+.sr-board__avatar {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--sr-black-soft) center / cover no-repeat;
+    box-shadow: inset 0 0 0 1px var(--sr-line);
+}
 .sr-board__name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: inherit;
+    text-decoration: none;
+}
+a.sr-board__name:hover {
+    color: var(--sr-amber);
+    text-decoration: underline;
 }
 .sr-board__meta {
     font-size: 0.8rem;

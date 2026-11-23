@@ -98,7 +98,7 @@
             "motto": "La patience est une arme.",
             "intro": "Un entraînement à la décision et à la précision. Des cibles se lèvent sur trois rails ; certaines doivent tomber, d'autres doivent être épargnées. Lisez-les, attendez le bon moment, puis neutralisez-les, idéalement d'une balle dans la tête.",
             "rulesTitle": "Règles d'engagement",
-            "ruleValid": "Cible orange : hostile. Deux impacts au corps ou un à la tête la neutralisent.",
+            "ruleValid": "Cible orange : hostile. Sans protection, une balle suffit ; une protection (gilet, casque) encaisse deux balles là où elle couvre.",
             "ruleDecoy": "Cible grise barrée : un leurre. Tirer dessus coûte cher ; la laisser passer rapporte.",
             "ruleWait": "Un anneau plein signifie prête, pas ouverte : la cible s'ouvre un instant plus tard, à un moment imprévisible. Tirer avant est pénalisé, et certains leurres ne se révèlent qu'à l'ouverture.",
             "ruleHead": "La vitesse et les tirs à la tête multiplient vos points ; une série de bonnes décisions les multiplie encore.",
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Grandes cibles immobiles, une fenêtre à la fois, 1,2 s pour tirer. Pour apprendre les règles.",
-                "regular": "Cibles plus petites qui se déplacent, quelques leurres déguisés, moins d'une seconde pour tirer.",
-                "elite": "Petites cibles en mouvement, beaucoup de leurres déguisés, deux fenêtres peuvent se chevaucher, 0,7 s pour frapper. Très dur, mais à portée humaine."
+                "recruit": "Grandes cibles immobiles, sans protection : une balle suffit. Une fenêtre à la fois, 1,2 s pour tirer.",
+                "regular": "Gilets : deux balles au corps, une à la tête. Cibles plus petites qui se déplacent, quelques leurres déguisés, moins d'une seconde.",
+                "elite": "Gilets et casques : deux balles partout. Petites cibles en mouvement, beaucoup de leurres déguisés, deux fenêtres peuvent se chevaucher, 0,7 s. Très dur, mais à portée humaine."
             },
             "start": "Lancer l'entraînement",
             "controlsTitle": "Commandes",
@@ -158,13 +158,6 @@
             "shareCopied": "Copié dans le presse-papiers",
             "shareText": "J'ai fait {score} sur Sage Range ({difficulty}). Tu fais mieux ?",
             "submitTitle": "Vous entrez dans le top 10 mondial",
-            "nameLabel": "Votre pseudo",
-            "nameHint": "3 à 16 caractères : lettres, chiffres, _ . -. Affiché publiquement avec votre score.",
-            "nameError": {
-                "length": "Votre pseudo doit faire 3 à 16 caractères.",
-                "chars": "Seuls les lettres, chiffres et _ . - sont autorisés.",
-                "blocked": "Choisissez un autre pseudo, celui-ci n'est pas accepté."
-            },
             "submit": "Enregistrer mon score",
             "submitting": "Vérification de la session…",
             "submitted": "Classé n° {rank}",
@@ -178,7 +171,12 @@
             "sharedVerified": "Rejouée et vérifiée dans votre navigateur.",
             "beatIt": "Battre ce score",
             "backToRange": "Retour au stand",
-            "sharedInvalid": "Ce lien ne contient pas de session valide (il est peut-être tronqué, ou issu d'anciennes règles)."
+            "sharedInvalid": "Ce lien ne contient pas de session valide (il est peut-être tronqué, ou issu d'anciennes règles).",
+            "profileLabel": "Lien de votre profil Steam",
+            "profilePlaceholder": "https://steamcommunity.com/id/…",
+            "profileHint": "Votre pseudo et votre avatar Steam apparaissent au classement, avec un lien vers votre profil.",
+            "profileInvalid": "Ce n'est pas un lien de profil Steam lisible (steamcommunity.com/id/… ou /profiles/…).",
+            "nameBlocked": "Ce pseudo Steam n'est pas accepté au classement."
         }
     },
     "showcase": {

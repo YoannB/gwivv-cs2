@@ -12,7 +12,7 @@ import {
     qualifies,
     type BoardEntry,
 } from "./leaderboard";
-import { foldName, isBlockedName, validateName } from "./names";
+import { NAME_MAX, cleanDisplayName, foldName, isBlockedName } from "./names";
 import { MIN_HUMAN_REACTION_MS, isHuman, parseShots, parseSubmission, replay, toPayload, verify } from "./submission";
 import { summarize } from "./summary";
 
@@ -43,20 +43,26 @@ describe("names", () => {
         }
     });
 
-    it("validates length, characters and content", () => {
-        expect(validateName("  Sharp_Eye  ")).toEqual({ ok: true, name: "Sharp_Eye" });
-        expect(validateName(42)).toEqual({ ok: false, reason: "chars" });
-        expect(validateName("ab")).toEqual({ ok: false, reason: "length" });
-        expect(validateName("a".repeat(17))).toEqual({ ok: false, reason: "length" });
-        expect(validateName("héros")).toEqual({ ok: false, reason: "chars" });
-        expect(validateName("<b>hi")).toEqual({ ok: false, reason: "chars" });
-        expect(validateName("moron")).toEqual({ ok: false, reason: "blocked" });
+    it("folds accents before matching", () => {
+        expect(isBlockedName("Pütáin")).toBe(true);
+    });
+
+    it("cleans display names: any script, no control characters, bounded, filtered", () => {
+        expect(cleanDisplayName("  Sharp ​  Eye ✦  ")).toBe("Sharp Eye ✦");
+        expect(cleanDisplayName("Héros 鋭い")).toBe("Héros 鋭い");
+        expect(cleanDisplayName(42)).toBeNull();
+        expect(cleanDisplayName(" ​ ")).toBeNull();
+        expect(cleanDisplayName("✦".repeat(NAME_MAX))).toBe("✦".repeat(NAME_MAX));
+        expect(cleanDisplayName("a".repeat(NAME_MAX + 1))).toBeNull();
+        expect(cleanDisplayName("moron")).toBeNull();
     });
 });
 
 let runSeq = 0;
 const entry = (name: string, score: number, day = "2026-11-20"): BoardEntry => ({
     name,
+    avatar: null,
+    url: `https://steamcommunity.com/id/${name}`,
     score,
     accuracy: 0.5,
     headshotRate: 0.25,
@@ -88,6 +94,9 @@ describe("parseBoards", () => {
                 { ...entry("day", 1), day: "yesterday" },
                 { ...entry("day2", 1), day: 3 },
                 { ...entry("run", 1), run: "xyz" },
+                { ...entry("avatar", 1), avatar: "javascript:alert(1)" },
+                { ...entry("url", 1), url: "https://x.example/a'b" },
+                { ...entry("anon", 8), url: null, avatar: "https://avatars.steamstatic.com/a_medium.jpg" },
                 { ...entry("slow", 7), timeToDamageMs: null },
                 entry("late", 9, "2026-11-21"),
                 entry("early", 9, "2026-11-19"),
@@ -96,7 +105,7 @@ describe("parseBoards", () => {
         };
         const boards = parseBoards(raw);
         expect(boards.regular).toEqual([]);
-        expect(boards.recruit.map((e) => e.name)).toEqual(["early", "late", "slow"]);
+        expect(boards.recruit.map((e) => e.name)).toEqual(["early", "late", "anon", "slow"]);
         expect(boards.elite).toHaveLength(BOARD_SIZE);
         expect(boards.elite[0].score).toBe(120);
     });
@@ -126,6 +135,13 @@ describe("insertEntry", () => {
     it("keeps a name's better score, case-insensitively", () => {
         const result = insertEntry(base, "elite", entry("alpha", 250));
         expect(result).toEqual({ boards: base, rank: 1, changed: false, duplicate: false });
+    });
+
+    it("tells players without a profile apart by name", () => {
+        const anon = { ...entry("Ghost", 50), url: null };
+        const boards = { ...emptyBoards(), regular: [anon] };
+        expect(insertEntry(boards, "regular", { ...entry("ghost", 40), url: null }).rank).toBe(1);
+        expect(insertEntry(boards, "regular", { ...entry("Other", 40), url: null }).rank).toBe(2);
     });
 
     it("replaces a name's lower score", () => {
@@ -159,8 +175,9 @@ describe("insertEntry", () => {
 
     it("builds an entry from a summary", () => {
         const summary = summarize(createGame({ difficulty: "recruit", seed: 1 }));
-        expect(entryFrom("Zed", summary, "2026-11-23", "0000abcd")).toEqual({
-            name: "Zed",
+        const player = { name: "Zed", avatar: null, url: "https://steamcommunity.com/id/zed" };
+        expect(entryFrom(player, summary, "2026-11-23", "0000abcd")).toEqual({
+            ...player,
             score: 0,
             accuracy: 0,
             headshotRate: 0,
@@ -235,16 +252,29 @@ describe("submission", () => {
     });
 
     it("validates every field of a submission", () => {
-        const good = { version: RULES_VERSION, difficulty: "elite", seed: 7, name: "Ace", shots: [[0, 1, 1]] };
+        const good = {
+            version: RULES_VERSION,
+            difficulty: "elite",
+            seed: 7,
+            identity: " steamcommunity.com/id/ace ",
+            shots: [[0, 1, 1]],
+        };
         expect(parseSubmission(good)).toEqual({
             ok: true,
-            submission: { difficulty: "elite", seed: 7, name: "Ace", shots: [{ t: 0, x: 1, y: 1 }] },
+            submission: {
+                difficulty: "elite",
+                seed: 7,
+                identity: "steamcommunity.com/id/ace",
+                shots: [{ t: 0, x: 1, y: 1 }],
+            },
         });
         expect(parseSubmission(null)).toEqual({ ok: false, reason: "malformed" });
         expect(parseSubmission({ ...good, version: 0 })).toEqual({ ok: false, reason: "version" });
         expect(parseSubmission({ ...good, difficulty: "god" })).toEqual({ ok: false, reason: "difficulty" });
         expect(parseSubmission({ ...good, seed: -1 })).toEqual({ ok: false, reason: "seed" });
-        expect(parseSubmission({ ...good, name: "idiot" })).toEqual({ ok: false, reason: "name" });
+        expect(parseSubmission({ ...good, identity: 3 })).toEqual({ ok: false, reason: "identity" });
+        expect(parseSubmission({ ...good, identity: "  " })).toEqual({ ok: false, reason: "identity" });
+        expect(parseSubmission({ ...good, identity: "x".repeat(301) })).toEqual({ ok: false, reason: "identity" });
         expect(parseSubmission({ ...good, shots: [[0]] })).toEqual({ ok: false, reason: "shots" });
     });
 

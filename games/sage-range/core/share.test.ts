@@ -50,8 +50,8 @@ describe("share codes", () => {
 
     it("round-trips every padding length and long tick gaps", () => {
         for (const shots of [[], [{ t: 0, x: 1, y: 2 }], [{ t: 3000, x: 1600, y: 900 }]]) {
-            for (const name of ["", "ab", "Abc", "Abcd"]) {
-                const run: SharedRun = { difficulty: "recruit", seed: 1, shots, name: name.length >= 3 ? name : "" };
+            for (const name of ["", "ab", "Abc", "Sharp Eye ✦"]) {
+                const run: SharedRun = { difficulty: "recruit", seed: 1, shots, name };
                 expect(decodeRun(encodeRun(run))).toEqual(run);
             }
         }

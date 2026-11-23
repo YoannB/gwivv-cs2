@@ -42,6 +42,8 @@ export interface Target {
     /** Head centre sits this far above the body centre. */
     readonly headDy: number;
     readonly travel: number;
+    readonly vest: boolean;
+    readonly helmet: boolean;
     hp: number;
     phase: TargetPhase;
     phaseStart: number;
@@ -252,9 +254,10 @@ function fire(state: GameState, x: number, y: number, events: GameEvent[]): void
         state.stats.ttdTicks += state.tick - openedAt;
         state.stats.ttdCount += 1;
     }
-    target.hp = zone === "head" ? 0 : target.hp - 1;
+    const armored = zone === "head" ? target.helmet : target.vest;
+    target.hp -= armored ? 1 : TARGET_HP;
     if (target.hp > 0) {
-        events.push({ type: "hit", x, y, headshot: false });
+        events.push({ type: "hit", x, y, headshot: zone === "head" });
         return;
     }
     const left = target.openTicks - (state.tick - openedAt);
@@ -392,6 +395,8 @@ function spawn(state: GameState): void {
             headR: Math.round(size * 0.38),
             headDy: size + Math.round(size * 0.48),
             travel,
+            vest: cfg.armor.vest,
+            helmet: cfg.armor.helmet,
             hp: TARGET_HP,
             phase: "emerge",
             phaseStart: state.tick,

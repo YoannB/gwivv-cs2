@@ -52,7 +52,21 @@ export function Board({
             {entries.map((e, i) => (
                 <li key={`${e.name}-${i}`} className={highlight === i + 1 ? "sr-board__row is-you" : "sr-board__row"}>
                     <span className="sr-board__rank">{i + 1}</span>
-                    <span className="sr-board__name">{e.name}</span>
+                    <span className="sr-board__player">
+                        {/* Avatar URLs are validated (strict https, no quote or parenthesis) by parseBoards. */}
+                        <span
+                            className="sr-board__avatar"
+                            style={e.avatar ? { backgroundImage: `url(${e.avatar})` } : undefined}
+                            aria-hidden="true"
+                        />
+                        {e.url ? (
+                            <a className="sr-board__name" href={e.url} target="_blank" rel="noopener noreferrer">
+                                {e.name}
+                            </a>
+                        ) : (
+                            <span className="sr-board__name">{e.name}</span>
+                        )}
+                    </span>
                     <span className="sr-board__meta">
                         {formatPercent(e.headshotRate, locale)} HS
                         {e.timeToDamageMs === null ? "" : ` · ${formatNumber(e.timeToDamageMs, locale)} ms`}

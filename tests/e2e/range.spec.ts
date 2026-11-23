@@ -79,10 +79,10 @@ test.describe("Sage Range", () => {
         expect([200, 503]).toContain(boards.status());
         const forged = await request.post("/api/range/scores", {
             data: {
-                version: 2,
+                version: 3,
                 difficulty: "elite",
                 seed: 1,
-                name: "Ace",
+                identity: "https://steamcommunity.com/id/ace",
                 shots: [
                     [0, 1, 1],
                     [1, 1, 1],
