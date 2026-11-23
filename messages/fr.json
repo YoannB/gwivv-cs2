@@ -82,6 +82,13 @@
         "play": "Lire le clip {title}",
         "source": "Voir sur Leetify"
     },
+    "rangeTeaser": {
+        "titleLead": "Test your",
+        "titleAccent": "instincts.",
+        "text": "La précision ne suffit pas. Encore faut-il savoir attendre.",
+        "play": "Jouer au Sage Range",
+        "soon": "Bientôt disponible"
+    },
     "showcase": {
         "title": "Bibliothèque de composants",
         "inputLabel": "Input",

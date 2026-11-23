@@ -82,6 +82,13 @@
         "play": "Clip {title} abspielen",
         "source": "Auf Leetify ansehen"
     },
+    "rangeTeaser": {
+        "titleLead": "Test your",
+        "titleAccent": "instincts.",
+        "text": "Präzision allein reicht nicht. Man muss auch warten können.",
+        "play": "Sage Range spielen",
+        "soon": "Demnächst verfügbar"
+    },
     "showcase": {
         "title": "Komponentenbibliothek",
         "inputLabel": "Eingabe",

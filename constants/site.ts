@@ -253,6 +253,13 @@ export const HEADER_SECTIONS: readonly HeaderSection[] = [
 ];
 
 /**
+ * Whether the Sage Range mini-game is served at `/range`. False until the game ships: the home
+ * teaser (components/home/RangeTeaser.tsx) then shows a disabled "Coming soon" button instead of a
+ * link to a missing page. Flip it in the same change that adds the route.
+ */
+export const RANGE_ENABLED: boolean = false;
+
+/**
  * A montage published on the player's YouTube channel. Copied from the video's public page; the
  * thumbnail is a local copy (public/images), so nothing is requested from YouTube before a click.
  */

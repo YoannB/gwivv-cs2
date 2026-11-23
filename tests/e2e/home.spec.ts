@@ -5,6 +5,7 @@ import {
     HEADER_SECTIONS,
     HIGHLIGHTS,
     LOADOUT,
+    RANGE_ENABLED,
     SEASONS,
     SITE_NAME,
     SOCIAL_LINKS,
@@ -97,6 +98,22 @@ test.describe("Home — structural smoke", () => {
         await expect(loadout.locator(".loadout__row").filter({ hasText: "eDPI" }).locator("dd")).toHaveText(
             String(Math.round(LOADOUT.settings.dpi * LOADOUT.settings.sensitivity)),
         );
+    });
+
+    test("the Sage Range teaser closes the page with its call to action", async ({ page }) => {
+        await page.goto("/");
+
+        const teaser = page.locator("#range");
+        await expect(teaser.getByRole("heading", { level: 2, name: "Test your instincts." })).toBeVisible();
+        if (RANGE_ENABLED) {
+            await expect(teaser.getByRole("link", { name: /Play Sage Range/ })).toHaveAttribute("href", /\/range$/);
+        } else {
+            // The game is not served yet: a disabled button, never a link to a missing page.
+            const cta = teaser.getByRole("button", { name: /Play Sage Range/ });
+            await expect(cta).toBeDisabled();
+            await expect(cta).toContainText("Coming soon");
+            await expect(teaser.getByRole("link")).toHaveCount(0);
+        }
     });
 
     test("the header links to every home section and marks the one reached", async ({ page }) => {
