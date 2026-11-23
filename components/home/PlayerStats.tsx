@@ -1,4 +1,5 @@
 import { PlayerStatsLive } from "@/components/home/PlayerStatsLive";
+import { SeasonHistory } from "@/components/home/SeasonHistory";
 import { FACEIT_SNAPSHOT, SOCIAL_LINKS, STEAM64_ID } from "@/constants/site";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -72,6 +73,7 @@ export async function PlayerStats({ locale }: { locale: string }) {
                     fetchedAt: t.raw("fetchedAt") as string,
                 }}
             />
+            <SeasonHistory locale={locale} />
         </section>
     );
 }

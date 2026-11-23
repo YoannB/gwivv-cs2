@@ -128,3 +128,200 @@
         background: color-mix(in oklab, var(--surface-2) 70%, transparent);
     }
 }
+
+/* ===== Season history (components/home/SeasonHistory.tsx), inside the statistics card ===== */
+.seasons {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-1);
+}
+.seasons__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-bottom: 8px;
+}
+.seasons__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+}
+.seasons__best {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-2);
+}
+.seasons__best strong {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text-1);
+}
+.seasons__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+.seasons__table th,
+.seasons__table td {
+    padding: 9px 10px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-1);
+}
+.seasons__table thead th {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    vertical-align: bottom;
+}
+.seasons__table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+.seasons__table .seasons__num {
+    text-align: right;
+    white-space: nowrap;
+}
+.seasons__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    color: var(--text-1);
+}
+.seasons__live {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 7px;
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: 2px;
+    color: var(--accent-2);
+    border: 1px solid color-mix(in oklab, var(--accent-1) 60%, transparent);
+    border-radius: 999px;
+}
+.seasons__none {
+    color: var(--muted);
+}
+/* Premier column: the value as text, then the min-max bar on the shared tier scale. */
+.seasons__premier,
+.seasons__premier-head {
+    width: 42%;
+    min-width: 220px;
+}
+.seasons__axis,
+.seasons__track {
+    position: relative;
+    display: block;
+    margin-inline: 4px 14px;
+}
+.seasons__axis {
+    height: 14px;
+    margin-top: 6px;
+    font-size: 0.68rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.seasons__axis span {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+}
+.seasons__range {
+    display: block;
+    font-weight: 600;
+    color: var(--text-1);
+}
+.seasons__track {
+    height: 10px;
+    margin-top: 6px;
+}
+.seasons__grid {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 1px;
+    background: var(--border-1);
+}
+.seasons__bar {
+    position: absolute;
+    top: 1px;
+    height: 8px;
+    min-width: 8px;
+    border-radius: 4px;
+    background: var(--accent-1);
+}
+.seasons__source {
+    margin: 10px 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+.seasons__source a {
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.seasons__source a:hover {
+    color: var(--accent-2);
+}
+
+/* Narrow screens: one card per season, each value labelled (data-label), the bar full width. */
+@media (max-width: 760px) {
+    .seasons__table thead {
+        display: none;
+    }
+    .seasons__table,
+    .seasons__table tbody {
+        display: block;
+    }
+    .seasons__table tr {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-1);
+    }
+    .seasons__table tbody tr:last-child {
+        border-bottom: 0;
+    }
+    .seasons__table th,
+    .seasons__table td {
+        padding: 0;
+        border: 0;
+    }
+    .seasons__table .seasons__num {
+        text-align: left;
+    }
+    .seasons__name,
+    .seasons__premier,
+    .seasons__table td:last-child {
+        grid-column: 1 / -1;
+    }
+    .seasons__premier {
+        width: auto;
+        min-width: 0;
+    }
+    .seasons__table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+    .seasons__table td:last-child {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+}

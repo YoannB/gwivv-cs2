@@ -34,6 +34,24 @@
         "credit": "Data Provided by Leetify",
         "viewOnLeetify": "View on Leetify"
     },
+    "seasons": {
+        "title": "Season history",
+        "best": "Best Premier: <strong>{value}</strong> ({season})",
+        "seasonColumn": "Season",
+        "season": "Season {n}",
+        "beta": "Beta season",
+        "inProgress": "In progress",
+        "matches": "Matches",
+        "winrate": "Win rate",
+        "premier": "Premier (min – max)",
+        "faceit": "FACEIT level",
+        "unrated": "Not rated",
+        "asOf": "From Leetify on {date}",
+        "source": "Rank history on Leetify",
+        "kd": "K/D",
+        "range": "{min} – {max}",
+        "levels": "{min} → {max}"
+    },
     "clips": {
         "title": "Latest clips",
         "play": "Play the clip {title}",

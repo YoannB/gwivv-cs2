@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { CLIPS, CLIPS_ON_HOME, SITE_NAME, SOCIAL_LINKS } from "../../constants/site";
+import { CLIPS, CLIPS_ON_HOME, SEASONS, SITE_NAME, SOCIAL_LINKS, STEAM64_ID } from "../../constants/site";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
 
@@ -29,6 +29,20 @@ test.describe("Home — structural smoke", () => {
         // Without LEETIFY_API_KEY (CI) the route answers { status: "unavailable" }: the strip says so,
         // it shows no number.
         await expect(strip.locator(".stats__status")).not.toHaveClass(/stats__status--loading/);
+    });
+
+    test("the season history lists every season with a Premier range bar when rated", async ({ page }) => {
+        await page.goto("/");
+
+        const rows = page.locator(".seasons__table tbody tr");
+        await expect(rows).toHaveCount(SEASONS.length);
+        for (const [i, season] of SEASONS.entries()) {
+            await expect(rows.nth(i).locator(".seasons__bar")).toHaveCount(season.premier ? 1 : 0);
+        }
+        await expect(page.getByRole("link", { name: "Rank history on Leetify" })).toHaveAttribute(
+            "href",
+            `https://leetify.com/app/profile/${STEAM64_ID}/ranks`,
+        );
     });
 
     test("the latest clips load the provider player only after a click", async ({ page }) => {
