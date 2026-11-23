@@ -13,10 +13,11 @@ const TIMEOUT_MS = 8000;
 const NO_STORE = { "Cache-Control": "no-store" };
 
 // The player's statistics for the home strip, read from Leetify with the server-side key (never
-// sent to the browser). Any failure answers 503 "unavailable": the strip then says so, it never
-// shows placeholder numbers.
+// sent to the browser). Always 200 (a missing key or a Leetify failure is an expected state, not a
+// server error the browser should log): { status: "unavailable" } and the strip says so, it never
+// shows placeholder numbers; { status: "ok", stats, fetchedAt } otherwise.
 export async function GET() {
-    const unavailable = () => NextResponse.json({ error: "unavailable" }, { status: 503, headers: NO_STORE });
+    const unavailable = () => NextResponse.json({ status: "unavailable" }, { headers: NO_STORE });
     if (!SERVER_ENV.leetifyApiKey) return unavailable();
     try {
         const res = await fetch(`${API}?steam64_id=${STEAM64_ID}`, {
@@ -27,7 +28,7 @@ export async function GET() {
         if (!res.ok) return unavailable();
         const stats = parsePlayerStats(await res.json());
         if (!stats) return unavailable();
-        return NextResponse.json({ stats, fetchedAt: new Date().toISOString() }, { headers: NO_STORE });
+        return NextResponse.json({ status: "ok", stats, fetchedAt: new Date().toISOString() }, { headers: NO_STORE });
     } catch {
         return unavailable();
     }

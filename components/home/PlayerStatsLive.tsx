@@ -45,8 +45,10 @@ export function PlayerStatsLive({
         const controller = new AbortController();
         fetch("/api/leetify/profile", { cache: "no-store", signal: controller.signal })
             .then(async (res) => {
-                if (!res.ok) return setState({ status: "unavailable" });
-                const body = (await res.json()) as { stats: PlayerStats; fetchedAt: string };
+                const body = res.ok
+                    ? ((await res.json()) as { status: string; stats?: PlayerStats; fetchedAt?: string })
+                    : null;
+                if (body?.status !== "ok" || !body.stats || !body.fetchedAt) return setState({ status: "unavailable" });
                 setState({ status: "ready", stats: body.stats, fetchedAt: body.fetchedAt });
             })
             .catch(() => {

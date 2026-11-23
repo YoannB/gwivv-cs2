@@ -26,7 +26,8 @@ test.describe("Home — structural smoke", () => {
             "href",
             "https://leetify.com/",
         );
-        // Without LEETIFY_API_KEY (CI) the route answers 503: the strip says so, it shows no number.
+        // Without LEETIFY_API_KEY (CI) the route answers { status: "unavailable" }: the strip says so,
+        // it shows no number.
         await expect(strip.locator(".stats__status")).not.toHaveClass(/stats__status--loading/);
     });
 
