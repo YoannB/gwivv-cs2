@@ -14,7 +14,7 @@ a leaderboard adapter, the backdrop URL and a `renderReturnLink` for the host's 
 
 | Path                         | Role                                                                                       |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
-| `core/config.ts`             | Rules: arena, ticks, points, the three difficulties, `RULES_VERSION`                       |
+| `core/config.ts`             | Rules: arena, ticks, points, the three difficulties, `RULES_VERSION`, `BOARD_SEASON`       |
 | `core/rng.ts`                | Seeded generator (mulberry32, integer maths)                                               |
 | `core/engine.ts`             | Deterministic simulation: `createGame`, `stepGame` (one 1/60 s tick), hit zones, spawning  |
 | `core/summary.ts`            | End figures: score + precision bonus, reaction time, time to damage, head precision, grade |
@@ -48,7 +48,7 @@ letting a decoy go = points; letting a hostile go = streak lost. Kill points = b
 speed bonus (falls to 0 at the end of the window), times the streak multiplier; the end bonus
 rewards accuracy and head precision. Mimic decoys (Regular, Elite) look hostile until they open:
 patience is the skill. Values live in `core/config.ts`; changing them changes scores, so bump
-`RULES_VERSION` (it also starts new boards).
+`RULES_VERSION` (it also starts new boards and forgets the saved personal bests).
 
 ## Results in the URL
 
@@ -106,16 +106,28 @@ the player can try as often as wanted and send the best one later; the server re
 any live submission (`payloadFromRun`). A better session replaces the stored best (not sent yet).
 Levels unlock in order from those bests (`isUnlocked`). Test-hook sessions are never stored.
 
+A best is stamped with the board it was played for, `BOARD_ID` = `v<RULES_VERSION>-s<BOARD_SEASON>`
+(`core/config.ts`). On read, a best from another board is dropped: once the rules change or the
+boards are reset, no stale record (with a link that no longer replays) stays on the start screen,
+and the levels lock again until replayed. A future periodic board (monthly next to all-time) would
+stamp its period the same way.
+
 ## Resetting the leaderboard
 
-All boards (the three difficulties) are ONE blob: key `boards-v<RULES_VERSION>` in the Netlify Blobs
-store `sage-range`. The store is site-wide: deploy previews and production share it, so scores
-made while testing a preview stay on the production board until reset. To reset:
+All boards (the three difficulties) are ONE blob: key `boards-<BOARD_ID>` (e.g. `boards-v4-s1`) in
+the Netlify Blobs store `sage-range`. The store is site-wide: deploy previews and production share it, so scores
+made while testing a preview stay on the production board until reset.
 
-- Netlify dashboard → the project → Blobs → store `sage-range` → delete the `boards-v<N>` entry; or
-- Netlify CLI from a linked checkout: `npx netlify blobs:delete sage-range boards-v<N>`
+Preferred reset: bump `BOARD_SEASON` in `core/config.ts` and deploy. The boards start empty under
+a new key and every browser forgets its personal bests, while the rules and share links stay valid.
+The old blob stays in the store (harmless; delete it as below to tidy up).
+
+Deleting the blob only (the bests saved in browsers stay, and can be sent again):
+
+- Netlify dashboard → the project → Blobs → store `sage-range` → delete the `boards-<BOARD_ID>` entry; or
+- Netlify CLI from a linked checkout: `npx netlify blobs:delete sage-range boards-<BOARD_ID>`
   (`npx netlify blobs:list sage-range` shows the current key).
 
-Removing one entry by hand: download it with `npx netlify blobs:get sage-range boards-v<N>`, edit the
-JSON, upload it with `npx netlify blobs:set sage-range boards-v<N> --input <file>`. Bumping
+Removing one entry by hand: download it with `npx netlify blobs:get sage-range boards-<BOARD_ID>`, edit the
+JSON, upload it with `npx netlify blobs:set sage-range boards-<BOARD_ID> --input <file>`. Bumping
 `RULES_VERSION` also starts empty boards, but it changes the rules and invalidates every share link.

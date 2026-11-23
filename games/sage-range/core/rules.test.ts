@@ -1,7 +1,7 @@
 // @vitest-environment node
 // rng, config guards, summary and formatting helpers.
 import { describe, expect, it } from "vitest";
-import { POINTS, TICK_MS, isDifficulty } from "./config";
+import { BOARD_ID, POINTS, TICK_MS, isDifficulty } from "./config";
 import { createGame } from "./engine";
 import { fill, formatClock, formatNumber, formatPercent, utcDay } from "./format";
 import { chance, createRng, nextFloat, nextInt } from "./rng";
@@ -116,7 +116,7 @@ describe("format", () => {
 });
 
 describe("saved data", () => {
-    const run = (score: number, code = "AbC", submitted = false) => ({ score, code, submitted });
+    const run = (score: number, code = "AbC", submitted = false) => ({ score, code, submitted, board: BOARD_ID });
 
     it("reads stored data defensively", () => {
         expect(parseSaved(null)).toBe(EMPTY_SAVED);
@@ -129,8 +129,8 @@ describe("saved data", () => {
         expect(
             parseSaved({
                 best: {
-                    recruit: { score: 120, code: "AbC", submitted: true },
-                    regular: { score: -4, code: "AbC" },
+                    recruit: { score: 120, code: "AbC", submitted: true, board: BOARD_ID },
+                    regular: { score: -4, code: "AbC", board: BOARD_ID },
                     elite: { score: 9, code: "no spaces" },
                     god: run(9),
                 },
@@ -144,7 +144,12 @@ describe("saved data", () => {
         expect(parseSaved({ best: { recruit: 120, regular: { score: 2.5, code: "A" } } }).best).toEqual({});
         expect(parseSaved({ best: { recruit: { score: 5, code: "A".repeat(8001) } } }).best).toEqual({});
         expect(parseSaved({ best: { recruit: { score: 5, code: 7 } } }).best).toEqual({});
-        expect(parseSaved({ best: { recruit: { score: 5, code: "A", submitted: "yes" } } }).best).toEqual({
+        // A best from older rules or a reset board (or saved before boards were tracked) is forgotten.
+        expect(parseSaved({ best: { recruit: { score: 5, code: "A" } } }).best).toEqual({});
+        expect(parseSaved({ best: { recruit: { score: 5, code: "A", board: "v3-s1" } } }).best).toEqual({});
+        expect(
+            parseSaved({ best: { recruit: { score: 5, code: "A", submitted: "yes", board: BOARD_ID } } }).best,
+        ).toEqual({
             recruit: run(5, "A"),
         });
     });

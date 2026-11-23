@@ -1,6 +1,6 @@
 // Global top scores, one board per difficulty. Pure: the storage (server side) and the transport
 // (client side) are injected by the host site; this module only reads, ranks and inserts.
-import { RULES_VERSION, isDifficulty, type Difficulty } from "./config";
+import { BOARD_ID, isDifficulty, type Difficulty } from "./config";
 import { cleanDisplayName } from "./names";
 import type { Summary } from "./summary";
 
@@ -31,8 +31,8 @@ export interface BoardEntry extends Player {
 
 export type Boards = Readonly<Record<Difficulty, readonly BoardEntry[]>>;
 
-/** Storage key of the boards: a rules change starts fresh boards. */
-export const BOARDS_KEY = `boards-v${RULES_VERSION}`;
+/** Storage key of the boards: a rules change or a new season starts fresh boards. */
+export const BOARDS_KEY = `boards-${BOARD_ID}`;
 
 export function emptyBoards(): Boards {
     return { recruit: [], regular: [], elite: [] };

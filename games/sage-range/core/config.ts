@@ -4,6 +4,15 @@
 
 export const RULES_VERSION = 4;
 
+/**
+ * Board season: bumping it starts empty leaderboards AND forgets every personal best kept in the
+ * players' browsers, without touching the rules (a reset after tests, a new season).
+ */
+export const BOARD_SEASON = 1;
+
+/** What a score belongs to: the rules it was played under and the board season it was made in. */
+export const BOARD_ID = `v${RULES_VERSION}-s${BOARD_SEASON}`;
+
 /** Simulation rate: one tick = 1/60 s. */
 export const TICKS_PER_SECOND = 60;
 export const TICK_MS = 1000 / TICKS_PER_SECOND;

@@ -1,8 +1,9 @@
 // What the game keeps in the player's browser (through a storage adapter given by the host): the
 // best session per difficulty — its score AND its share code, so it can be replayed, shown or sent
 // to the leaderboard later — and the last identity typed for the leaderboard (this site: a Steam
-// profile link), so the next submission is one click.
-import { DIFFICULTIES, type Difficulty } from "./config";
+// profile link), so the next submission is one click. A best belongs to one board (rules version +
+// season, BOARD_ID): once the rules change or the boards are reset, it is forgotten with them.
+import { BOARD_ID, DIFFICULTIES, type Difficulty } from "./config";
 import { DEFAULT_SETTINGS, parseSettings, type Settings } from "./settings";
 
 /** Longest identity kept (a profile URL is far shorter). */
@@ -17,6 +18,8 @@ export interface BestRun {
     readonly code: string;
     /** Already sent to the leaderboard. */
     readonly submitted: boolean;
+    /** BOARD_ID it was played for; a best from another board is dropped on read. */
+    readonly board: string;
 }
 
 export interface SavedData {
@@ -32,7 +35,8 @@ function parseBest(raw: unknown): BestRun | null {
     const r = raw as Record<string, unknown>;
     if (typeof r.score !== "number" || !Number.isInteger(r.score) || r.score <= 0) return null;
     if (typeof r.code !== "string" || r.code.length > CODE_MAX || !CODE.test(r.code)) return null;
-    return { score: r.score, code: r.code, submitted: r.submitted === true };
+    if (r.board !== BOARD_ID) return null;
+    return { score: r.score, code: r.code, submitted: r.submitted === true, board: BOARD_ID };
 }
 
 /** Reads stored data defensively: anything unexpected falls back to empty values. */
@@ -64,7 +68,7 @@ export function recordScore(
     code: string,
 ): { saved: SavedData; newBest: boolean } {
     if (score <= bestScore(saved, difficulty)) return { saved, newBest: false };
-    const run: BestRun = { score, code, submitted: false };
+    const run: BestRun = { score, code, submitted: false, board: BOARD_ID };
     return { saved: { ...saved, best: { ...saved.best, [difficulty]: run } }, newBest: true };
 }
 
