@@ -1,5 +1,13 @@
 // @vitest-environment node
-import { parseProfileInput, parseProfileXml, profileXmlUrl } from "@/lib/steam-profile";
+import {
+    parseProfileInput,
+    parseProfileXml,
+    parseSummaryAnswer,
+    parseVanityAnswer,
+    profileXmlUrl,
+    summaryApiUrl,
+    vanityApiUrl,
+} from "@/lib/steam-profile";
 import { describe, expect, it } from "vitest";
 
 const ID = "76561197960287930";
@@ -69,5 +77,43 @@ describe("parseProfileXml", () => {
         expect(parseProfileXml(xml("<steamID><![CDATA[Ace]]></steamID>"))).toBeNull();
         expect(parseProfileXml(xml("<steamID64>123</steamID64><steamID><![CDATA[Ace]]></steamID>"))).toBeNull();
         expect(parseProfileXml(xml(`<steamID64>${ID}</steamID64>`))).toBeNull();
+    });
+});
+
+describe("Steam Web API", () => {
+    it("builds the two endpoints with the key encoded", () => {
+        expect(vanityApiUrl("K&1", "ace")).toBe(
+            "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=K%261&vanityurl=ace",
+        );
+        expect(summaryApiUrl("K", ID)).toBe(
+            `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=K&steamids=${ID}`,
+        );
+    });
+
+    it("reads a resolved vanity name", () => {
+        expect(parseVanityAnswer({ response: { success: 1, steamid: ID } })).toBe(ID);
+        expect(parseVanityAnswer({ response: { success: 42, message: "No match" } })).toBeNull();
+        expect(parseVanityAnswer({ response: { success: 1, steamid: 7 } })).toBeNull();
+        expect(parseVanityAnswer({ response: { success: 1, steamid: "123" } })).toBeNull();
+        expect(parseVanityAnswer(null)).toBeNull();
+        expect(parseVanityAnswer({})).toBeNull();
+    });
+
+    it("reads the player summary", () => {
+        const answer = { response: { players: [null, { steamid: ID, personaname: "Ace", avatarmedium: AVATAR }] } };
+        expect(parseSummaryAnswer(answer, ID)).toEqual({
+            id64: ID,
+            name: "Ace",
+            avatar: AVATAR,
+            url: `https://steamcommunity.com/profiles/${ID}`,
+        });
+        const noAvatar = {
+            response: { players: [{ steamid: ID, personaname: "Ace", avatarmedium: "http://x/a.jpg" }] },
+        };
+        expect(parseSummaryAnswer(noAvatar, ID)?.avatar).toBeNull();
+        expect(parseSummaryAnswer({ response: { players: [] } }, ID)).toBeNull();
+        expect(parseSummaryAnswer({ response: { players: [{ steamid: ID }] } }, ID)).toBeNull();
+        expect(parseSummaryAnswer({ response: {} }, ID)).toBeNull();
+        expect(parseSummaryAnswer("x", ID)).toBeNull();
     });
 });

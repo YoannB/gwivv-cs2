@@ -73,8 +73,11 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
   for the in-memory rate limit only and never stored. Replay proves a score matches a legal shot
   sequence, not that a human fired it.
 - Player identity: the player pastes their Steam profile link (`/id/<vanity>` or
-  `/profiles/<SteamID64>`). `lib/steam-profile.ts` (pure) parses it and the public XML view
-  (`steamcommunity.com/…/?xml=1`, no API key); the route fetches that view and ranks the entry under
+  `/profiles/<SteamID64>`). `lib/steam-profile.ts` (pure) parses it and Steam's answers. With
+  `STEAM_API_KEY` set (server only, `lib/env-server.ts`; free key at steamcommunity.com/dev/apikey),
+  the route uses the Steam Web API (ResolveVanityURL, GetPlayerSummaries); without it, the public
+  XML view (`steamcommunity.com/…/?xml=1`), which Steam answers with HTTP 429 from Netlify's shared
+  IPs, so production needs the key. The route fetches the profile and ranks the entry under
   the persona name (cleaned and filtered by the game) with the medium avatar and the canonical
   profile URL; one board line per profile. The link is not proof of ownership: a demo board,
   moderated by hand. Avatars load from `*.steamstatic.com` (`img-src` in `lib/security-headers.ts`).

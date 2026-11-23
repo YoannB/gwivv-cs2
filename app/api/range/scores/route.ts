@@ -1,7 +1,18 @@
 import { cleanDisplayName, entryFrom, isHuman, parseSubmission, runId, verify } from "@/games/sage-range/server";
 import { clientIpFrom, hitRateLimit } from "@/lib/ai/rate-limit";
 import { addEntry, readBoards } from "@/lib/range-scores";
-import { parseProfileInput, parseProfileXml, profileXmlUrl, type SteamProfile } from "@/lib/steam-profile";
+import { SERVER_ENV } from "@/lib/env-server";
+import {
+    parseProfileInput,
+    parseProfileXml,
+    parseSummaryAnswer,
+    parseVanityAnswer,
+    profileXmlUrl,
+    summaryApiUrl,
+    vanityApiUrl,
+    type ProfileRef,
+    type SteamProfile,
+} from "@/lib/steam-profile";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -15,38 +26,65 @@ const STEAM_TIMEOUT_MS = 6_000;
 const reply = (body: object, status = 200) => NextResponse.json(body, { status, headers: NO_STORE });
 
 type Resolved = { ok: true; profile: SteamProfile } | { ok: false; error: "identity" | "steam"; detail: string };
+type Fetched = { ok: true; body: string } | { ok: false; detail: string };
+
+/** GET with a timeout. `label` names the call in logs: the URL may hold the API key, never log it. */
+async function get(url: string, label: string): Promise<Fetched> {
+    try {
+        const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(STEAM_TIMEOUT_MS) });
+        const body = await res.text();
+        if (res.ok) return { ok: true, body };
+        console.error(`[range] steam ${label} HTTP ${res.status}`);
+        return { ok: false, detail: `${label}-http-${res.status}` };
+    } catch (error) {
+        console.error(`[range] steam ${label} failed — ${error instanceof Error ? error.name : "error"}`);
+        return { ok: false, detail: `${label}-network` };
+    }
+}
+
+const json = (body: string): unknown => {
+    try {
+        return JSON.parse(body);
+    } catch {
+        return null;
+    }
+};
+
+/** Steam Web API (with a key): resolve a vanity name, then read the player summary. */
+async function viaWebApi(key: string, ref: ProfileRef): Promise<Resolved> {
+    let id64 = ref.id;
+    if (ref.kind === "vanity") {
+        const answer = await get(vanityApiUrl(key, ref.id), "vanity");
+        if (!answer.ok) return { ok: false, error: "steam", detail: answer.detail };
+        const resolved = parseVanityAnswer(json(answer.body));
+        if (!resolved) return { ok: false, error: "identity", detail: "not-found" };
+        id64 = resolved;
+    }
+    const answer = await get(summaryApiUrl(key, id64), "summary");
+    if (!answer.ok) return { ok: false, error: "steam", detail: answer.detail };
+    const profile = parseSummaryAnswer(json(answer.body), id64);
+    return profile ? { ok: true, profile } : { ok: false, error: "identity", detail: "not-found" };
+}
+
+/** Public XML profile view (no key). Steam rate-limits it (429) from shared cloud IPs such as Netlify's. */
+async function viaXml(ref: ProfileRef): Promise<Resolved> {
+    const answer = await get(profileXmlUrl(ref), "xml");
+    if (!answer.ok) return { ok: false, error: "steam", detail: answer.detail };
+    const profile = parseProfileXml(answer.body);
+    if (profile) return { ok: true, profile };
+    if (answer.body.includes("<error>")) return { ok: false, error: "identity", detail: "not-found" };
+    return { ok: false, error: "steam", detail: `xml-unreadable-${answer.body.length}` };
+}
 
 /**
- * The pasted Steam profile, read from its public XML view. A bad link or an unknown profile is the
- * player's error ("identity"); Steam not answering usably is not ("steam", retry later). `detail` is a
- * short diagnostic code (no personal data), also logged.
+ * The pasted Steam profile: through the Steam Web API when STEAM_API_KEY is set, else the public XML
+ * view. A bad link or an unknown profile is the player's error ("identity"); Steam not answering
+ * usably is not ("steam", retry later). `detail` is a short diagnostic code, also logged.
  */
 async function resolveSteamProfile(identity: string): Promise<Resolved> {
     const ref = parseProfileInput(identity);
     if (!ref) return { ok: false, error: "identity", detail: "link" };
-    let res: Response;
-    try {
-        res = await fetch(profileXmlUrl(ref), {
-            cache: "no-store",
-            redirect: "follow",
-            headers: { Accept: "text/xml,application/xml", "User-Agent": "Mozilla/5.0 (compatible; SageRange/1.0)" },
-            signal: AbortSignal.timeout(STEAM_TIMEOUT_MS),
-        });
-    } catch (error) {
-        console.error(`[range] steam profile fetch failed — ${String(error)}`);
-        return { ok: false, error: "steam", detail: "network" };
-    }
-    const body = await res.text().catch(() => "");
-    if (!res.ok) {
-        console.error(`[range] steam profile HTTP ${res.status}`);
-        return { ok: false, error: "steam", detail: `http-${res.status}` };
-    }
-    const profile = parseProfileXml(body);
-    if (profile) return { ok: true, profile };
-    if (body.includes("<error>")) return { ok: false, error: "identity", detail: "not-found" };
-    const head = body.slice(0, 48).replace(/[^A-Za-z0-9<>?=:. -]/g, "");
-    console.error(`[range] steam profile answer not readable (${body.length} bytes): ${head}`);
-    return { ok: false, error: "steam", detail: `unreadable-${body.length}-${head}` };
+    return SERVER_ENV.steamApiKey ? viaWebApi(SERVER_ENV.steamApiKey, ref) : viaXml(ref);
 }
 
 // SAGE RANGE global top scores. GET: the boards. POST: a session (seed + shot log + the player's

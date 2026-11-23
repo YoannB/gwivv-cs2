@@ -1,7 +1,7 @@
 // Steam profile links for the Sage Range leaderboard (pure). A player pastes the link of their
-// profile; the server reads its PUBLIC XML view (steamcommunity.com/…/?xml=1, no API key) to get
-// the persona name and avatar. The link is not proof of ownership: this is a demo board, entries
-// are moderated by hand (docs/sage-range.md).
+// profile; the server resolves it to the persona name and avatar, through the Steam Web API when a
+// key is set (STEAM_API_KEY), else the public XML view (rate-limited from cloud IPs). The link is not
+// proof of ownership: this is a demo board, entries are moderated by hand (docs/sage-range.md).
 
 const STEAM_ID64 = /^7656119\d{10}$/;
 const VANITY = /^[A-Za-z0-9_-]{2,32}$/;
@@ -60,6 +60,45 @@ export function parseProfileXml(xml: string): SteamProfile | null {
         id64,
         name,
         avatar: avatar !== null && AVATAR.test(avatar) ? avatar : null,
+        url: `https://steamcommunity.com/profiles/${id64}`,
+    };
+}
+
+// --- Steam Web API (api.steampowered.com, needs a key; reliable from cloud servers) ---
+
+const API = "https://api.steampowered.com/ISteamUser";
+
+/** ResolveVanityURL: `/id/<vanity>` → SteamID64. The key travels in the query: never log this URL. */
+export function vanityApiUrl(key: string, vanity: string): string {
+    return `${API}/ResolveVanityURL/v1/?key=${encodeURIComponent(key)}&vanityurl=${encodeURIComponent(vanity)}`;
+}
+
+/** GetPlayerSummaries for one SteamID64. The key travels in the query: never log this URL. */
+export function summaryApiUrl(key: string, id64: string): string {
+    return `${API}/GetPlayerSummaries/v2/?key=${encodeURIComponent(key)}&steamids=${id64}`;
+}
+
+const record = (v: unknown): Record<string, unknown> | null =>
+    typeof v === "object" && v !== null ? (v as Record<string, unknown>) : null;
+
+/** SteamID64 from a ResolveVanityURL answer; null when the vanity name is unknown. */
+export function parseVanityAnswer(json: unknown): string | null {
+    const response = record(record(json)?.response);
+    if (response?.success !== 1 || typeof response.steamid !== "string") return null;
+    return STEAM_ID64.test(response.steamid) ? response.steamid : null;
+}
+
+/** The profile from a GetPlayerSummaries answer; null when the player is not in it. */
+export function parseSummaryAnswer(json: unknown, id64: string): SteamProfile | null {
+    const players = record(record(json)?.response)?.players;
+    if (!Array.isArray(players)) return null;
+    const player = players.map(record).find((p) => p?.steamid === id64);
+    if (!player || typeof player.personaname !== "string") return null;
+    const avatar = player.avatarmedium;
+    return {
+        id64,
+        name: player.personaname,
+        avatar: typeof avatar === "string" && AVATAR.test(avatar) ? avatar : null,
         url: `https://steamcommunity.com/profiles/${id64}`,
     };
 }
