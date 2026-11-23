@@ -75,6 +75,11 @@ export interface SageRangeLabels {
     submitting: string;
     submitted: string;
     submitError: string;
+    submitNotRanked: string;
+    bestSubmitted: string;
+    bestNotSubmitted: string;
+    bestShow: string;
+    bestSend: string;
     submitDuplicate: string;
     sharedTitle: string;
     sharedBy: string;

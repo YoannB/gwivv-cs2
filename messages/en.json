@@ -178,7 +178,12 @@
             "profileInvalid": "This is not a Steam profile link we can read (steamcommunity.com/id/… or /profiles/…).",
             "nameBlocked": "This Steam name is not allowed on the board.",
             "steamUnavailable": "Steam did not answer to confirm your profile. Try again in a moment.",
-            "difficultyLocked": "Score on {level} to unlock the next level."
+            "difficultyLocked": "Score on {level} to unlock the next level.",
+            "submitNotRanked": "Verified, but below the top 10 this time.",
+            "bestSubmitted": "Sent to the leaderboard.",
+            "bestNotSubmitted": "Not sent to the leaderboard yet: send it whenever you like.",
+            "bestShow": "See this run",
+            "bestSend": "Send my best"
         }
     },
     "showcase": {

@@ -178,7 +178,12 @@
             "profileInvalid": "Este não é um link de perfil Steam legível (steamcommunity.com/id/… ou /profiles/…).",
             "nameBlocked": "Este nome Steam não é permitido na classificação.",
             "steamUnavailable": "A Steam não respondeu para confirmar seu perfil. Tente de novo em instantes.",
-            "difficultyLocked": "Faça uma pontuação em {level} para desbloquear o próximo nível."
+            "difficultyLocked": "Faça uma pontuação em {level} para desbloquear o próximo nível.",
+            "submitNotRanked": "Verificado, mas fora do top 10 desta vez.",
+            "bestSubmitted": "Enviado para a classificação.",
+            "bestNotSubmitted": "Ainda não enviado para a classificação: envie quando quiser.",
+            "bestShow": "Ver esta partida",
+            "bestSend": "Enviar meu recorde"
         }
     },
     "showcase": {

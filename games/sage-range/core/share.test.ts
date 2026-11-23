@@ -2,8 +2,8 @@
 import { describe, expect, it } from "vitest";
 import { RULES_VERSION } from "./config";
 import { createGame, stepGame } from "./engine";
-import { decodeRun, encodeRun, runCodeFromHash, runFromGame, runId, type SharedRun } from "./share";
-import { replay } from "./submission";
+import { decodeRun, encodeRun, payloadFromRun, runCodeFromHash, runFromGame, runId, type SharedRun } from "./share";
+import { replay, toPayload } from "./submission";
 import { summarize } from "./summary";
 
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -93,5 +93,15 @@ describe("share codes", () => {
         expect(runCodeFromHash("#r=AbC-_9")).toBe("AbC-_9");
         expect(runCodeFromHash("#x=AbC")).toBeNull();
         expect(runCodeFromHash("")).toBeNull();
+    });
+});
+
+describe("payloadFromRun", () => {
+    it("submits a stored run exactly like the live game would", () => {
+        const run = played();
+        const state = replay(run.difficulty, run.seed, run.shots);
+        expect(payloadFromRun(run, "https://steamcommunity.com/id/ace")).toEqual(
+            toPayload(state, "https://steamcommunity.com/id/ace"),
+        );
     });
 });

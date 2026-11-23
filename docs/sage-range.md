@@ -86,6 +86,14 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
 - Tests: `tests/e2e/range.spec.ts` uses the test hook `window.__SAGE_RANGE_TEST__` (seed, short
   session, no countdown); hooked runs never offer the leaderboard.
 
+## Personal best, sent whenever the player wants
+
+The browser keeps, per level, the best session's score AND its share code (`core/saved.ts`). The
+start screen shows it with "see this run" (replays it) and "send my best" until it is on the board:
+the player can try as often as wanted and send the best one later; the server replays the code like
+any live submission (`payloadFromRun`). A better session replaces the stored best (not sent yet).
+Levels unlock in order from those bests (`isUnlocked`). Test-hook sessions are never stored.
+
 ## Resetting the leaderboard
 
 All boards (the three difficulties) are ONE blob: key `boards-v<RULES_VERSION>` in the Netlify Blobs

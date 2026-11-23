@@ -178,7 +178,12 @@
             "profileInvalid": "Das ist kein lesbarer Steam-Profillink (steamcommunity.com/id/… oder /profiles/…).",
             "nameBlocked": "Dieser Steam-Name ist in der Rangliste nicht erlaubt.",
             "steamUnavailable": "Steam hat zur Bestätigung deines Profils nicht geantwortet. Versuche es gleich noch einmal.",
-            "difficultyLocked": "Erziele eine Punktzahl in {level}, um die nächste Stufe freizuschalten."
+            "difficultyLocked": "Erziele eine Punktzahl in {level}, um die nächste Stufe freizuschalten.",
+            "submitNotRanked": "Geprüft, aber diesmal nicht in den Top 10.",
+            "bestSubmitted": "An die Rangliste gesendet.",
+            "bestNotSubmitted": "Noch nicht an die Rangliste gesendet: sende ihn, wann du willst.",
+            "bestShow": "Diese Runde ansehen",
+            "bestSend": "Rekord senden"
         }
     },
     "showcase": {

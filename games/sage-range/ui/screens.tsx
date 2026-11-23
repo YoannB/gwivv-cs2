@@ -5,8 +5,9 @@ import type { Difficulty } from "../core/config";
 import type { GameState } from "../core/engine";
 import { fill, formatNumber, formatPercent } from "../core/format";
 import { qualifies, type Boards } from "../core/leaderboard";
-import { EMPTY_SAVED, IDENTITY_MAX, isUnlocked, type SavedData } from "../core/saved";
-import { toPayload } from "../core/submission";
+import { EMPTY_SAVED, IDENTITY_MAX, bestScore, isUnlocked, type SavedData } from "../core/saved";
+import { decodeRun, payloadFromRun } from "../core/share";
+import { toPayload, type SubmissionPayload } from "../core/submission";
 import type { Summary } from "../core/summary";
 import { Board, DifficultyPicker, ShareButton, TargetIcon } from "./parts";
 import type { SageRangeLabels, SageRangeLeaderboard } from "./types";
@@ -21,7 +22,11 @@ export function StartScreen({
     onStart,
     saved,
     boards,
-    hasBoard,
+    leaderboard,
+    onBoards,
+    onIdentity,
+    onShowRun,
+    onBestSubmitted,
 }: {
     labels: SageRangeLabels;
     locale: string;
@@ -30,9 +35,17 @@ export function StartScreen({
     onStart: () => void;
     saved: SavedData | null;
     boards: BoardsState;
-    hasBoard: boolean;
+    leaderboard?: SageRangeLeaderboard;
+    onBoards: (b: Boards) => void;
+    onIdentity: (identity: string) => void;
+    /** Opens a stored run (its replayed results). */
+    onShowRun: (code: string) => void;
+    onBestSubmitted: (difficulty: Difficulty, code: string) => void;
 }) {
     const best = saved?.best[difficulty];
+    // The stored best can be sent to the leaderboard at any time, after as many tries as wanted.
+    const bestRun = best ? decodeRun(best.code) : null;
+    const [sendingCode, setSendingCode] = useState<string | null>(null);
     return (
         <div className="sr-screen sr-start">
             <div className="sr-start__main">
@@ -81,10 +94,50 @@ export function StartScreen({
                 <section className="sr-panel">
                     <h2 className="sr-heading">{labels.bestTitle}</h2>
                     <p className={best ? "sr-best" : "sr-best sr-best--none"} data-testid="sr-best">
-                        {best ? formatNumber(best, locale) : labels.bestNone}
+                        {best ? formatNumber(best.score, locale) : labels.bestNone}
                     </p>
+                    {best ? (
+                        <>
+                            <p className="sr-muted">
+                                {best.submitted ? labels.bestSubmitted : labels.bestNotSubmitted}
+                            </p>
+                            <div className="sr-best__actions">
+                                <button
+                                    type="button"
+                                    className="sr-btn sr-btn--ghost sr-btn--small"
+                                    onClick={() => onShowRun(best.code)}
+                                >
+                                    {labels.bestShow}
+                                </button>
+                                {leaderboard && bestRun && !best.submitted && sendingCode !== best.code ? (
+                                    <button
+                                        type="button"
+                                        className="sr-btn sr-btn--primary sr-btn--small"
+                                        onClick={() => setSendingCode(best.code)}
+                                    >
+                                        {labels.bestSend}
+                                    </button>
+                                ) : null}
+                            </div>
+                        </>
+                    ) : null}
+                    {leaderboard && best && bestRun && sendingCode === best.code ? (
+                        <SubmitScore
+                            key={best.code}
+                            labels={labels}
+                            locale={locale}
+                            title={labels.bestSend}
+                            difficulty={difficulty}
+                            makePayload={(identity) => payloadFromRun(bestRun, identity)}
+                            initialIdentity={saved?.identity ?? ""}
+                            leaderboard={leaderboard}
+                            onBoards={onBoards}
+                            onIdentity={onIdentity}
+                            onSubmitted={() => onBestSubmitted(difficulty, best.code)}
+                        />
+                    ) : null}
                 </section>
-                {hasBoard ? (
+                {leaderboard ? (
                     <section className="sr-panel">
                         <h2 className="sr-heading">
                             {labels.boardTitle} · {labels.difficulty[difficulty]}
@@ -178,7 +231,7 @@ export function ResultsScreen({
     const armed = useArmed();
     const ms = (v: number | null) => (v === null ? "—" : fill(labels.ms, { value: formatNumber(v, locale) }));
     const own = mode.kind === "own";
-    const best = Math.max(saved?.best[summary.difficulty] ?? 0, own ? summary.score : 0);
+    const best = Math.max(saved ? bestScore(saved, summary.difficulty) : 0, own ? summary.score : 0);
     const shareText = fill(labels.shareText, {
         score: formatNumber(summary.score, locale),
         difficulty: labels.difficulty[summary.difficulty],
@@ -238,7 +291,9 @@ export function ResultsScreen({
                 <SubmitScore
                     labels={labels}
                     locale={locale}
-                    game={mode.game}
+                    title={labels.submitTitle}
+                    difficulty={summary.difficulty}
+                    makePayload={(identity) => toPayload(mode.game, identity)}
                     initialIdentity={saved?.identity ?? ""}
                     leaderboard={leaderboard}
                     onBoards={onBoards}
@@ -294,10 +349,13 @@ export function InvalidRun({ labels, onMenu }: { labels: SageRangeLabels; onMenu
     );
 }
 
+/** Sends one session (live, or the stored personal best) to the leaderboard under a Steam profile. */
 function SubmitScore({
     labels,
     locale,
-    game,
+    title,
+    difficulty,
+    makePayload,
     initialIdentity,
     leaderboard,
     onBoards,
@@ -306,7 +364,9 @@ function SubmitScore({
 }: {
     labels: SageRangeLabels;
     locale: string;
-    game: GameState;
+    title: string;
+    difficulty: Difficulty;
+    makePayload: (identity: string) => SubmissionPayload;
     initialIdentity: string;
     leaderboard: SageRangeLeaderboard;
     onBoards: (b: Boards) => void;
@@ -328,7 +388,7 @@ function SubmitScore({
         }
         setStatus({ kind: "sending" });
         onIdentity(value);
-        const result = await leaderboard.submit(toPayload(game, value)).catch(() => null);
+        const result = await leaderboard.submit(makePayload(value)).catch(() => null);
         if (!result || !result.ok) {
             const messages: Record<string, string> = {
                 identity: labels.profileInvalid,
@@ -348,9 +408,11 @@ function SubmitScore({
     if (status.kind === "done") {
         return (
             <section className="sr-panel sr-submit">
-                <p className="sr-badge">{fill(labels.submitted, { rank: status.rank ?? "—" })}</p>
+                <p className="sr-badge">
+                    {status.rank === null ? labels.submitNotRanked : fill(labels.submitted, { rank: status.rank })}
+                </p>
                 <Board
-                    entries={entries ? entries[game.config.id] : []}
+                    entries={entries ? entries[difficulty] : []}
                     labels={labels}
                     locale={locale}
                     highlight={status.rank}
@@ -360,7 +422,7 @@ function SubmitScore({
     }
     return (
         <form className="sr-panel sr-submit" onSubmit={submit}>
-            <h2 className="sr-heading">{labels.submitTitle}</h2>
+            <h2 className="sr-heading">{title}</h2>
             <label className="sr-field">
                 <span>{labels.profileLabel}</span>
                 <input

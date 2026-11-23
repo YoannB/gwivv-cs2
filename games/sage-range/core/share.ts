@@ -6,7 +6,7 @@
 import { DIFFICULTIES, DIFFICULTY_CONFIGS, RULES_VERSION, type Difficulty } from "./config";
 import type { GameState, Shot } from "./engine";
 import { cleanDisplayName } from "./names";
-import { parseShots } from "./submission";
+import { parseShots, type SubmissionPayload } from "./submission";
 
 export interface SharedRun {
     readonly difficulty: Difficulty;
@@ -114,4 +114,15 @@ export function runId(run: SharedRun): string {
 export function runCodeFromHash(hash: string): string | null {
     const match = /^#r=([A-Za-z0-9_-]+)$/.exec(hash);
     return match ? match[1] : null;
+}
+
+/** Leaderboard payload of a stored or shared session (the server replays it like any other). */
+export function payloadFromRun(run: SharedRun, identity: string): SubmissionPayload {
+    return {
+        version: RULES_VERSION,
+        difficulty: run.difficulty,
+        seed: run.seed,
+        identity,
+        shots: run.shots.map((s) => [s.t, s.x, s.y]),
+    };
 }

@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type R
 import type { Difficulty } from "../core/config";
 import { createGame, type GameState } from "../core/engine";
 import type { Boards } from "../core/leaderboard";
-import { EMPTY_SAVED, isUnlocked, parseSaved, recordScore, type SavedData } from "../core/saved";
+import { EMPTY_SAVED, isUnlocked, markSubmitted, parseSaved, recordScore, type SavedData } from "../core/saved";
 import { decodeRun, encodeRun, runCodeFromHash, runFromGame } from "../core/share";
 import { replay } from "../core/submission";
 import { summarize, type Summary } from "../core/summary";
@@ -140,10 +140,14 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
     const finish = useCallback(
         (game: GameState) => {
             const summary = summarize(game);
-            const { saved: next, newBest } = recordScore(store.get(), summary.difficulty, summary.score);
-            if (newBest) store.set(next);
             const finished = encodeRun(runFromGame(game));
-            ownRuns.set(finished, { game, summary, newBest, testRun: testHook() !== undefined });
+            const testRun = testHook() !== undefined;
+            // A shortened test session is never a personal best: its code would not replay faithfully.
+            const recorded = testRun
+                ? { saved: store.get(), newBest: false }
+                : recordScore(store.get(), summary.difficulty, summary.score, finished);
+            if (recorded.newBest) store.set(recorded.saved);
+            ownRuns.set(finished, { game, summary, newBest: recorded.newBest, testRun });
             setScreen({ kind: "idle" });
             goTo(`#r=${finished}`);
         },
@@ -154,11 +158,12 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
     const renamed = useCallback(
         (name: string) => {
             if (!code || !own) return;
+            store.set(markSubmitted(store.get(), own.summary.difficulty, code));
             const next = encodeRun(runFromGame(own.game, name));
             ownRuns.set(next, own);
             goTo(`#r=${next}`, true);
         },
-        [code, own, ownRuns],
+        [code, own, ownRuns, store],
     );
 
     const toMenu = useCallback(() => {
@@ -283,7 +288,11 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 onStart={() => start()}
                 saved={saved}
                 boards={boards}
-                hasBoard={Boolean(leaderboard)}
+                leaderboard={leaderboard}
+                onBoards={setBoards}
+                onIdentity={onIdentity}
+                onShowRun={(run) => goTo(`#r=${run}`)}
+                onBestSubmitted={(level, run) => store.set(markSubmitted(store.get(), level, run))}
             />
         );
     }

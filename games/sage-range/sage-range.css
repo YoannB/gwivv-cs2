@@ -216,6 +216,23 @@ html:has(.sr[data-phase="play"]) {
     font-weight: 700;
     color: var(--sr-amber);
 }
+.sr-best__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+.sr-btn.sr-btn--small {
+    min-height: 36px;
+    padding: 0 14px;
+    font-size: 0.85rem;
+}
+.sr-panel .sr-submit {
+    margin-top: 16px;
+    padding: 0;
+    border: 0;
+    background: none;
+}
 .sr-best--none {
     font-size: 1.1rem;
     color: var(--sr-grey);
