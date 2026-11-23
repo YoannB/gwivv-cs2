@@ -22,6 +22,7 @@ const NO_STORE = { "Cache-Control": "no-store" };
 /** A full session log is a few kilobytes; anything far bigger is not a session. */
 const MAX_BODY_BYTES = 24_000;
 const STEAM_TIMEOUT_MS = 6_000;
+const RETRIES_ON_429 = 2;
 
 const reply = (body: object, status = 200) => NextResponse.json(body, { status, headers: NO_STORE });
 
@@ -30,15 +31,22 @@ type Fetched = { ok: true; body: string } | { ok: false; detail: string };
 
 /** GET with a timeout. `label` names the call in logs: the URL may hold the API key, never log it. */
 async function get(url: string, label: string): Promise<Fetched> {
-    try {
-        const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(STEAM_TIMEOUT_MS) });
-        const body = await res.text();
-        if (res.ok) return { ok: true, body };
-        console.error(`[range] steam ${label} HTTP ${res.status}`);
-        return { ok: false, detail: `${label}-http-${res.status}` };
-    } catch (error) {
-        console.error(`[range] steam ${label} failed — ${error instanceof Error ? error.name : "error"}`);
-        return { ok: false, detail: `${label}-network` };
+    for (let attempt = 0; ; attempt += 1) {
+        try {
+            const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(STEAM_TIMEOUT_MS) });
+            const body = await res.text();
+            if (res.ok) return { ok: true, body };
+            // Steam's 429 on shared cloud IPs comes and goes: wait a little and try again.
+            if (res.status === 429 && attempt < RETRIES_ON_429) {
+                await new Promise((resolve) => setTimeout(resolve, 700 * (attempt + 1)));
+                continue;
+            }
+            console.error(`[range] steam ${label} HTTP ${res.status}`);
+            return { ok: false, detail: `${label}-http-${res.status}` };
+        } catch (error) {
+            console.error(`[range] steam ${label} failed — ${error instanceof Error ? error.name : "error"}`);
+            return { ok: false, detail: `${label}-network` };
+        }
     }
 }
 

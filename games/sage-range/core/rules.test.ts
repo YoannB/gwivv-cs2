@@ -5,7 +5,7 @@ import { POINTS, TICK_MS, isDifficulty } from "./config";
 import { createGame } from "./engine";
 import { fill, formatClock, formatNumber, formatPercent, utcDay } from "./format";
 import { chance, createRng, nextFloat, nextInt } from "./rng";
-import { EMPTY_SAVED, parseSaved, recordScore } from "./saved";
+import { EMPTY_SAVED, isUnlocked, parseSaved, recordScore } from "./saved";
 import { gradeFor, summarize } from "./summary";
 
 describe("rng", () => {
@@ -125,6 +125,15 @@ describe("saved data", () => {
                 identity: " steamcommunity.com/id/ace ",
             }),
         ).toEqual({ best: { recruit: 120 }, identity: "steamcommunity.com/id/ace" });
+    });
+
+    it("opens the levels one after the other", () => {
+        expect(isUnlocked(EMPTY_SAVED, "recruit")).toBe(true);
+        expect(isUnlocked(EMPTY_SAVED, "regular")).toBe(false);
+        const recruit = { best: { recruit: 40 }, identity: "" };
+        expect(isUnlocked(recruit, "regular")).toBe(true);
+        expect(isUnlocked(recruit, "elite")).toBe(false);
+        expect(isUnlocked({ best: { regular: 10 }, identity: "" }, "elite")).toBe(true);
     });
 
     it("keeps the best score per difficulty", () => {

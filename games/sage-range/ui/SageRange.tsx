@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type R
 import type { Difficulty } from "../core/config";
 import { createGame, type GameState } from "../core/engine";
 import type { Boards } from "../core/leaderboard";
-import { EMPTY_SAVED, parseSaved, recordScore, type SavedData } from "../core/saved";
+import { EMPTY_SAVED, isUnlocked, parseSaved, recordScore, type SavedData } from "../core/saved";
 import { decodeRun, encodeRun, runCodeFromHash, runFromGame } from "../core/share";
 import { replay } from "../core/submission";
 import { summarize, type Summary } from "../core/summary";
@@ -88,7 +88,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
     const saved = useSyncExternalStore(store.subscribe, store.get, serverSaved);
     const hash = useSyncExternalStore(subscribeLocation, readHash, serverHash);
     const [ownRuns] = useState(() => new Map<string, OwnRun>());
-    const [difficulty, setDifficulty] = useState<Difficulty>("regular");
+    const [difficulty, setDifficulty] = useState<Difficulty>("recruit");
     const [screen, setScreen] = useState<Screen>({ kind: "idle" });
     const [paused, setPaused] = useState(false);
     const [run, setRun] = useState(0);
@@ -262,7 +262,9 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 mode={{
                     kind: "shared",
                     name: shared.run.name,
-                    onBeat: () => start(shared.run.difficulty),
+                    // A challenge on a level still locked here sends to the range instead.
+                    onBeat: () =>
+                        isUnlocked(store.get(), shared.run.difficulty) ? start(shared.run.difficulty) : toMenu(),
                     onMenu: toMenu,
                 }}
             />

@@ -177,7 +177,8 @@
             "profileHint": "Votre pseudo et votre avatar Steam apparaissent au classement, avec un lien vers votre profil.",
             "profileInvalid": "Ce n'est pas un lien de profil Steam lisible (steamcommunity.com/id/… ou /profiles/…).",
             "nameBlocked": "Ce pseudo Steam n'est pas accepté au classement.",
-            "steamUnavailable": "Steam n'a pas répondu pour confirmer votre profil. Réessayez dans un instant."
+            "steamUnavailable": "Steam n'a pas répondu pour confirmer votre profil. Réessayez dans un instant.",
+            "difficultyLocked": "Faites un score en {level} pour débloquer le niveau suivant."
         }
     },
     "showcase": {

@@ -2,7 +2,7 @@
 // Small presentational pieces shared by the game screens.
 import { useState } from "react";
 import type { Difficulty } from "../core/config";
-import { formatNumber, formatPercent } from "../core/format";
+import { fill, formatNumber, formatPercent } from "../core/format";
 import type { BoardEntry } from "../core/leaderboard";
 import type { SageRangeLabels } from "./types";
 
@@ -82,12 +82,17 @@ export function DifficultyPicker({
     value,
     onChange,
     labels,
+    isLocked,
 }: {
     value: Difficulty;
     onChange: (d: Difficulty) => void;
     labels: SageRangeLabels;
+    /** A level opens once the level below has a score. */
+    isLocked: (d: Difficulty) => boolean;
 }) {
     const levels: Difficulty[] = ["recruit", "regular", "elite"];
+    const lockedHint = (d: Difficulty) =>
+        fill(labels.difficultyLocked, { level: labels.difficulty[levels[levels.indexOf(d) - 1]] });
     return (
         <div className="sr-difficulty">
             <div className="sr-difficulty__options" role="radiogroup" aria-label={labels.difficultyTitle}>
@@ -99,13 +104,28 @@ export function DifficultyPicker({
                         aria-checked={value === d}
                         className={value === d ? "sr-difficulty__option is-on" : "sr-difficulty__option"}
                         onClick={() => onChange(d)}
+                        disabled={isLocked(d)}
+                        title={isLocked(d) ? lockedHint(d) : undefined}
                     >
+                        {isLocked(d) ? <LockIcon /> : null}
                         {labels.difficulty[d]}
                     </button>
                 ))}
             </div>
             <p className="sr-difficulty__hint">{labels.difficultyHint[value]}</p>
+            {levels.some(isLocked) ? (
+                <p className="sr-difficulty__lock">{lockedHint(levels.find(isLocked) as Difficulty)}</p>
+            ) : null}
         </div>
+    );
+}
+
+function LockIcon() {
+    return (
+        <svg className="sr-lock" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">
+            <rect x="3" y="7" width="10" height="8" rx="1.5" fill="currentColor" />
+            <path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        </svg>
     );
 }
 

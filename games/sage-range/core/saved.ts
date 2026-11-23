@@ -39,3 +39,9 @@ export function recordScore(
     if (score <= previous) return { saved, newBest: false };
     return { saved: { ...saved, best: { ...saved.best, [difficulty]: score } }, newBest: true };
 }
+
+/** Levels open one after the other: Recruit always, the next one once the level below has a score. */
+export function isUnlocked(saved: SavedData, difficulty: Difficulty): boolean {
+    const index = DIFFICULTIES.indexOf(difficulty);
+    return index === 0 || (saved.best[DIFFICULTIES[index - 1]] ?? 0) > 0;
+}

@@ -18,6 +18,8 @@ export interface SageRangeLabels {
     difficultyTitle: string;
     difficulty: Record<Difficulty, string>;
     difficultyHint: Record<Difficulty, string>;
+    /** `{level}`: the level below, which needs a score first. */
+    difficultyLocked: string;
     start: string;
     controlsTitle: string;
     controlAim: string;

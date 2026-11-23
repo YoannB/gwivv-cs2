@@ -85,3 +85,17 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
   is CSS-only (no hydration mismatch).
 - Tests: `tests/e2e/range.spec.ts` uses the test hook `window.__SAGE_RANGE_TEST__` (seed, short
   session, no countdown); hooked runs never offer the leaderboard.
+
+## Resetting the leaderboard
+
+All boards (the three difficulties) are ONE blob: key `boards-v<RULES_VERSION>` in the Netlify Blobs
+store `sage-range`. The store is site-wide: deploy previews and production share it, so scores
+made while testing a preview stay on the production board until reset. To reset:
+
+- Netlify dashboard → the project → Blobs → store `sage-range` → delete the `boards-v<N>` entry; or
+- Netlify CLI from a linked checkout: `npx netlify blobs:delete sage-range boards-v<N>`
+  (`npx netlify blobs:list sage-range` shows the current key).
+
+Removing one entry by hand: download it with `npx netlify blobs:get sage-range boards-v<N>`, edit the
+JSON, upload it with `npx netlify blobs:set sage-range boards-v<N> --input <file>`. Bumping
+`RULES_VERSION` also starts empty boards, but it changes the rules and invalidates every share link.

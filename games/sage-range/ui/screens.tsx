@@ -5,7 +5,7 @@ import type { Difficulty } from "../core/config";
 import type { GameState } from "../core/engine";
 import { fill, formatNumber, formatPercent } from "../core/format";
 import { qualifies, type Boards } from "../core/leaderboard";
-import { IDENTITY_MAX, type SavedData } from "../core/saved";
+import { EMPTY_SAVED, IDENTITY_MAX, isUnlocked, type SavedData } from "../core/saved";
 import { toPayload } from "../core/submission";
 import type { Summary } from "../core/summary";
 import { Board, DifficultyPicker, ShareButton, TargetIcon } from "./parts";
@@ -65,7 +65,12 @@ export function StartScreen({
                 </ul>
 
                 <h2 className="sr-heading">{labels.difficultyTitle}</h2>
-                <DifficultyPicker value={difficulty} onChange={onDifficulty} labels={labels} />
+                <DifficultyPicker
+                    value={difficulty}
+                    onChange={onDifficulty}
+                    labels={labels}
+                    isLocked={(d) => !isUnlocked(saved ?? EMPTY_SAVED, d)}
+                />
 
                 <button type="button" className="sr-btn sr-btn--primary sr-start__go" onClick={onStart}>
                     {labels.start}
