@@ -20,3 +20,5 @@ export function writeLS(key: string, value: unknown) {
 // Code reads them from here, never from a string literal; two features never share a key.
 export const LS_USAGE = "usage";
 export const LS_THEME_MODE = "theme-mode";
+// SAGE RANGE: personal bests and the last leaderboard tag (games/sage-range/core/saved.ts).
+export const LS_SAGE_RANGE = "sage-range";

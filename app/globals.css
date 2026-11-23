@@ -38,3 +38,6 @@
 @import "../styles/text-tools.css";
 @import "../styles/ui/tabs.css";
 @import "../styles/ui/terminal.css";
+/* The game ships its own stylesheet inside its folder (self-contained, extractable). */
+@import "../games/sage-range/sage-range.css";
+@import "../styles/pages/range.css";

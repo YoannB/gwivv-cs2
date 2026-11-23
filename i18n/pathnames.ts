@@ -3,6 +3,15 @@
 // plain Node code — Playwright specs — can resolve localized paths too.
 export const PATHNAMES = {
     "/": "/",
+    // The game keeps its name in every language.
+    "/range": {
+        fr: "/range",
+        en: "/range",
+        es: "/range",
+        de: "/range",
+        it: "/range",
+        pt: "/range",
+    },
     "/sitemap": {
         fr: "/plan-du-site",
         en: "/sitemap",

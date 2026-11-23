@@ -36,6 +36,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | Markdown articles & collections: `content/<collection>/`, front matter, listing/latest block, New/Archive badges, SEO (hreflang, JSON-LD, sitemap), slug-aware language switch, declaring a collection, comments (Disqus, consent, CSP) | `docs/articles.md`        |
 | text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
 | visual/layout/animation: hero roulette, icon draw, pre-hydration splash (`SPLASH`, splash logo), video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state, social images (og:image, Twitter card, `components/og/OgImage.tsx`, `/og/*.png`) | `docs/seo-layout.md` |
+| the Sage Range game: `games/sage-range/` (engine, scoring, replay, leaderboard, names filter, canvas, UI), `/range`, `/api/range/scores`, its self-containment rule | `docs/sage-range.md` |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |
 | Storybook stories, component visual states, `.storybook/` config                                                                                                 | `docs/storybook.md`       |
 

@@ -86,6 +86,7 @@ export function Header() {
                                 href={n.href}
                                 className={cn(
                                     "site-nav__link",
+                                    n.accent && "site-nav__link--accent",
                                     (pathname === n.href || pathname.startsWith(`${n.href}/`)) && "is-active",
                                 )}
                                 onClick={close}
