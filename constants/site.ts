@@ -32,6 +32,8 @@ export const DEFAULT_TITLE = "GWIVV CS2 — Counter-Strike 2 player";
 export const DEFAULT_DESCRIPTION =
     "GWIVV, Counter-Strike 2 player: profile, statistics, highlights, loadout and the Sage Range.";
 export const GITHUB_URL = "";
+/** The reference app this site is built from (linked by the footer notice, `footer.notice`). */
+export const BASE_APP_URL = "https://github.com/YoannB/axons";
 // Never ends with "/" (lib/site-url.ts): consumers append paths to it.
 export const SITE_URL: string = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;

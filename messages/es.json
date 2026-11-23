@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Jugador de Counter-Strike 2. La paciencia es un arma.",
         "rights": "© {year} {site}. Todos los derechos reservados.",
-        "builtWith": "Construido con Next.js, Material UI, next-intl y OpenRouter"
+        "builtWith": "Construido con Next.js, Material UI, next-intl y OpenRouter",
+        "notice": "Sitio de fan personal y sin fines comerciales, creado para mostrar el boilerplate <axons>Axons</axons>. Counter-Strike es una marca de Valve Corporation. La ilustración es un fan art: los personajes pertenecen a sus respectivos titulares de derechos."
     },
     "cookie": {
         "message": "Este sitio utiliza cookies y servicios de terceros que requieren tu consentimiento, para las finalidades siguientes. Puedes aceptarlos o rechazarlos.",
@@ -186,6 +187,14 @@
                     "body": [
                         "Todos los elementos del sitio (estructura, textos, gráficos, logotipos, iconos, código fuente, componentes) están protegidos por derechos de autor, derecho de marcas y derecho de diseños.",
                         "Cualquier reproducción, representación, modificación, publicación o adaptación, total o parcial, por cualquier medio, sin el consentimiento escrito previo del editor, está prohibida y constituye una infracción."
+                    ]
+                },
+                {
+                    "heading": "Acerca de este sitio",
+                    "body": [
+                        "GWIVV CS2 es un sitio personal y sin fines comerciales dedicado a un jugador de Counter-Strike 2. También sirve como demostración del boilerplate Axons (https://github.com/YoannB/axons). No contiene publicidad, patrocinio ni contenido de pago.",
+                        "Counter-Strike y Counter-Strike 2 son marcas de Valve Corporation. Este sitio no está afiliado a Valve, Steam, FACEIT, Leetify, Allstar, Twitch ni YouTube, ni cuenta con su respaldo; sus nombres solo identifican los enlaces a los perfiles públicos del jugador.",
+                        "La ilustración de la cabecera es un fan art. Los personajes que pueda evocar pertenecen a sus respectivos titulares de derechos y no se reivindica ningún derecho sobre ellos. Un titular de derechos que se oponga a este uso puede contactar con el editor (datos arriba): el elemento se retirará rápidamente."
                     ]
                 },
                 {

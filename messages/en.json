@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Counter-Strike 2 player. Patience is a weapon.",
         "rights": "© {year} {site}. All rights reserved.",
-        "builtWith": "Built with Next.js, Material UI, next-intl and OpenRouter"
+        "builtWith": "Built with Next.js, Material UI, next-intl and OpenRouter",
+        "notice": "Non-commercial personal fan site, built to showcase the <axons>Axons</axons> boilerplate. Counter-Strike is a trademark of Valve Corporation. The illustration is fan art: the characters belong to their respective rights holders."
     },
     "cookie": {
         "message": "This site uses cookies and third-party services that require your consent, for the purposes below. You can accept or refuse them.",
@@ -186,6 +187,14 @@
                     "body": [
                         "All elements of the site (structure, texts, graphics, logos, icons, source code, components) are protected by copyright, trademark law and design law.",
                         "Any reproduction, representation, modification, publication or adaptation, in whole or in part, by any means, without the publisher's prior written consent, is prohibited and constitutes infringement."
+                    ]
+                },
+                {
+                    "heading": "About this site",
+                    "body": [
+                        "GWIVV CS2 is a personal, non-commercial website about a Counter-Strike 2 player. It also serves as a demonstration of the Axons boilerplate (https://github.com/YoannB/axons). It carries no advertising, sponsorship or paid content.",
+                        "Counter-Strike and Counter-Strike 2 are trademarks of Valve Corporation. This site is not affiliated with or endorsed by Valve, Steam, FACEIT, Leetify, Allstar, Twitch or YouTube; their names only label links to the player's public profiles.",
+                        "The hero illustration is fan art. The characters it may evoke belong to their respective rights holders, and no ownership is claimed over them. A rights holder who objects to this use can contact the publisher (details above): the element will be removed promptly."
                     ]
                 },
                 {

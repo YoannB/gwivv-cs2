@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Giocatore di Counter-Strike 2. La pazienza è un'arma.",
         "rights": "© {year} {site}. Tutti i diritti riservati.",
-        "builtWith": "Creato con Next.js, Material UI, next-intl e OpenRouter"
+        "builtWith": "Creato con Next.js, Material UI, next-intl e OpenRouter",
+        "notice": "Sito di fan personale e non commerciale, realizzato per presentare il boilerplate <axons>Axons</axons>. Counter-Strike è un marchio di Valve Corporation. L'illustrazione è una fan art: i personaggi appartengono ai rispettivi titolari dei diritti."
     },
     "cookie": {
         "message": "Questo sito utilizza cookie e servizi di terze parti che richiedono il tuo consenso, per le finalità indicate di seguito. Puoi accettarli o rifiutarli.",
@@ -186,6 +187,14 @@
                     "body": [
                         "Tutti gli elementi del sito (struttura, testi, grafica, loghi, icone, codice sorgente, componenti) sono protetti dal diritto d'autore, dal diritto dei marchi e dal diritto dei disegni e modelli.",
                         "È vietata qualsiasi riproduzione, rappresentazione, modifica, pubblicazione o adattamento totale o parziale, con qualsiasi mezzo, senza il preventivo consenso scritto dell'editore."
+                    ]
+                },
+                {
+                    "heading": "Informazioni su questo sito",
+                    "body": [
+                        "GWIVV CS2 è un sito personale e non commerciale dedicato a un giocatore di Counter-Strike 2. Serve anche come dimostrazione del boilerplate Axons (https://github.com/YoannB/axons). Non contiene pubblicità, sponsorizzazioni né contenuti a pagamento.",
+                        "Counter-Strike e Counter-Strike 2 sono marchi di Valve Corporation. Questo sito non è affiliato a Valve, Steam, FACEIT, Leetify, Allstar, Twitch o YouTube né da essi approvato; i loro nomi indicano soltanto i link ai profili pubblici del giocatore.",
+                        "L'illustrazione dell'intestazione è una fan art. I personaggi che può evocare appartengono ai rispettivi titolari dei diritti e su di essi non viene rivendicato alcun diritto. Un titolare dei diritti che si opponga a questo uso può contattare l'editore (recapiti sopra): l'elemento sarà rimosso tempestivamente."
                     ]
                 },
                 {

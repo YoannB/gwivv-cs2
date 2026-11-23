@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Joueur Counter-Strike 2. La patience est une arme.",
         "rights": "© {year} {site}. Tous droits réservés.",
-        "builtWith": "Construit avec Next.js, Material UI, next-intl et OpenRouter"
+        "builtWith": "Construit avec Next.js, Material UI, next-intl et OpenRouter",
+        "notice": "Site de fan personnel et non commercial, réalisé pour présenter le boilerplate <axons>Axons</axons>. Counter-Strike est une marque de Valve Corporation. L'illustration est un fan art : les personnages appartiennent à leurs ayants droit respectifs."
     },
     "cookie": {
         "message": "Ce site utilise des cookies et des services tiers soumis à votre consentement, pour les finalités ci-dessous. Vous pouvez les accepter ou les refuser.",
@@ -186,6 +187,14 @@
                     "body": [
                         "L'ensemble des éléments du site (structure, textes, graphismes, logos, icônes, code source, composants) est protégé par le droit d'auteur, le droit des marques et le droit des dessins et modèles.",
                         "Toute reproduction, représentation, modification, publication ou adaptation, totale ou partielle, par quelque procédé que ce soit, sans autorisation écrite préalable de l'éditeur, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle."
+                    ]
+                },
+                {
+                    "heading": "À propos de ce site",
+                    "body": [
+                        "GWIVV CS2 est un site personnel et non commercial consacré à un joueur de Counter-Strike 2. Il sert également de démonstration du boilerplate Axons (https://github.com/YoannB/axons). Il ne comporte ni publicité, ni sponsoring, ni contenu payant.",
+                        "Counter-Strike et Counter-Strike 2 sont des marques de Valve Corporation. Ce site n'est ni affilié à Valve, Steam, FACEIT, Leetify, Allstar, Twitch ou YouTube, ni approuvé par eux ; leurs noms servent uniquement à désigner les liens vers les profils publics du joueur.",
+                        "L'illustration de l'en-tête est un fan art. Les personnages qu'elle peut évoquer appartiennent à leurs ayants droit respectifs, et aucun droit n'est revendiqué sur eux. Un ayant droit qui s'oppose à cet usage peut contacter l'éditeur (coordonnées ci-dessus) : l'élément sera retiré rapidement."
                     ]
                 },
                 {

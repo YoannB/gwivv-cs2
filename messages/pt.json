@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Jogador de Counter-Strike 2. A paciência é uma arma.",
         "rights": "© {year} {site}. Todos os direitos reservados.",
-        "builtWith": "Construído com Next.js, Material UI, next-intl e OpenRouter"
+        "builtWith": "Construído com Next.js, Material UI, next-intl e OpenRouter",
+        "notice": "Site de fã pessoal e sem fins comerciais, criado para apresentar o boilerplate <axons>Axons</axons>. Counter-Strike é uma marca da Valve Corporation. A ilustração é uma fan art: as personagens pertencem aos respetivos titulares de direitos."
     },
     "cookie": {
         "message": "Este site utiliza cookies e serviços de terceiros que requerem o seu consentimento, para as finalidades indicadas abaixo. Pode aceitá-los ou recusá-los.",
@@ -186,6 +187,14 @@
                     "body": [
                         "Todos os elementos do site (estrutura, textos, gráficos, logótipos, ícones, código-fonte, componentes) estão protegidos por direitos de autor, direito de marcas e direito de desenhos e modelos.",
                         "Qualquer reprodução, representação, modificação, publicação ou adaptação total ou parcial, por qualquer meio, sem consentimento escrito prévio do editor, é proibida e constitui contrafação."
+                    ]
+                },
+                {
+                    "heading": "Sobre este site",
+                    "body": [
+                        "GWIVV CS2 é um site pessoal e sem fins comerciais dedicado a um jogador de Counter-Strike 2. Serve também como demonstração do boilerplate Axons (https://github.com/YoannB/axons). Não contém publicidade, patrocínio nem conteúdo pago.",
+                        "Counter-Strike e Counter-Strike 2 são marcas da Valve Corporation. Este site não é afiliado à Valve, Steam, FACEIT, Leetify, Allstar, Twitch ou YouTube, nem aprovado por elas; os seus nomes apenas identificam as ligações para os perfis públicos do jogador.",
+                        "A ilustração do cabeçalho é uma fan art. As personagens que possa evocar pertencem aos respetivos titulares de direitos e não é reivindicado qualquer direito sobre elas. Um titular de direitos que se oponha a esta utilização pode contactar o editor (contactos acima): o elemento será retirado rapidamente."
                     ]
                 },
                 {

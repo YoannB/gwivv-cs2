@@ -1,6 +1,14 @@
 "use client";
 import { Logo } from "@/components/ui";
-import { BRAND_ACCENT_FROM, CONSENT_REQUIRED, GITHUB_LINK_ENABLED, GITHUB_URL, NAV, SITE_NAME } from "@/constants/site";
+import {
+    BASE_APP_URL,
+    BRAND_ACCENT_FROM,
+    CONSENT_REQUIRED,
+    GITHUB_LINK_ENABLED,
+    GITHUB_URL,
+    NAV,
+    SITE_NAME,
+} from "@/constants/site";
 import { useCookieConsent } from "@/hooks/use-consent";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -54,6 +62,18 @@ export function Footer() {
                     <span className="muted">{t("rights", { year: new Date().getFullYear(), site: SITE_NAME })}</span>
                 </div>
             </div>
+            {/* `footer.notice` (optional message, rich tag <axons>): the fan-site / demo notice. */}
+            {t.has("notice") ? (
+                <p className="container site-footer__notice muted">
+                    {t.rich("notice", {
+                        axons: (c) => (
+                            <a href={BASE_APP_URL} target="_blank" rel="noopener noreferrer">
+                                {c}
+                            </a>
+                        ),
+                    })}
+                </p>
+            ) : null}
         </footer>
     );
 }

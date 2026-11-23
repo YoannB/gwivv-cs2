@@ -119,7 +119,8 @@
     "footer": {
         "tagline": "Counter-Strike-2-Spieler. Geduld ist eine Waffe.",
         "rights": "© {year} {site}. Alle Rechte vorbehalten.",
-        "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter"
+        "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter",
+        "notice": "Private, nicht kommerzielle Fan-Website, erstellt als Demo des <axons>Axons</axons>-Boilerplates. Counter-Strike ist eine Marke der Valve Corporation. Die Illustration ist Fan-Art: Die Figuren gehören ihren jeweiligen Rechteinhabern."
     },
     "cookie": {
         "message": "Diese Website verwendet Cookies und Dienste Dritter, die deine Einwilligung erfordern, für die unten genannten Zwecke. Du kannst sie akzeptieren oder ablehnen.",
@@ -186,6 +187,14 @@
                     "body": [
                         "Alle Elemente der Website (Struktur, Texte, Grafiken, Logos, Icons, Quellcode, Komponenten) sind durch Urheberrecht, Markenrecht und Designrecht geschützt.",
                         "Jede Vervielfältigung, Darstellung, Änderung, Veröffentlichung oder Anpassung, ganz oder teilweise, auf irgendeinem Weg, ohne vorherige schriftliche Zustimmung des Herausgebers, ist verboten und stellt eine Rechtsverletzung dar."
+                    ]
+                },
+                {
+                    "heading": "Über diese Website",
+                    "body": [
+                        "GWIVV CS2 ist eine private, nicht kommerzielle Website über einen Counter-Strike-2-Spieler. Sie dient außerdem als Demonstration des Axons-Boilerplates (https://github.com/YoannB/axons). Sie enthält weder Werbung noch Sponsoring noch kostenpflichtige Inhalte.",
+                        "Counter-Strike und Counter-Strike 2 sind Marken der Valve Corporation. Diese Website steht in keiner Verbindung zu Valve, Steam, FACEIT, Leetify, Allstar, Twitch oder YouTube und wird von ihnen nicht unterstützt; ihre Namen kennzeichnen lediglich die Links zu den öffentlichen Profilen des Spielers.",
+                        "Die Illustration im Kopfbereich ist Fan-Art. Die Figuren, an die sie erinnern mag, gehören ihren jeweiligen Rechteinhabern; es werden keine Rechte an ihnen beansprucht. Ein Rechteinhaber, der dieser Nutzung widerspricht, kann den Herausgeber kontaktieren (Kontaktdaten oben): Das Element wird umgehend entfernt."
                     ]
                 },
                 {
