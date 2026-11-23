@@ -1,0 +1,110 @@
+/* ===== Home sections below the hero ===== */
+.home-sections {
+    padding-block: 32px 24px;
+}
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.section-heading::before {
+    content: "///";
+    letter-spacing: 0.05em;
+    color: var(--accent-1);
+}
+
+/* ===== Latest clips (components/home/LatestClips.tsx, ClipPlayer.tsx) ===== */
+.clips__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.clips__item {
+    min-width: 0;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--surface-1) 85%, transparent);
+    overflow: hidden;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.clips__item:hover {
+    border-color: color-mix(in oklab, var(--accent-1) 55%, var(--border-2));
+    box-shadow: 0 0 22px color-mix(in oklab, var(--accent-1) 22%, transparent);
+}
+.clip-player {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+}
+.clip-player__frame,
+.clip-player__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.clip-player__poster {
+    display: block;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+}
+.clip-player__thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.clip-player__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    color: #101010;
+    background: var(--accent-1);
+    box-shadow: 0 0 24px color-mix(in oklab, var(--accent-1) 60%, transparent);
+    transition: transform 0.2s ease;
+}
+.clip-player__poster:hover .clip-player__play,
+.clip-player__poster:focus-visible .clip-player__play {
+    transform: translate(-50%, -50%) scale(1.08);
+}
+.clips__meta {
+    padding: 12px 14px 14px;
+}
+.clips__title {
+    margin: 0 0 4px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+}
+.clips__sub {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+.clips__sub a {
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.clips__sub a:hover {
+    color: var(--accent-2);
+}

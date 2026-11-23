@@ -52,6 +52,12 @@ describe("buildSecurityHeaders", () => {
         expect(csp(["'self'"], true)).toContain("'unsafe-eval' 'wasm-unsafe-eval'");
         expect(csp(["'self'"], false)).not.toContain("unsafe-eval");
     });
+    it("frames the clip provider's player (home clips) next to YouTube", () => {
+        const frame = csp(["'self'"])
+            .split("; ")
+            .find((d) => d.startsWith("frame-src "));
+        expect(frame).toContain("https://dinkem.gg");
+    });
     it("keeps the base headers", () => {
         const h = buildSecurityHeaders({ isDev: false, frameAncestors: ["'self'"] });
         expect(header(h, "X-Content-Type-Options")).toBe("nosniff");

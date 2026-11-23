@@ -18,6 +18,11 @@
         "scrollCue": "Percorra para baixo",
         "limitSuffix": "Limitado: {count} chamadas de IA / dia"
     },
+    "clips": {
+        "title": "Últimos clipes",
+        "play": "Reproduzir o clipe {title}",
+        "source": "Ver no Leetify"
+    },
     "showcase": {
         "title": "Biblioteca de componentes",
         "inputLabel": "Entrada",

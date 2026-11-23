@@ -18,6 +18,11 @@
         "scrollCue": "Nach unten scrollen",
         "limitSuffix": "Begrenzt: {count} KI-Aufrufe / Tag"
     },
+    "clips": {
+        "title": "Neueste Clips",
+        "play": "Clip {title} abspielen",
+        "source": "Auf Leetify ansehen"
+    },
     "showcase": {
         "title": "Komponentenbibliothek",
         "inputLabel": "Eingabe",

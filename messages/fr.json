@@ -18,6 +18,11 @@
         "scrollCue": "Faire défiler vers le bas",
         "limitSuffix": "Limité : {count} appels IA / jour"
     },
+    "clips": {
+        "title": "Derniers clips",
+        "play": "Lire le clip {title}",
+        "source": "Voir sur Leetify"
+    },
     "showcase": {
         "title": "Bibliothèque de composants",
         "inputLabel": "Input",

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { SITE_NAME, SOCIAL_LINKS } from "../../constants/site";
+import { CLIPS, CLIPS_ON_HOME, SITE_NAME, SOCIAL_LINKS } from "../../constants/site";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
 
@@ -15,6 +15,18 @@ test.describe("Home — structural smoke", () => {
             await expect(links.nth(i)).toHaveAttribute("href", link.href);
             await expect(links.nth(i)).toHaveAttribute("rel", "noopener noreferrer");
         }
+    });
+
+    test("the latest clips load the provider player only after a click", async ({ page }) => {
+        test.skip(CLIPS.length === 0, "no clip declared in constants/site.ts");
+        await page.goto("/");
+
+        const items = page.locator(".clips__item");
+        await expect(items).toHaveCount(Math.min(CLIPS.length, CLIPS_ON_HOME));
+        const first = items.first();
+        await expect(first.locator("iframe")).toHaveCount(0);
+        await first.locator("button.clip-player__poster").click();
+        await expect(first.locator("iframe")).toHaveAttribute("src", CLIPS[0].embed);
     });
 
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {

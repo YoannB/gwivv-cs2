@@ -18,6 +18,11 @@
         "scrollCue": "Scroll down",
         "limitSuffix": "Limited: {count} AI calls / day"
     },
+    "clips": {
+        "title": "Latest clips",
+        "play": "Play the clip {title}",
+        "source": "View on Leetify"
+    },
     "showcase": {
         "title": "Component library",
         "inputLabel": "Input",
