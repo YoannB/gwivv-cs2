@@ -292,6 +292,65 @@ export const STEAM64_ID = "76561198048679104";
  */
 export const FACEIT_SNAPSHOT = { level: 5, elo: 1138, date: "2026-11-23" } as const;
 
+/** A CS2 season as Leetify summarises it on the player's Rank History page. */
+export interface Season {
+    /** 0 = the beta season (CS2 Limited Test), then 1, 2, … */
+    readonly number: number;
+    readonly matches: number;
+    /** Win rate as a fraction (0.46 = 46 %). */
+    readonly winrate: number;
+    readonly kd: number;
+    /** Lowest and highest Premier rating of the season; null = no Premier rating that season. */
+    readonly premier: { readonly min: number; readonly max: number } | null;
+    /** Lowest and highest FACEIT level; null = no FACEIT data for that season. */
+    readonly faceit: { readonly min: number; readonly max: number } | null;
+}
+/**
+ * CS2 seasons, newest first, copied by hand from https://leetify.com/app/profile/<STEAM64_ID>/ranks
+ * on SEASONS_AS_OF: the public API has no season history (only the current ranks and the last
+ * 100 matches). The current season is still moving: its figures are those of that date.
+ */
+export const SEASONS: readonly Season[] = [
+    { number: 5, matches: 331, winrate: 0.41, kd: 0.95, premier: null, faceit: null },
+    {
+        number: 4,
+        matches: 460,
+        winrate: 0.46,
+        kd: 0.98,
+        premier: { min: 20000, max: 21867 },
+        faceit: { min: 6, max: 7 },
+    },
+    {
+        number: 3,
+        matches: 748,
+        winrate: 0.48,
+        kd: 0.98,
+        premier: { min: 12598, max: 19639 },
+        faceit: { min: 7, max: 8 },
+    },
+    {
+        number: 2,
+        matches: 716,
+        winrate: 0.47,
+        kd: 1.01,
+        premier: { min: 14072, max: 19350 },
+        faceit: { min: 6, max: 7 },
+    },
+    {
+        number: 1,
+        matches: 1477,
+        winrate: 0.52,
+        kd: 1.1,
+        premier: { min: 6303, max: 18402 },
+        faceit: { min: 3, max: 6 },
+    },
+    { number: 0, matches: 164, winrate: 0.48, kd: 1.01, premier: { min: 6299, max: 10744 }, faceit: null },
+];
+/** The day SEASONS was read on Leetify (ISO 8601); shown next to the table. */
+export const SEASONS_AS_OF = "2026-11-23";
+/** Season currently running: its row is marked "in progress". */
+export const CURRENT_SEASON = 5;
+
 export const SOCIAL_LINKS: readonly SocialLink[] = [
     { id: "steam", label: "Steam", href: "https://steamcommunity.com/profiles/76561198048679104" },
     { id: "twitch", label: "Twitch", href: "https://www.twitch.tv/gwivv" },

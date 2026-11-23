@@ -34,6 +34,24 @@
         "credit": "Data Provided by Leetify",
         "viewOnLeetify": "View on Leetify"
     },
+    "seasons": {
+        "title": "Historial de temporadas",
+        "best": "Mejor Premier: <strong>{value}</strong> ({season})",
+        "seasonColumn": "Temporada",
+        "season": "Temporada {n}",
+        "beta": "Temporada beta",
+        "inProgress": "En curso",
+        "matches": "Partidas",
+        "winrate": "Victorias",
+        "premier": "Premier (mín. – máx.)",
+        "faceit": "Nivel FACEIT",
+        "unrated": "Sin clasificar",
+        "asOf": "Datos de Leetify del {date}",
+        "source": "Historial de rangos en Leetify",
+        "kd": "K/D",
+        "range": "{min} – {max}",
+        "levels": "{min} → {max}"
+    },
     "highlights": {
         "title": "Highlights",
         "channel": "Canal de YouTube",
