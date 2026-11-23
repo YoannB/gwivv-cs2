@@ -24,9 +24,30 @@
     margin-bottom: 12px;
 }
 .stats__credit {
-    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 12px;
     font-size: 0.8rem;
     color: var(--muted);
+}
+/* Official "Data provided by Leetify" badge: shown as delivered, only sized. */
+.stats__badge {
+    display: block;
+    line-height: 0;
+}
+.stats__badge-img {
+    width: auto;
+    height: 36px;
+}
+.stats__badge-img--light {
+    display: none;
+}
+[data-theme="light"] .stats__badge-img--dark {
+    display: none;
+}
+[data-theme="light"] .stats__badge-img--light {
+    display: block;
 }
 .stats__credit a {
     color: var(--text-2);

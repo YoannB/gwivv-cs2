@@ -1,6 +1,7 @@
 import { PlayerStatsLive } from "@/components/home/PlayerStatsLive";
 import { FACEIT_SNAPSHOT, SOCIAL_LINKS, STEAM64_ID } from "@/constants/site";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 
 const FACEIT_HREF = SOCIAL_LINKS.find((l) => l.id === "faceit")?.href ?? "https://www.faceit.com/";
 
@@ -21,10 +22,26 @@ export async function PlayerStats({ locale }: { locale: string }) {
                     {t("title")}
                 </h2>
                 <p className="stats__credit">
-                    <a href="https://leetify.com/" target="_blank" rel="noopener noreferrer">
-                        {t("credit")}
+                    {/* Leetify's official badge, unmodified: white for dark backgrounds, black for light
+                        ones (the hidden one is display: none, out of the accessibility tree). */}
+                    <a className="stats__badge" href="https://leetify.com/" target="_blank" rel="noopener noreferrer">
+                        <Image
+                            className="stats__badge-img stats__badge-img--dark"
+                            src="/images/leetify-badge-white.png"
+                            alt={t("credit")}
+                            width={270}
+                            height={115}
+                            unoptimized
+                        />
+                        <Image
+                            className="stats__badge-img stats__badge-img--light"
+                            src="/images/leetify-badge-black.png"
+                            alt={t("credit")}
+                            width={270}
+                            height={112}
+                            unoptimized
+                        />
                     </a>
-                    {" · "}
                     <a
                         className="stats__view"
                         href={`https://leetify.com/app/profile/${STEAM64_ID}`}
