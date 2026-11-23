@@ -34,6 +34,26 @@
         "credit": "Data Provided by Leetify",
         "viewOnLeetify": "View on Leetify"
     },
+    "highlights": {
+        "title": "Highlights",
+        "channel": "Chaîne YouTube",
+        "play": "Lire la vidéo {title}",
+        "watch": "Voir sur YouTube"
+    },
+    "loadout": {
+        "title": "Loadout",
+        "hardware": "Matériel",
+        "settings": "Paramètres de jeu",
+        "cpu": "Processeur",
+        "gpu": "Carte graphique",
+        "ram": "Mémoire",
+        "ramValue": "{gb} Go",
+        "monitor": "Écran",
+        "monitorValue": "{hz} Hz",
+        "dpi": "DPI",
+        "sensitivity": "Sensibilité CS2",
+        "edpi": "eDPI"
+    },
     "clips": {
         "title": "Derniers clips",
         "play": "Lire le clip {title}",

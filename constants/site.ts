@@ -234,6 +234,55 @@ export const CLIPS: readonly Clip[] = [
 ];
 export const CLIPS_ON_HOME = 3;
 
+/**
+ * A montage published on the player's YouTube channel. Copied from the video's public page; the
+ * thumbnail is a local copy (public/images), so nothing is requested from YouTube before a click.
+ */
+export interface Highlight {
+    /** YouTube video id: https://www.youtube.com/watch?v=<id>. */
+    readonly id: string;
+    /** Title as published on YouTube: the player's own words, never translated. */
+    readonly title: string;
+    /** Language of the title (BCP 47), for the `lang` attribute. */
+    readonly titleLang: string;
+    /** Duration in seconds. */
+    readonly seconds: number;
+    /** Publication date (ISO 8601). */
+    readonly date: string;
+    readonly thumbnail: string;
+}
+/** The two montages of the channel, newest first (spec: only the real videos, no filler). */
+export const HIGHLIGHTS: readonly Highlight[] = [
+    {
+        id: "-xFuK2Wouj0",
+        title: "Gwivv – L’évolution sur Counter-Strike 2 | Montage Allstar.gg (2025)",
+        titleLang: "fr",
+        seconds: 125,
+        date: "2025-10-21",
+        thumbnail: "/images/highlight-cs2-2025.webp",
+    },
+    {
+        id: "PL8fWXsLMhE",
+        title: "Gwivv – Les débuts sur CS:GO | Premier montage Allstar.gg (2023)",
+        titleLang: "fr",
+        seconds: 69,
+        date: "2025-10-21",
+        thumbnail: "/images/highlight-csgo-2023.webp",
+    },
+];
+
+/** The player's gaming setup (spec 4.5): hardware as product names, settings as numbers. */
+export const LOADOUT = {
+    hardware: {
+        cpu: "Intel Core i5-12600K",
+        gpu: "NVIDIA GeForce RTX 3080 Ti",
+        ramGb: 32,
+        refreshHz: 144,
+    },
+    /** eDPI is not stored: it is DPI × sensitivity, computed where it is shown. */
+    settings: { dpi: 400, sensitivity: 1.35 },
+} as const;
+
 /** The player's Steam64 ID: the Leetify profile the statistics strip reads. */
 export const STEAM64_ID = "76561198048679104";
 /**
