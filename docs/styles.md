@@ -34,6 +34,8 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 | `layout/header.css`        | `.site-header`, `.site-nav`, `.brand`, `.brand-tagline`, `.menu-toggle`, `.gh-link` + the mobile squeeze (also hides/compacts limit badge, lang, toggle) |
 | `layout/footer.css`        | `.site-footer`                                                                                                                                           |
 | `home/hero.css`            | `.hero`, `.pill`, `.scroll-cue`                                                                                                                          |
+| `home/clips.css`           | `.home-sections`, `.section-heading`, `.clips`, `.clip-player` (latest clips, click-to-play)                                                             |
+| `home/stats.css`           | `.stats` statistics strip (overlaps the hero bottom), cards, Leetify credit, live status                                                                 |
 | `home/roulette.css`        | `.roulette` (rotating hero word)                                                                                                                         |
 | `home/showcase.css`        | `.showcase`, `.sg-*` generator mock, `.fld`, `.term-demo`                                                                                                |
 | `ui/gauge.css`             | `.gauge`                                                                                                                                                 |

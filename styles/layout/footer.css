@@ -62,3 +62,19 @@
         text-align: left;
     }
 }
+/* Fan-site / demo notice under the footer grid (footer.notice). */
+.site-footer__notice {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-1);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+.site-footer__notice a {
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.site-footer__notice a:hover {
+    color: var(--accent-2);
+}

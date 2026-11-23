@@ -40,6 +40,10 @@ const nextConfig: NextConfig = {
                 protocol: "https",
                 hostname: "img.youtube.com",
             },
+            {
+                protocol: "https",
+                hostname: "dnkm.s3.gra.io.cloud.ovh.net",
+            },
         ],
     },
 };

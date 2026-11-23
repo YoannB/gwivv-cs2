@@ -1,15 +1,46 @@
 import { expect, test } from "@playwright/test";
+import { CLIPS, CLIPS_ON_HOME, SITE_NAME, SOCIAL_LINKS } from "../../constants/site";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
 
 test.describe("Home — structural smoke", () => {
-    test("shows the hero, the component library, the SEO section and the FAQ", async ({ page }) => {
+    test("shows the player hero: brand title, illustration and the six platform links", async ({ page }) => {
         await page.goto("/");
 
-        await expect(page.locator("h1")).toBeVisible();
-        await expect(page.locator("#showcase")).toBeVisible();
-        await expect(page.locator("#seo")).toBeVisible();
-        await expect(page.locator("#faq")).toBeVisible();
+        await expect(page.getByRole("heading", { level: 1, name: SITE_NAME })).toBeVisible();
+        await expect(page.locator(".hero__character")).toBeVisible();
+        const links = page.locator(".hero__social a");
+        await expect(links).toHaveCount(SOCIAL_LINKS.length);
+        for (const [i, link] of SOCIAL_LINKS.entries()) {
+            await expect(links.nth(i)).toHaveAttribute("href", link.href);
+            await expect(links.nth(i)).toHaveAttribute("rel", "noopener noreferrer");
+        }
+    });
+
+    test("the statistics strip shows the dated FACEIT card and a settled Leetify state", async ({ page }) => {
+        await page.goto("/");
+
+        const strip = page.locator(".stats");
+        await expect(strip.locator(".stats__card--faceit")).toBeVisible();
+        await expect(strip.getByRole("link", { name: "Data Provided by Leetify" })).toHaveAttribute(
+            "href",
+            "https://leetify.com/",
+        );
+        // Without LEETIFY_API_KEY (CI) the route answers { status: "unavailable" }: the strip says so,
+        // it shows no number.
+        await expect(strip.locator(".stats__status")).not.toHaveClass(/stats__status--loading/);
+    });
+
+    test("the latest clips load the provider player only after a click", async ({ page }) => {
+        test.skip(CLIPS.length === 0, "no clip declared in constants/site.ts");
+        await page.goto("/");
+
+        const items = page.locator(".clips__item");
+        await expect(items).toHaveCount(Math.min(CLIPS.length, CLIPS_ON_HOME));
+        const first = items.first();
+        await expect(first.locator("iframe")).toHaveCount(0);
+        await first.locator("button.clip-player__poster").click();
+        await expect(first.locator("iframe")).toHaveAttribute("src", CLIPS[0].embed);
     });
 
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {

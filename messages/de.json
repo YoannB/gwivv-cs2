@@ -10,24 +10,34 @@
         "menu": "Menü"
     },
     "hero": {
-        "badge": "Dein KI-Assistent, bereit mit einem Klick",
-        "titleLead": "Das Next.js-Boilerplate für deine ",
-        "rotating": ["KI-Agenten", "SEO-Websites", "Next.js-Apps", "OpenRouter-Demos"],
-        "subtitle": "Eine moderne, schnelle und SEO-freundliche Grundlage, um einfach Web-Apps mit KI zu erstellen. Einsatzfertige Komponenten, mehrsprachig, deploybar auf Netlify.",
-        "ctaDemo": "Demo ansehen",
-        "ctaPlan": "Sitemap",
+        "eyebrow": "Counter-Strike-2-Spieler",
+        "motto": "La patience est une arme.",
+        "intro": "Begeistert von Counter-Strike 2, immer auf der Suche nach Präzision und dem richtigen Timing.",
+        "socialLabel": "GWIVV auf Gaming- und Videoplattformen",
+        "illustrationAlt": "Illustration von GWIVV in taktischer Ausrüstung mit Gewehr",
         "scrollCue": "Nach unten scrollen",
-        "limitSuffix": "Begrenzt: {count} KI-Aufrufe / Tag",
-        "tech": {
-            "next": "Next.js 16+",
-            "nextSub": "App Router",
-            "ts": "TypeScript",
-            "tsSub": "Sicherheit und Stabilität",
-            "mui": "Material UI 9+",
-            "muiSub": "Moderne Komponenten",
-            "or": "OpenRouter",
-            "orSub": "Kostenlose KI"
-        }
+        "limitSuffix": "Begrenzt: {count} KI-Aufrufe / Tag"
+    },
+    "stats": {
+        "title": "Spielerstatistiken",
+        "premier": "Premier",
+        "unranked": "Keine aktuelle Wertung",
+        "leetifyRating": "Leetify Rating",
+        "aim": "Aim",
+        "winrate": "Siegquote",
+        "matches": "Matches",
+        "faceitValue": "Level {level} · {elo} ELO",
+        "faceitAsOf": "Stand {date}",
+        "loading": "Statistiken werden geladen…",
+        "unavailable": "Statistiken sind derzeit nicht verfügbar.",
+        "fetchedAt": "Von Leetify gelesen am {time}",
+        "credit": "Data Provided by Leetify",
+        "viewOnLeetify": "View on Leetify"
+    },
+    "clips": {
+        "title": "Neueste Clips",
+        "play": "Clip {title} abspielen",
+        "source": "Auf Leetify ansehen"
     },
     "showcase": {
         "title": "Komponentenbibliothek",
@@ -127,47 +137,11 @@
             "duration": "10 min"
         }
     },
-    "features": {
-        "multilang": "Mehrsprachig",
-        "multilangSub": "FR, EN, ES, DE, IT, PT",
-        "theme": "Heller / dunkler Modus",
-        "themeSub": "Entsprechend deinem System",
-        "cookies": "Cookies",
-        "cookiesSub": "Einwilligungsverwaltung",
-        "storage": "Lokaler Speicher",
-        "storageSub": "Deine Daten bleiben lokal",
-        "security": "Gesichert",
-        "securitySub": "Bot-Schutz"
-    },
-    "faq": {
-        "title": "Häufig gestellte Fragen",
-        "items": [
-            {
-                "q": "Was ist Axons?",
-                "a": "Ein Next.js-16-/React-19-Boilerplate mit Fokus auf SEO und KI, deploybar auf Netlify, mit isolierter Komponentenbibliothek (Material UI) und OpenRouter-Anbindung über einen Route Handler."
-            },
-            {
-                "q": "Ist die KI kostenpflichtig?",
-                "a": "Das Standardmodell ist ein kostenloses OpenRouter-Modell (openrouter/free). Ein Tageskontingent begrenzt Browser-Aufrufe; Fehler werden als Toasts angezeigt, damit du einfach erneut versuchen kannst."
-            },
-            {
-                "q": "Gehen meine Daten irgendwohin?",
-                "a": "Nein. Thema, Cookie-Einwilligung und Tageszähler werden lokal gespeichert (Cookie + localStorage). Der OpenRouter-Schlüssel bleibt serverseitig und wird niemals dem Browser übermittelt."
-            },
-            {
-                "q": "Wie füge ich eine neue KI-Aktion hinzu?",
-                "a": "Lege eine Datei in capabilities/agents/ ab (oder einen Ordner capabilities/skills/<id>/) und rufe POST /api/run mit { prompt, agentId?, skillId?, inputs? } auf. Die Route bleibt schlank: Komposition, Kontingent, Timeout und Fehler liegen in lib/ai (run → composeRun + runPrompt)."
-            },
-            {
-                "q": "Ist die Website für Google indexierbar?",
-                "a": "Ja: Server-Rendering, lokalisierte URLs, Metadaten, hreflang, XML-Sitemap und HTML-Sitemap sind enthalten."
-            }
-        ]
-    },
     "footer": {
-        "tagline": "Deine Basis für moderne KI-Apps",
+        "tagline": "Counter-Strike-2-Spieler. Geduld ist eine Waffe.",
         "rights": "© {year} {site}. Alle Rechte vorbehalten.",
-        "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter"
+        "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter",
+        "notice": "Private, nicht kommerzielle Fan-Website, erstellt als Demo des <axons>Axons</axons>-Boilerplates. Counter-Strike ist eine Marke der Valve Corporation. Die Illustration ist Fan-Art: Die Figuren gehören ihren jeweiligen Rechteinhabern."
     },
     "cookie": {
         "message": "Diese Website verwendet Cookies und Dienste Dritter, die deine Einwilligung erfordern, für die unten genannten Zwecke. Du kannst sie akzeptieren oder ablehnen.",
@@ -234,6 +208,14 @@
                     "body": [
                         "Alle Elemente der Website (Struktur, Texte, Grafiken, Logos, Icons, Quellcode, Komponenten) sind durch Urheberrecht, Markenrecht und Designrecht geschützt.",
                         "Jede Vervielfältigung, Darstellung, Änderung, Veröffentlichung oder Anpassung, ganz oder teilweise, auf irgendeinem Weg, ohne vorherige schriftliche Zustimmung des Herausgebers, ist verboten und stellt eine Rechtsverletzung dar."
+                    ]
+                },
+                {
+                    "heading": "Über diese Website",
+                    "body": [
+                        "GWIVV CS2 ist eine private, nicht kommerzielle Website über einen Counter-Strike-2-Spieler. Sie dient außerdem als Demonstration des Axons-Boilerplates (https://github.com/YoannB/axons). Sie enthält weder Werbung noch Sponsoring noch kostenpflichtige Inhalte.",
+                        "Counter-Strike und Counter-Strike 2 sind Marken der Valve Corporation. Diese Website steht in keiner Verbindung zu Valve, Steam, FACEIT, Leetify, Allstar, Twitch oder YouTube und wird von ihnen nicht unterstützt; ihre Namen kennzeichnen lediglich die Links zu den öffentlichen Profilen des Spielers.",
+                        "Die Illustration im Kopfbereich ist Fan-Art. Die Figuren, an die sie erinnern mag, gehören ihren jeweiligen Rechteinhabern; es werden keine Rechte an ihnen beansprucht. Ein Rechteinhaber, der dieser Nutzung widerspricht, kann den Herausgeber kontaktieren (Kontaktdaten oben): Das Element wird umgehend entfernt."
                     ]
                 },
                 {
@@ -474,7 +456,7 @@
     },
     "meta": {
         "home": {
-            "title": "GWIVV — Counter-Strike-2-Spieler",
+            "title": "GWIVV CS2 — Counter-Strike-2-Spieler",
             "description": "GWIVV, Counter-Strike-2-Spieler: Profil, Statistiken, Highlights, Loadout und das Minispiel Sage Range."
         }
     },

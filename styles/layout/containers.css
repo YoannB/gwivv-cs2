@@ -3,18 +3,16 @@
 .page-shell,
 .section,
 .hero,
-.hero__grid,
+.hero__inner,
+.home-sections,
+.clips,
+.stats,
 .hero__copy,
-.hero__demo,
-.showcase,
 .card,
 .seo,
 .seo__video-block,
 .seo__articles,
 .seo__articles-grid,
-.valueprops,
-.faq,
-.feature-strip,
 .static-page {
     min-width: 0;
 }

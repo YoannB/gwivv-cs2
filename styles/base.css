@@ -32,6 +32,24 @@ body {
 main {
     flex: 1 0 auto;
 }
+/* Textured site background (dark theme): a fixed layer behind the content, not
+   background-attachment: fixed (ignored by iOS). 16:10 by default, 16:9 on wider screens. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url("/images/bg-desktop-16x10.webp") center / cover no-repeat;
+}
+@media (min-aspect-ratio: 16/9) {
+    body::before {
+        background-image: url("/images/bg-desktop-16x9.webp");
+    }
+}
+[data-theme="light"] body::before {
+    display: none;
+}
 .site-header,
 .site-footer {
     flex-shrink: 0;

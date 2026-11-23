@@ -8,8 +8,6 @@ export const CLIENT_MESSAGES: readonly string[] = [
     "common",
     "cookie",
     "errors",
-    "faq",
-    "features",
     "footer",
     "hero",
     "nav",

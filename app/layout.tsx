@@ -3,6 +3,7 @@ import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME, SITE_URL, SPLASH } from 
 import { LOCALES } from "@/i18n/locales";
 import { buildBootScript } from "@/lib/boot-script";
 import { getLocale } from "next-intl/server";
+import { Barlow_Condensed, Permanent_Marker } from "next/font/google";
 import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -27,13 +28,23 @@ export const metadata = {
 // (the list is serialized from i18n/locales.ts at build time).
 const bootScript = buildBootScript(LOCALES);
 
+// Display fonts, self-hosted at build time (no request to Google at runtime): a condensed face for
+// headings and statistics, a brush face for the GWIVV word and the signature (styles/tokens.css).
+const displayFont = Barlow_Condensed({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-condensed" });
+const brushFont = Permanent_Marker({ subsets: ["latin"], weight: "400", variable: "--font-marker" });
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
     // getLocale() reads the locale resolved from the request context (set by middleware.ts / next-intl),
     // including at static build time. Fallback: 'en' (the routing defaultLocale).
     const locale = (await getLocale()) ?? "en";
 
     return (
-        <html lang={locale} data-theme="dark" suppressHydrationWarning>
+        <html
+            lang={locale}
+            data-theme="dark"
+            className={`${displayFont.variable} ${brushFont.variable}`}
+            suppressHydrationWarning
+        >
             <head>
                 <Script
                     id="boot-script"

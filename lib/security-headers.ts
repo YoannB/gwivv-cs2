@@ -81,7 +81,7 @@ export function buildSecurityHeaders(opts: {
                 ["style-src 'self' 'unsafe-inline'", ...disqus("style")].join(" "),
                 ["img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com", ...disqus("img")].join(" "),
                 [
-                    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com",
+                    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https://dinkem.gg",
                     ...disqus("frame"),
                 ].join(" "),
                 [
