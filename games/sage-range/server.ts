@@ -9,4 +9,5 @@ export {
     type BoardEntry,
     type Boards,
 } from "./core/leaderboard";
-export { parseSubmission, verify, type SubmissionPayload } from "./core/submission";
+export { runId } from "./core/share";
+export { isHuman, parseSubmission, verify, type SubmissionPayload } from "./core/submission";

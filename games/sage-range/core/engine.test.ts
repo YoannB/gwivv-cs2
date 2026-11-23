@@ -16,6 +16,7 @@ function target(over: Partial<Target> = {}): Target {
         size: 50,
         bodyA: 31,
         bodyB: 50,
+        corner: 11,
         headR: 21,
         headDy: 69,
         travel: 0,
@@ -23,6 +24,7 @@ function target(over: Partial<Target> = {}): Target {
         phase: "open",
         phaseStart: 0,
         guardTicks: 30,
+        holdTicks: 0,
         openTicks: 60,
         openedAt: 0,
         aimedAt: null,
@@ -86,6 +88,14 @@ describe("hitZone", () => {
         expect(hitZone(t, HEAD.x, HEAD.y)).toBe("head");
         expect(hitZone(t, BODY.x, BODY.y)).toBe("body");
         expect(hitZone(t, 800 + 40, 600)).toBeNull();
+        expect(hitZone(t, 800, 600 + 51)).toBeNull();
+    });
+
+    it("follows the rounded corners of the torso", () => {
+        const t = target();
+        expect(hitZone(t, 800 + 30, 600 + 49)).toBeNull();
+        expect(hitZone(t, 800 - 25, 600 - 45)).toBe("body");
+        expect(hitZone(t, 800 + 30, 600)).toBe("body");
     });
 });
 
@@ -240,6 +250,39 @@ describe("target phases", () => {
         expect(state.targets).toHaveLength(1);
         run(1);
         expect(state.targets).toHaveLength(0);
+    });
+
+    it("waits a hidden hold once the ring is full", () => {
+        const t = target({ phase: "guard", phaseStart: 0, guardTicks: 2, holdTicks: 3, openedAt: null });
+        const state = arena(t);
+        for (let i = 0; i < 5; i += 1) stepGame(state, []);
+        expect(t.phase).toBe("guard");
+        stepGame(state, []);
+        expect(t.phase).toBe("open");
+        expect(state.lastOpenTick).toBe(5);
+    });
+
+    it("staggers openings and caps the open windows", () => {
+        const ready = () => target({ phase: "guard", phaseStart: 0, guardTicks: 0, openedAt: null });
+        const a = ready();
+        const b = ready();
+        const state = arena(a, b);
+        stepGame(state, []);
+        expect([a.phase, b.phase]).toEqual(["open", "guard"]);
+        // Regular allows one window at a time: b waits for a to close, then for the gap.
+        for (let i = 0; i < 59; i += 1) stepGame(state, []);
+        expect(b.phase).toBe("guard");
+        const elite = createGame({ difficulty: "elite", seed: 1 });
+        elite.nextSpawnTick = Number.POSITIVE_INFINITY;
+        const c = ready();
+        const d = ready();
+        elite.targets = [c, d];
+        stepGame(elite, []);
+        expect(d.phase).toBe("guard");
+        for (let i = 1; i < DIFFICULTY_CONFIGS.elite.openGapTicks; i += 1) stepGame(elite, []);
+        expect(d.phase).toBe("guard");
+        stepGame(elite, []);
+        expect(d.phase).toBe("open");
     });
 
     it("rewards leaving a decoy alone", () => {

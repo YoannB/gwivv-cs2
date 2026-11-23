@@ -14,9 +14,14 @@
     --sr-font-display: "Arial Narrow", system-ui, sans-serif;
     --sr-font-brush: var(--sr-font-display);
     --sr-font-text: system-ui, sans-serif;
+    /* The frame around every screen: always dark (the game is), whatever the host's theme. */
+    --sr-frame-bg:
+        radial-gradient(ellipse at 85% 0%, rgba(249, 115, 22, 0.1), transparent 55%),
+        linear-gradient(160deg, rgba(25, 25, 25, 0.94), rgba(12, 12, 12, 0.95));
+    --sr-frame-border: rgba(249, 115, 22, 0.28);
+    --sr-radius: 20px;
 
-    min-height: 80vh;
-    background: radial-gradient(ellipse at 70% 0%, rgba(249, 115, 22, 0.12), transparent 60%), var(--sr-black);
+    padding: 32px 0 64px;
     color: var(--sr-text);
     font-family: var(--sr-font-text);
 }
@@ -42,7 +47,11 @@ html:has(.sr[data-phase="play"]) {
 .sr-screen {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 48px 24px 72px;
+    padding: 44px 44px 48px;
+    border: 1px solid var(--sr-frame-border);
+    border-radius: var(--sr-radius);
+    background: var(--sr-frame-bg);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     animation: sr-rise 0.45s ease-out both;
 }
 
@@ -519,8 +528,11 @@ html:has(.sr[data-phase="play"]) {
 .sr-mobile {
     display: grid;
     justify-items: center;
-    padding: 56px 16px 72px;
+    padding: 40px 20px 44px;
     text-align: center;
+}
+.sr-touch .sr-results {
+    margin-bottom: 20px;
 }
 .sr-mobile .sr-icon {
     width: 56px;
@@ -532,6 +544,9 @@ html:has(.sr[data-phase="play"]) {
 }
 
 @media (max-width: 860px) {
+    .sr-screen {
+        padding: 28px 18px 32px;
+    }
     .sr-start {
         grid-template-columns: minmax(0, 1fr);
     }

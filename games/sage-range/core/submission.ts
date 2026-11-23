@@ -92,6 +92,18 @@ export function replay(difficulty: Difficulty, seed: number, shots: readonly Sho
     return state;
 }
 
+/**
+ * Below this average reaction time (over enough targets) a session is not human: a target opens
+ * after a hidden hold, so its opening cannot be anticipated. The fastest human reactions are ~150 ms.
+ */
+export const MIN_HUMAN_REACTION_MS = 130;
+const MIN_REACTION_SAMPLES = 5;
+
+export function isHuman(summary: Summary): boolean {
+    if (summary.reactionMs === null || summary.kills < MIN_REACTION_SAMPLES) return true;
+    return summary.reactionMs >= MIN_HUMAN_REACTION_MS;
+}
+
 /** Replays a parsed submission and returns its verified summary. */
 export function verify(submission: Submission): Summary {
     return summarize(replay(submission.difficulty, submission.seed, submission.shots));

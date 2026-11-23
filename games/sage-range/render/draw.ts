@@ -163,11 +163,25 @@ function raise(target: Target, tick: number): number {
     return 1;
 }
 
+/** Generic range silhouette (bust): torso, neck, head. Matches the engine's hit zones. */
 function silhouette(ctx: CanvasRenderingContext2D, t: Target): void {
     ctx.beginPath();
-    ctx.ellipse(t.x, t.y, t.bodyA, t.bodyB, 0, 0, Math.PI * 2);
+    ctx.roundRect(t.x - t.bodyA, t.y - t.bodyB, t.bodyA * 2, t.bodyB * 2, t.corner);
+    const neck = t.headR * 0.55;
+    ctx.rect(t.x - neck, t.y - t.headDy, neck * 2, t.headDy - t.bodyB + 2);
     ctx.moveTo(t.x + t.headR, t.y - t.headDy);
     ctx.arc(t.x, t.y - t.headDy, t.headR, 0, Math.PI * 2);
+}
+
+/** Inner details: a vest plate on the torso and a band across the head. */
+function gear(ctx: CanvasRenderingContext2D, t: Target, color: string): void {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, t.size * 0.05);
+    ctx.beginPath();
+    ctx.roundRect(t.x - t.bodyA * 0.55, t.y - t.bodyB * 0.7, t.bodyA * 1.1, t.bodyB * 1.2, t.corner * 0.5);
+    ctx.moveTo(t.x - t.headR, t.y - t.headDy - t.headR * 0.15);
+    ctx.lineTo(t.x + t.headR, t.y - t.headDy - t.headR * 0.15);
+    ctx.stroke();
 }
 
 function drawTarget(ctx: CanvasRenderingContext2D, t: Target, tick: number, nowMs: number): void {
@@ -215,11 +229,7 @@ function drawTarget(ctx: CanvasRenderingContext2D, t: Target, tick: number, nowM
         ctx.arc(t.x, t.y - t.headDy, t.headR * 0.55, 0, Math.PI * 2);
         ctx.fillStyle = PALETTE.amber;
         ctx.fill();
-        ctx.strokeStyle = "rgba(16,16,16,0.55)";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.ellipse(t.x, t.y, t.bodyA * 0.55, t.bodyB * 0.55, 0, 0, Math.PI * 2);
-        ctx.stroke();
+        gear(ctx, t, "rgba(16,16,16,0.5)");
         ctx.globalAlpha = 1;
         if (t.hp === 1) drawCrack(ctx, t);
     } else {
@@ -241,6 +251,7 @@ function drawTarget(ctx: CanvasRenderingContext2D, t: Target, tick: number, nowM
         ctx.strokeStyle = PALETTE.grey;
         ctx.lineWidth = 2;
         ctx.stroke();
+        gear(ctx, t, "rgba(136,136,136,0.55)");
         // No-shoot mark on the chest.
         const r = t.bodyA * 0.55;
         ctx.strokeStyle = PALETTE.offWhite;
@@ -255,8 +266,10 @@ function drawTarget(ctx: CanvasRenderingContext2D, t: Target, tick: number, nowM
 
     // Timing ring: fills while the target holds (wait), then drains while it is open (shoot).
     if (t.phase === "guard" && revealed) {
-        const k = Math.min(1, (tick - t.phaseStart) / t.guardTicks);
-        ring(ctx, t, k, valid ? "rgba(255,191,85,0.55)" : "rgba(136,136,136,0.4)", true);
+        // Full ring = ready, but the opening itself comes after a hidden hold: wait for it.
+        const k = Math.min(1, (tick - t.phaseStart) / Math.max(1, t.guardTicks));
+        const a = k < 1 ? 0.55 : 0.45 + Math.sin(nowMs / 140) * 0.2;
+        ring(ctx, t, k, valid ? `rgba(255,191,85,${a})` : "rgba(136,136,136,0.4)", true);
     } else if (open) {
         const k = 1 - (tick - t.phaseStart) / t.openTicks;
         const pulse = 0.75 + Math.sin(nowMs / 60) * 0.25;

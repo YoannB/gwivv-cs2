@@ -100,7 +100,7 @@
             "rulesTitle": "Rules of engagement",
             "ruleValid": "Orange target: hostile. Two body hits or one head hit takes it down.",
             "ruleDecoy": "Grey target with the crossed mark: a decoy. Shooting it costs dearly; letting it go scores.",
-            "ruleWait": "A target is only open once its ring has filled. A shot before that is a penalty, and some decoys only reveal themselves at that moment.",
+            "ruleWait": "A full ring means ready, not open: the target opens a moment later, at an unpredictable instant. A shot before that is a penalty, and some decoys only reveal themselves when they open.",
             "ruleHead": "Speed and head hits multiply your points; a streak of right decisions multiplies them again.",
             "difficultyTitle": "Difficulty",
             "difficulty": {
@@ -109,9 +109,9 @@
                 "elite": "Elite"
             },
             "difficultyHint": {
-                "recruit": "Large still targets, a one-second window. To learn the rules.",
-                "regular": "Smaller targets that strafe, a few disguised decoys, a 0.75 s window.",
-                "elite": "Tiny strafing targets, many disguised decoys, half a second to strike. Built to be very hard."
+                "recruit": "Large still targets, one window at a time, 1.2 s to strike. To learn the rules.",
+                "regular": "Smaller targets that strafe, a few disguised decoys, under a second to strike.",
+                "elite": "Small strafing targets, many disguised decoys, two windows can overlap, 0.7 s to strike. Built to be very hard, yet within human reach."
             },
             "start": "Start training",
             "controlsTitle": "Controls",
@@ -171,7 +171,14 @@
             "submitError": "The score could not be saved. Try again in a moment.",
             "mobileTitle": "Built for a mouse",
             "mobileText": "Sage Range is about precise aim and timing; a fingertip hides the target it touches. Open this page on a computer with a mouse to train.",
-            "mobileCopy": "Copy the link"
+            "mobileCopy": "Copy the link",
+            "submitDuplicate": "This session is already on the leaderboard.",
+            "sharedTitle": "Shared session",
+            "sharedBy": "Played by {name}.",
+            "sharedVerified": "Replayed and verified in your browser.",
+            "beatIt": "Beat this score",
+            "backToRange": "Back to the range",
+            "sharedInvalid": "This link does not hold a valid session (it may be cut, or made under older rules)."
         }
     },
     "showcase": {

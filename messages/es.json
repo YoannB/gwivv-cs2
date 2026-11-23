@@ -100,7 +100,7 @@
             "rulesTitle": "Reglas de enfrentamiento",
             "ruleValid": "Blanco naranja: hostil. Dos impactos en el cuerpo o uno en la cabeza lo derriban.",
             "ruleDecoy": "Blanco gris tachado: un señuelo. Dispararle cuesta caro; dejarlo pasar suma.",
-            "ruleWait": "Un blanco solo está abierto cuando su anillo se ha llenado. Disparar antes penaliza, y algunos señuelos solo se revelan en ese instante.",
+            "ruleWait": "Anillo lleno significa listo, no abierto: el blanco se abre un instante después, en un momento imprevisible. Disparar antes penaliza, y algunos señuelos solo se revelan al abrirse.",
             "ruleHead": "La rapidez y los disparos a la cabeza multiplican tus puntos; una racha de buenas decisiones los multiplica aún más.",
             "difficultyTitle": "Dificultad",
             "difficulty": {
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Blancos grandes e inmóviles, un segundo para disparar. Para aprender las reglas.",
-                "regular": "Blancos más pequeños que se mueven, algunos señuelos disfrazados, 0,75 s para disparar.",
-                "elite": "Blancos diminutos en movimiento, muchos señuelos disfrazados, medio segundo para golpear. Pensado para ser muy difícil."
+                "recruit": "Blancos grandes e inmóviles, una ventana cada vez, 1,2 s para disparar. Para aprender las reglas.",
+                "regular": "Blancos más pequeños que se mueven, algunos señuelos disfrazados, menos de un segundo para disparar.",
+                "elite": "Blancos pequeños en movimiento, muchos señuelos disfrazados, dos ventanas pueden coincidir, 0,7 s para golpear. Muy difícil, pero al alcance humano."
             },
             "start": "Empezar el entrenamiento",
             "controlsTitle": "Controles",
@@ -171,7 +171,14 @@
             "submitError": "No se pudo guardar la puntuación. Inténtalo de nuevo en un momento.",
             "mobileTitle": "Pensado para el ratón",
             "mobileText": "Sage Range se basa en una puntería precisa y el timing; el dedo tapa el blanco que toca. Abre esta página en un ordenador con ratón para entrenar.",
-            "mobileCopy": "Copiar el enlace"
+            "mobileCopy": "Copiar el enlace",
+            "submitDuplicate": "Esta sesión ya está en la clasificación.",
+            "sharedTitle": "Sesión compartida",
+            "sharedBy": "Jugada por {name}.",
+            "sharedVerified": "Repetida y verificada en tu navegador.",
+            "beatIt": "Supera esta puntuación",
+            "backToRange": "Volver a la galería",
+            "sharedInvalid": "Este enlace no contiene una sesión válida (puede estar cortado o venir de reglas antiguas)."
         }
     },
     "showcase": {

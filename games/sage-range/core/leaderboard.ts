@@ -16,6 +16,8 @@ export interface BoardEntry {
     readonly timeToDamageMs: number | null;
     /** Calendar day of the session, YYYY-MM-DD (UTC). */
     readonly day: string;
+    /** Fingerprint of the session (core/share.ts runId): a run ranks once, under one tag. */
+    readonly run: string;
 }
 
 export type Boards = Readonly<Record<Difficulty, readonly BoardEntry[]>>;
@@ -28,6 +30,7 @@ export function emptyBoards(): Boards {
 }
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
+const RUN = /^[0-9a-f]{8}$/;
 const isRatio = (v: unknown): v is number => typeof v === "number" && v >= 0 && v <= 1;
 
 function parseEntry(raw: unknown): BoardEntry | null {
@@ -40,6 +43,7 @@ function parseEntry(raw: unknown): BoardEntry | null {
     const ttd = e.timeToDamageMs;
     if (ttd !== null && (typeof ttd !== "number" || ttd < 0)) return null;
     if (typeof e.day !== "string" || !DAY.test(e.day)) return null;
+    if (typeof e.run !== "string" || !RUN.test(e.run)) return null;
     return {
         name: name.name,
         score: e.score,
@@ -47,6 +51,7 @@ function parseEntry(raw: unknown): BoardEntry | null {
         headshotRate: e.headshotRate,
         timeToDamageMs: ttd,
         day: e.day,
+        run: e.run,
     };
 }
 
@@ -74,7 +79,7 @@ export function qualifies(board: readonly BoardEntry[], score: number): boolean 
     return score > board[board.length - 1].score;
 }
 
-export function entryFrom(name: string, summary: Summary, day: string): BoardEntry {
+export function entryFrom(name: string, summary: Summary, day: string, run: string): BoardEntry {
     return {
         name,
         score: summary.score,
@@ -82,26 +87,36 @@ export function entryFrom(name: string, summary: Summary, day: string): BoardEnt
         headshotRate: summary.headshotRate,
         timeToDamageMs: summary.timeToDamageMs,
         day,
+        run,
     };
 }
 
 /**
  * Inserts an entry. One line per name and difficulty: a name that already holds a better or equal
  * score keeps it (rank of that line returned), a better score replaces it. Rank is 1-based, null
- * when the entry does not make the board.
+ * when the entry does not make the board. A run already on any board (a shared link replayed
+ * under another tag) is refused as a duplicate.
  */
 export function insertEntry(
     boards: Boards,
     difficulty: Difficulty,
     entry: BoardEntry,
-): { boards: Boards; rank: number | null; changed: boolean } {
+): { boards: Boards; rank: number | null; changed: boolean; duplicate: boolean } {
     const board = boards[difficulty];
     const key = entry.name.toLowerCase();
     const own = board.find((e) => e.name.toLowerCase() === key);
     if (own && own.score >= entry.score) {
-        return { boards, rank: board.indexOf(own) + 1, changed: false };
+        return { boards, rank: board.indexOf(own) + 1, changed: false, duplicate: false };
     }
-    if (!own && !qualifies(board, entry.score)) return { boards, rank: null, changed: false };
+    if (Object.values(boards).some((list) => list.some((e) => e.run === entry.run))) {
+        return { boards, rank: null, changed: false, duplicate: true };
+    }
+    if (!own && !qualifies(board, entry.score)) return { boards, rank: null, changed: false, duplicate: false };
     const next = sortBoard([...board.filter((e) => e !== own), entry]).slice(0, BOARD_SIZE);
-    return { boards: { ...boards, [difficulty]: next }, rank: next.indexOf(entry) + 1, changed: true };
+    return {
+        boards: { ...boards, [difficulty]: next },
+        rank: next.indexOf(entry) + 1,
+        changed: true,
+        duplicate: false,
+    };
 }

@@ -100,7 +100,7 @@
             "rulesTitle": "Règles d'engagement",
             "ruleValid": "Cible orange : hostile. Deux impacts au corps ou un à la tête la neutralisent.",
             "ruleDecoy": "Cible grise barrée : un leurre. Tirer dessus coûte cher ; la laisser passer rapporte.",
-            "ruleWait": "Une cible n'est ouverte qu'une fois son anneau rempli. Tirer avant est pénalisé, et certains leurres ne se révèlent qu'à cet instant.",
+            "ruleWait": "Un anneau plein signifie prête, pas ouverte : la cible s'ouvre un instant plus tard, à un moment imprévisible. Tirer avant est pénalisé, et certains leurres ne se révèlent qu'à l'ouverture.",
             "ruleHead": "La vitesse et les tirs à la tête multiplient vos points ; une série de bonnes décisions les multiplie encore.",
             "difficultyTitle": "Difficulté",
             "difficulty": {
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Grandes cibles immobiles, une seconde pour tirer. Pour apprendre les règles.",
-                "regular": "Cibles plus petites qui se déplacent, quelques leurres déguisés, 0,75 s pour tirer.",
-                "elite": "Cibles minuscules en mouvement, beaucoup de leurres déguisés, une demi-seconde pour frapper. Conçu pour être très dur."
+                "recruit": "Grandes cibles immobiles, une fenêtre à la fois, 1,2 s pour tirer. Pour apprendre les règles.",
+                "regular": "Cibles plus petites qui se déplacent, quelques leurres déguisés, moins d'une seconde pour tirer.",
+                "elite": "Petites cibles en mouvement, beaucoup de leurres déguisés, deux fenêtres peuvent se chevaucher, 0,7 s pour frapper. Très dur, mais à portée humaine."
             },
             "start": "Lancer l'entraînement",
             "controlsTitle": "Commandes",
@@ -171,7 +171,14 @@
             "submitError": "Le score n'a pas pu être enregistré. Réessayez dans un instant.",
             "mobileTitle": "Conçu pour la souris",
             "mobileText": "Sage Range repose sur une visée précise et le timing ; le doigt cache la cible qu'il touche. Ouvrez cette page sur un ordinateur avec une souris pour vous entraîner.",
-            "mobileCopy": "Copier le lien"
+            "mobileCopy": "Copier le lien",
+            "submitDuplicate": "Cette session est déjà au classement.",
+            "sharedTitle": "Session partagée",
+            "sharedBy": "Jouée par {name}.",
+            "sharedVerified": "Rejouée et vérifiée dans votre navigateur.",
+            "beatIt": "Battre ce score",
+            "backToRange": "Retour au stand",
+            "sharedInvalid": "Ce lien ne contient pas de session valide (il est peut-être tronqué, ou issu d'anciennes règles)."
         }
     },
     "showcase": {

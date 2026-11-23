@@ -34,8 +34,10 @@ export interface Target {
     readonly y: number;
     vx: number;
     readonly size: number;
+    /** Torso: a rounded rectangle, half-width bodyA (shoulders), half-height bodyB, corner radius. */
     readonly bodyA: number;
     readonly bodyB: number;
+    readonly corner: number;
     readonly headR: number;
     /** Head centre sits this far above the body centre. */
     readonly headDy: number;
@@ -43,7 +45,10 @@ export interface Target {
     hp: number;
     phase: TargetPhase;
     phaseStart: number;
+    /** Visible hold: the ring fills over guardTicks. */
     readonly guardTicks: number;
+    /** Hidden hold after the ring is full: the opening cannot be anticipated, only reacted to. */
+    readonly holdTicks: number;
     readonly openTicks: number;
     openedAt: number | null;
     aimedAt: number | null;
@@ -86,6 +91,8 @@ export interface GameState {
     streak: number;
     bestStreak: number;
     lastShotTick: number;
+    /** Tick of the last opening (openings are staggered so every window stays humanly reachable). */
+    lastOpenTick: number;
     /** Tick of the last penalty (decoy, early shot), for the HUD's penalty flash. */
     penaltyTick: number;
     stats: GameStats;
@@ -127,6 +134,7 @@ export function createGame({ difficulty, seed, durationTicks }: GameOptions): Ga
         streak: 0,
         bestStreak: 0,
         lastShotTick: -FIRE_COOLDOWN_TICKS,
+        lastOpenTick: -1_000_000,
         penaltyTick: -Infinity,
         stats: {
             shots: 0,
@@ -163,11 +171,13 @@ export function hitZone(target: Target, x: number, y: number): "head" | "body" |
     const dx = x - target.x;
     const hy = y - (target.y - target.headDy);
     if (dx * dx + hy * hy <= target.headR * target.headR) return "head";
-    const by = y - target.y;
-    const a2 = target.bodyA * target.bodyA;
-    const b2 = target.bodyB * target.bodyB;
-    if (dx * dx * b2 + by * by * a2 <= a2 * b2) return "body";
-    return null;
+    const ax = Math.abs(dx);
+    const ay = Math.abs(y - target.y);
+    if (ax > target.bodyA || ay > target.bodyB) return null;
+    const cx = ax - (target.bodyA - target.corner);
+    const cy = ay - (target.bodyB - target.corner);
+    if (cx > 0 && cy > 0 && cx * cx + cy * cy > target.corner * target.corner) return null;
+    return "body";
 }
 
 /**
@@ -294,10 +304,11 @@ function advanceTargets(state: GameState, events: GameEvent[]): void {
         if (target.phase === "emerge" && elapsed >= EMERGE_TICKS) {
             target.phase = "guard";
             target.phaseStart = state.tick;
-        } else if (target.phase === "guard" && elapsed >= target.guardTicks) {
+        } else if (target.phase === "guard" && elapsed >= target.guardTicks + target.holdTicks && canOpen(state)) {
             target.phase = "open";
             target.phaseStart = state.tick;
             target.openedAt = state.tick;
+            state.lastOpenTick = state.tick;
         } else if (target.phase === "open") {
             if (elapsed >= target.openTicks) expire(state, target, events);
             else strafe(target);
@@ -307,6 +318,12 @@ function advanceTargets(state: GameState, events: GameEvent[]): void {
         kept.push(target);
     }
     state.targets = kept;
+}
+
+/** One window at a time per the difficulty, never two openings closer than openGapTicks. */
+function canOpen(state: GameState): boolean {
+    if (state.tick - state.lastOpenTick < state.config.openGapTicks) return false;
+    return state.targets.filter((t) => t.phase === "open").length < state.config.maxOpen;
 }
 
 function strafe(target: Target): void {
@@ -347,7 +364,7 @@ function spawn(state: GameState): void {
     const rng = state.rng;
     const rail = nextInt(rng, 0, RAILS.length - 1);
     const size = Math.round((cfg.size * RAILS[rail].scale) / 100);
-    const bodyA = Math.round(size * 0.62);
+    const bodyA = Math.round(size * 0.7);
     const speed = nextInt(rng, cfg.speed[0], cfg.speed[1]);
     const travel = speed > 0 ? cfg.travel : 0;
     const half = bodyA + travel;
@@ -371,13 +388,15 @@ function spawn(state: GameState): void {
             size,
             bodyA,
             bodyB: size,
-            headR: Math.round(size * 0.42),
-            headDy: size + Math.round(size * 0.38),
+            corner: Math.round(size * 0.35),
+            headR: Math.round(size * 0.38),
+            headDy: size + Math.round(size * 0.48),
             travel,
             hp: TARGET_HP,
             phase: "emerge",
             phaseStart: state.tick,
             guardTicks: nextInt(rng, cfg.guardTicks[0], cfg.guardTicks[1]),
+            holdTicks: nextInt(rng, cfg.holdTicks[0], cfg.holdTicks[1]),
             openTicks: cfg.openTicks,
             openedAt: null,
             aimedAt: null,

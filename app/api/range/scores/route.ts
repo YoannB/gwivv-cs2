@@ -1,4 +1,4 @@
-import { entryFrom, parseSubmission, verify } from "@/games/sage-range/server";
+import { entryFrom, isHuman, parseSubmission, runId, verify } from "@/games/sage-range/server";
 import { clientIpFrom, hitRateLimit } from "@/lib/ai/rate-limit";
 import { addEntry, readBoards } from "@/lib/range-scores";
 import { NextResponse } from "next/server";
@@ -38,12 +38,21 @@ export async function POST(req: Request) {
         return reply({ status: "error", error: parsed.reason === "name" ? "name" : "rejected" }, 400);
     }
     const summary = verify(parsed.submission);
+    if (!isHuman(summary)) return reply({ status: "error", error: "rejected" }, 400);
     const day = new Date().toISOString().slice(0, 10);
     try {
-        const { boards, rank } = await addEntry(
+        const { submission } = parsed;
+        const run = runId({
+            difficulty: submission.difficulty,
+            seed: submission.seed,
+            shots: submission.shots,
+            name: "",
+        });
+        const { boards, rank, duplicate } = await addEntry(
             parsed.submission.difficulty,
-            entryFrom(parsed.submission.name, summary, day),
+            entryFrom(submission.name, summary, day, run),
         );
+        if (duplicate) return reply({ status: "error", error: "duplicate" }, 409);
         return reply({ status: "ok", rank, score: summary.score, boards });
     } catch (error) {
         console.error(`[range] board write failed — ${String(error)}`);

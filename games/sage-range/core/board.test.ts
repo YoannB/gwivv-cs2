@@ -13,7 +13,7 @@ import {
     type BoardEntry,
 } from "./leaderboard";
 import { foldName, isBlockedName, validateName } from "./names";
-import { parseShots, parseSubmission, replay, toPayload, verify } from "./submission";
+import { MIN_HUMAN_REACTION_MS, isHuman, parseShots, parseSubmission, replay, toPayload, verify } from "./submission";
 import { summarize } from "./summary";
 
 describe("names", () => {
@@ -54,6 +54,7 @@ describe("names", () => {
     });
 });
 
+let runSeq = 0;
 const entry = (name: string, score: number, day = "2026-11-20"): BoardEntry => ({
     name,
     score,
@@ -61,6 +62,7 @@ const entry = (name: string, score: number, day = "2026-11-20"): BoardEntry => (
     headshotRate: 0.25,
     timeToDamageMs: 320,
     day,
+    run: (runSeq++).toString(16).padStart(8, "0"),
 });
 
 describe("parseBoards", () => {
@@ -85,6 +87,7 @@ describe("parseBoards", () => {
                 { ...entry("ttd2", 1), timeToDamageMs: "3" },
                 { ...entry("day", 1), day: "yesterday" },
                 { ...entry("day2", 1), day: 3 },
+                { ...entry("run", 1), run: "xyz" },
                 { ...entry("slow", 7), timeToDamageMs: null },
                 entry("late", 9, "2026-11-21"),
                 entry("early", 9, "2026-11-19"),
@@ -122,7 +125,7 @@ describe("insertEntry", () => {
 
     it("keeps a name's better score, case-insensitively", () => {
         const result = insertEntry(base, "elite", entry("alpha", 250));
-        expect(result).toEqual({ boards: base, rank: 1, changed: false });
+        expect(result).toEqual({ boards: base, rank: 1, changed: false, duplicate: false });
     });
 
     it("replaces a name's lower score", () => {
@@ -136,18 +139,34 @@ describe("insertEntry", () => {
 
     it("refuses a score that does not make a full board", () => {
         const full = { ...emptyBoards(), elite: Array.from({ length: BOARD_SIZE }, (_, i) => entry(`p${i}`, 100 - i)) };
-        expect(insertEntry(full, "elite", entry("Late", 10))).toEqual({ boards: full, rank: null, changed: false });
+        expect(insertEntry(full, "elite", entry("Late", 10))).toEqual({
+            boards: full,
+            rank: null,
+            changed: false,
+            duplicate: false,
+        });
+    });
+
+    it("refuses a run already ranked, on any board, under another tag", () => {
+        const copied = { ...entry("Thief", 999), run: base.elite[0].run };
+        expect(insertEntry(base, "recruit", copied)).toEqual({
+            boards: base,
+            rank: null,
+            changed: false,
+            duplicate: true,
+        });
     });
 
     it("builds an entry from a summary", () => {
         const summary = summarize(createGame({ difficulty: "recruit", seed: 1 }));
-        expect(entryFrom("Zed", summary, "2026-11-23")).toEqual({
+        expect(entryFrom("Zed", summary, "2026-11-23", "0000abcd")).toEqual({
             name: "Zed",
             score: 0,
             accuracy: 0,
             headshotRate: 0,
             timeToDamageMs: null,
             day: "2026-11-23",
+            run: "0000abcd",
         });
     });
 });
@@ -239,6 +258,14 @@ describe("submission", () => {
         if (!parsed.ok) throw new Error(parsed.reason);
         expect(verify(parsed.submission)).toEqual(local);
         expect(replay("elite", 2026, parsed.submission.shots).log).toEqual(played.log);
+    });
+
+    it("flags inhuman reaction times only over enough targets", () => {
+        const base = summarize(createGame({ difficulty: "elite", seed: 1 }));
+        expect(isHuman(base)).toBe(true);
+        expect(isHuman({ ...base, reactionMs: 40, kills: 4 })).toBe(true);
+        expect(isHuman({ ...base, reactionMs: 40, kills: 12 })).toBe(false);
+        expect(isHuman({ ...base, reactionMs: MIN_HUMAN_REACTION_MS, kills: 12 })).toBe(true);
     });
 
     it("does not credit a forged log with the player's score", () => {

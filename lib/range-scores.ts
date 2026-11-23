@@ -56,7 +56,7 @@ export async function readBoards(): Promise<Boards> {
 export async function addEntry(
     difficulty: Difficulty,
     entry: BoardEntry,
-): Promise<{ boards: Boards; rank: number | null }> {
+): Promise<{ boards: Boards; rank: number | null; duplicate: boolean }> {
     const s = store();
     const work = async () => {
         for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
@@ -68,6 +68,6 @@ export async function addEntry(
         }
         throw new Error("sage-range: board contention");
     };
-    const { boards, rank } = await withDeadline(work(), DEADLINE_MS);
-    return { boards, rank };
+    const { boards, rank, duplicate } = await withDeadline(work(), DEADLINE_MS);
+    return { boards, rank, duplicate };
 }

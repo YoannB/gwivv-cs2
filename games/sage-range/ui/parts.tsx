@@ -11,20 +11,22 @@ export function TargetIcon({ kind }: { kind: "valid" | "decoy" }) {
     const valid = kind === "valid";
     return (
         <svg className={`sr-icon sr-icon--${kind}`} viewBox="0 0 40 56" width="28" height="40" aria-hidden="true">
-            <circle cx="20" cy="12" r="8.5" fill={valid ? "#FF9D32" : "#262626"} stroke={valid ? "none" : "#888"} />
-            {valid ? <circle cx="20" cy="12" r="4.5" fill="#FFBF55" /> : null}
-            <ellipse
-                cx="20"
-                cy="38"
-                rx="12.5"
-                ry="17"
+            <circle cx="20" cy="10" r="7.5" fill={valid ? "#FF9D32" : "#262626"} stroke={valid ? "none" : "#888"} />
+            {valid ? <circle cx="20" cy="10" r="4" fill="#FFBF55" /> : null}
+            <rect x="17" y="15" width="6" height="6" fill={valid ? "#F97316" : "#262626"} />
+            <rect
+                x="6"
+                y="20"
+                width="28"
+                height="34"
+                rx="9"
                 fill={valid ? "#F97316" : "#262626"}
                 stroke={valid ? "none" : "#888"}
             />
             {valid ? null : (
                 <g stroke="#F2F0EB" strokeWidth="2" fill="none">
-                    <circle cx="20" cy="38" r="6.5" />
-                    <path d="M15.5 33.5l9 9" />
+                    <circle cx="20" cy="37" r="6.5" />
+                    <path d="M15.5 32.5l9 9" />
                 </g>
             )}
         </svg>

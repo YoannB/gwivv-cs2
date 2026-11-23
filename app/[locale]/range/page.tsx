@@ -17,7 +17,7 @@ export default async function RangePage({ params }: { params: Promise<{ locale: 
     const t = await getTranslations({ locale, namespace: "range" });
     const labels = t.raw("game") as SageRangeLabels;
     return (
-        <div className="range-page">
+        <div className="range-page container">
             <RangeClient labels={labels} locale={locale} />
         </div>
     );

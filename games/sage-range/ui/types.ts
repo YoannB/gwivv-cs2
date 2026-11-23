@@ -71,6 +71,13 @@ export interface SageRangeLabels {
     submitting: string;
     submitted: string;
     submitError: string;
+    submitDuplicate: string;
+    sharedTitle: string;
+    sharedBy: string;
+    sharedVerified: string;
+    beatIt: string;
+    backToRange: string;
+    sharedInvalid: string;
     mobileTitle: string;
     mobileText: string;
     mobileCopy: string;
@@ -84,7 +91,7 @@ export interface SageRangeStorage {
 
 export type SubmitResult =
     | { ok: true; rank: number | null; score: number; boards: Boards }
-    | { ok: false; error: "name" | "rejected" | "rate" | "unavailable" };
+    | { ok: false; error: "name" | "rejected" | "duplicate" | "rate" | "unavailable" };
 
 /** Global top scores, provided by the host (transport and server are the host's business). */
 export interface SageRangeLeaderboard {

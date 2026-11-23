@@ -46,8 +46,25 @@ test.describe("Sage Range", () => {
         const stored = await page.evaluate((key) => localStorage.getItem(key), LS_SAGE_RANGE);
         expect(stored === null || stored.includes('"best"')).toBe(true);
 
+        // The results live in the address: it is the share link, and Back returns to it.
+        await expect(page).toHaveURL(/#r=[A-Za-z0-9_-]+$/);
+        const shareUrl = page.url();
+        const score = await page.getByTestId("sr-final-score").textContent();
+
         await page.locator(".sr-actions .sr-btn--primary").click();
         await expect(game).toHaveAttribute("data-phase", "play");
+        await page.goBack();
+        await expect(game).toHaveAttribute("data-phase", "results");
+        await expect(page.getByTestId("sr-final-score")).toHaveText(score as string);
+
+        // Someone else opening the link sees the session, replayed, read-only. (A share code holds
+        // no session length: this hooked two-second run replays over a full minute, so its score is
+        // not compared here; games/sage-range/core/share.test.ts proves the round trip.)
+        const other = await page.context().browser()!.newPage();
+        await other.goto(shareUrl);
+        await expect(other.locator(".sr")).toHaveAttribute("data-phase", "shared");
+        await expect(other.locator(".sr-desktop").getByTestId("sr-final-score")).toHaveText(/\d/);
+        await other.close();
     });
 
     test("touch: an explanatory screen instead of a shrunk game", async ({ page, isMobile }) => {
@@ -62,7 +79,7 @@ test.describe("Sage Range", () => {
         expect([200, 503]).toContain(boards.status());
         const forged = await request.post("/api/range/scores", {
             data: {
-                version: 1,
+                version: 2,
                 difficulty: "elite",
                 seed: 1,
                 name: "Ace",

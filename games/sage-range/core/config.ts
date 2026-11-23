@@ -2,7 +2,7 @@
 // reads is an integer (arena units, ticks), so a session replays bit for bit from its seed and its
 // shot log. Bumping RULES_VERSION retires every leaderboard entry made under the previous rules.
 
-export const RULES_VERSION = 1;
+export const RULES_VERSION = 2;
 
 /** Simulation rate: one tick = 1/60 s. */
 export const TICKS_PER_SECOND = 60;
@@ -67,8 +67,14 @@ export interface DifficultyConfig {
     readonly size: number;
     /** Hold time before a target opens, drawn in [min, max]. */
     readonly guardTicks: readonly [number, number];
+    /** Hidden extra hold once the ring is full, drawn in [min, max]: makes the opening a reaction, not a countdown. */
+    readonly holdTicks: readonly [number, number];
     /** How long a target stays open. */
     readonly openTicks: number;
+    /** Targets open at the same time, at most. */
+    readonly maxOpen: number;
+    /** Minimum ticks between two openings. */
+    readonly openGapTicks: number;
     /** Strafe speed while open, arena units per tick, drawn in [min, max]. */
     readonly speed: readonly [number, number];
     /** Strafe amplitude around the spawn point, arena units. */
@@ -85,7 +91,10 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         mimicPercent: 0,
         size: 64,
         guardTicks: [30, 60],
-        openTicks: 60,
+        holdTicks: [0, 30],
+        openTicks: 72,
+        maxOpen: 1,
+        openGapTicks: 30,
         speed: [0, 0],
         travel: 0,
     },
@@ -98,7 +107,10 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         mimicPercent: 15,
         size: 50,
         guardTicks: [24, 54],
-        openTicks: 45,
+        holdTicks: [0, 30],
+        openTicks: 57,
+        maxOpen: 1,
+        openGapTicks: 24,
         speed: [0, 3],
         travel: 90,
     },
@@ -111,7 +123,10 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         mimicPercent: 35,
         size: 40,
         guardTicks: [18, 60],
-        openTicks: 30,
+        holdTicks: [0, 36],
+        openTicks: 42,
+        maxOpen: 2,
+        openGapTicks: 24,
         speed: [2, 5],
         travel: 130,
     },

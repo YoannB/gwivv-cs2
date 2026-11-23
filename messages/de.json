@@ -100,7 +100,7 @@
             "rulesTitle": "Einsatzregeln",
             "ruleValid": "Oranges Ziel: feindlich. Zwei Körpertreffer oder ein Kopftreffer schalten es aus.",
             "ruleDecoy": "Graues, durchgestrichenes Ziel: ein Köder. Ein Treffer kostet viel; es stehen zu lassen bringt Punkte.",
-            "ruleWait": "Ein Ziel ist erst offen, wenn sein Ring voll ist. Ein Schuss davor wird bestraft, und manche Köder zeigen sich erst in diesem Moment.",
+            "ruleWait": "Ein voller Ring heißt bereit, nicht offen: Das Ziel öffnet sich einen Moment später, zu einem unvorhersehbaren Zeitpunkt. Ein Schuss davor wird bestraft, und manche Köder zeigen sich erst beim Öffnen.",
             "ruleHead": "Tempo und Kopftreffer vervielfachen deine Punkte; eine Serie richtiger Entscheidungen noch einmal.",
             "difficultyTitle": "Schwierigkeit",
             "difficulty": {
@@ -109,9 +109,9 @@
                 "elite": "Elite"
             },
             "difficultyHint": {
-                "recruit": "Große, unbewegte Ziele, eine Sekunde zum Schießen. Zum Lernen der Regeln.",
-                "regular": "Kleinere, bewegte Ziele, einige getarnte Köder, 0,75 s zum Schießen.",
-                "elite": "Winzige, bewegte Ziele, viele getarnte Köder, eine halbe Sekunde zum Treffen. Bewusst sehr schwer."
+                "recruit": "Große, unbewegte Ziele, immer nur ein Fenster, 1,2 s zum Schießen. Zum Lernen der Regeln.",
+                "regular": "Kleinere, bewegte Ziele, einige getarnte Köder, unter einer Sekunde zum Schießen.",
+                "elite": "Kleine, bewegte Ziele, viele getarnte Köder, zwei Fenster können sich überschneiden, 0,7 s zum Treffen. Sehr schwer, aber menschlich machbar."
             },
             "start": "Training starten",
             "controlsTitle": "Steuerung",
@@ -171,7 +171,14 @@
             "submitError": "Die Punktzahl konnte nicht gespeichert werden. Versuche es gleich noch einmal.",
             "mobileTitle": "Für die Maus gemacht",
             "mobileText": "Sage Range lebt von präzisem Zielen und Timing; ein Finger verdeckt das Ziel, das er berührt. Öffne diese Seite auf einem Computer mit Maus, um zu trainieren.",
-            "mobileCopy": "Link kopieren"
+            "mobileCopy": "Link kopieren",
+            "submitDuplicate": "Diese Sitzung steht bereits in der Rangliste.",
+            "sharedTitle": "Geteilte Sitzung",
+            "sharedBy": "Gespielt von {name}.",
+            "sharedVerified": "In deinem Browser nachgespielt und geprüft.",
+            "beatIt": "Diese Punktzahl schlagen",
+            "backToRange": "Zurück zum Schießstand",
+            "sharedInvalid": "Dieser Link enthält keine gültige Sitzung (vielleicht abgeschnitten oder nach alten Regeln erstellt)."
         }
     },
     "showcase": {

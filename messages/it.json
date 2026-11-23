@@ -100,7 +100,7 @@
             "rulesTitle": "Regole d'ingaggio",
             "ruleValid": "Bersaglio arancione: ostile. Due colpi al corpo o uno alla testa lo abbattono.",
             "ruleDecoy": "Bersaglio grigio barrato: un'esca. Colpirla costa caro; lasciarla passare fa punti.",
-            "ruleWait": "Un bersaglio è aperto solo quando il suo anello è pieno. Sparare prima è penalizzato, e alcune esche si rivelano solo in quell'istante.",
+            "ruleWait": "Anello pieno significa pronto, non aperto: il bersaglio si apre un attimo dopo, in un istante imprevedibile. Sparare prima è penalizzato, e alcune esche si rivelano solo all'apertura.",
             "ruleHead": "Velocità e colpi alla testa moltiplicano i tuoi punti; una serie di decisioni giuste li moltiplica ancora.",
             "difficultyTitle": "Difficoltà",
             "difficulty": {
@@ -109,9 +109,9 @@
                 "elite": "Élite"
             },
             "difficultyHint": {
-                "recruit": "Bersagli grandi e fermi, un secondo per sparare. Per imparare le regole.",
-                "regular": "Bersagli più piccoli che si muovono, qualche esca camuffata, 0,75 s per sparare.",
-                "elite": "Bersagli minuscoli in movimento, molte esche camuffate, mezzo secondo per colpire. Pensato per essere durissimo."
+                "recruit": "Bersagli grandi e fermi, una finestra alla volta, 1,2 s per sparare. Per imparare le regole.",
+                "regular": "Bersagli più piccoli che si muovono, qualche esca camuffata, meno di un secondo per sparare.",
+                "elite": "Bersagli piccoli in movimento, molte esche camuffate, due finestre possono sovrapporsi, 0,7 s per colpire. Durissimo, ma alla portata umana."
             },
             "start": "Inizia l'allenamento",
             "controlsTitle": "Comandi",
@@ -171,7 +171,14 @@
             "submitError": "Impossibile salvare il punteggio. Riprova tra un attimo.",
             "mobileTitle": "Pensato per il mouse",
             "mobileText": "Sage Range si basa su una mira precisa e sul timing; il dito copre il bersaglio che tocca. Apri questa pagina su un computer con il mouse per allenarti.",
-            "mobileCopy": "Copia il link"
+            "mobileCopy": "Copia il link",
+            "submitDuplicate": "Questa sessione è già in classifica.",
+            "sharedTitle": "Sessione condivisa",
+            "sharedBy": "Giocata da {name}.",
+            "sharedVerified": "Rigiocata e verificata nel tuo browser.",
+            "beatIt": "Batti questo punteggio",
+            "backToRange": "Torna al poligono",
+            "sharedInvalid": "Questo link non contiene una sessione valida (forse è troncato o creato con regole precedenti)."
         }
     },
     "showcase": {

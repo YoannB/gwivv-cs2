@@ -1,6 +1,6 @@
 "use client";
 // The start screen, the results screen and the small-touch-screen notice.
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { Difficulty } from "../core/config";
 import type { GameState } from "../core/engine";
 import { fill, formatNumber, formatPercent } from "../core/format";
@@ -123,45 +123,64 @@ function Stat({ label, value, strong }: { label: string; value: string; strong?:
     );
 }
 
+/** Buttons stay inert for a moment after the results appear: a late in-game click must not skip them. */
+const ARM_DELAY_MS = 900;
+
+function useArmed(): boolean {
+    const [armed, setArmed] = useState(false);
+    useEffect(() => {
+        const id = window.setTimeout(() => setArmed(true), ARM_DELAY_MS);
+        return () => window.clearTimeout(id);
+    }, []);
+    return armed;
+}
+
+/** Own session just played, or a session opened from a shared link (replayed, read-only). */
+export type ResultsMode =
+    | {
+          kind: "own";
+          game: GameState;
+          newBest: boolean;
+          canSubmit: boolean;
+          onReplay: () => void;
+          onMenu: () => void;
+          onSubmitted: (name: string) => void;
+      }
+    | { kind: "shared"; name: string; onBeat: () => void; onMenu: () => void };
+
 export function ResultsScreen({
     labels,
     locale,
     summary,
-    game,
-    newBest,
+    mode,
     saved,
     boards,
     leaderboard,
-    canSubmit,
     onBoards,
     onName,
-    onReplay,
-    onMenu,
     returnLink,
 }: {
     labels: SageRangeLabels;
     locale: string;
     summary: Summary;
-    game: GameState;
-    newBest: boolean;
+    mode: ResultsMode;
     saved: SavedData | null;
     boards: BoardsState;
     leaderboard?: SageRangeLeaderboard;
-    canSubmit: boolean;
     onBoards: (b: Boards) => void;
     onName: (name: string) => void;
-    onReplay: () => void;
-    onMenu: () => void;
     returnLink: ReactNode;
 }) {
+    const armed = useArmed();
     const ms = (v: number | null) => (v === null ? "—" : fill(labels.ms, { value: formatNumber(v, locale) }));
-    const best = Math.max(saved?.best[summary.difficulty] ?? 0, summary.score);
+    const own = mode.kind === "own";
+    const best = Math.max(saved?.best[summary.difficulty] ?? 0, own ? summary.score : 0);
     const shareText = fill(labels.shareText, {
         score: formatNumber(summary.score, locale),
         difficulty: labels.difficulty[summary.difficulty],
     });
     const board = boards ? boards[summary.difficulty] : null;
-    const eligible = Boolean(leaderboard && canSubmit && board && qualifies(board, summary.score));
+    const eligible = Boolean(own && mode.canSubmit && leaderboard && board && qualifies(board, summary.score));
 
     return (
         <div className="sr-screen sr-results">
@@ -169,7 +188,12 @@ export function ResultsScreen({
                 <p className="sr-eyebrow">
                     {labels.title} · {labels.difficulty[summary.difficulty]}
                 </p>
-                <h1 className="sr-heading sr-heading--xl">{labels.resultsTitle}</h1>
+                <h1 className="sr-heading sr-heading--xl">{own ? labels.resultsTitle : labels.sharedTitle}</h1>
+                {mode.kind === "shared" ? (
+                    <p className="sr-muted sr-results__by">
+                        {mode.name ? fill(labels.sharedBy, { name: mode.name }) : null} {labels.sharedVerified}
+                    </p>
+                ) : null}
             </header>
 
             <div className="sr-results__score">
@@ -182,9 +206,9 @@ export function ResultsScreen({
                     </p>
                     <p className="sr-muted">
                         {fill(labels.bonus, { value: formatNumber(summary.bonus, locale) })} · {labels.bestTitle}{" "}
-                        {formatNumber(best, locale)}
+                        {best > 0 ? formatNumber(best, locale) : labels.bestNone}
                     </p>
-                    {newBest ? <p className="sr-badge">{labels.newBest}</p> : null}
+                    {own && mode.newBest ? <p className="sr-badge">{labels.newBest}</p> : null}
                 </div>
             </div>
 
@@ -206,27 +230,61 @@ export function ResultsScreen({
                 {summary.escaped} · {labels.statWasted} {summary.wasted}
             </p>
 
-            {eligible && leaderboard ? (
+            {eligible && own && leaderboard ? (
                 <SubmitScore
                     labels={labels}
                     locale={locale}
-                    game={game}
+                    game={mode.game}
                     initialName={saved?.name ?? ""}
                     leaderboard={leaderboard}
                     onBoards={onBoards}
                     onName={onName}
+                    onSubmitted={mode.onSubmitted}
                 />
             ) : null}
 
-            <div className="sr-actions">
-                <button type="button" className="sr-btn sr-btn--primary" onClick={onReplay} autoFocus>
-                    {labels.replay}
-                </button>
-                <button type="button" className="sr-btn sr-btn--ghost" onClick={onMenu}>
-                    {labels.changeDifficulty}
-                </button>
+            <div className="sr-actions" data-armed={armed}>
+                {own ? (
+                    <>
+                        <button
+                            type="button"
+                            className="sr-btn sr-btn--primary"
+                            onClick={mode.onReplay}
+                            disabled={!armed}
+                        >
+                            {labels.replay}
+                        </button>
+                        <button type="button" className="sr-btn sr-btn--ghost" onClick={mode.onMenu} disabled={!armed}>
+                            {labels.changeDifficulty}
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button type="button" className="sr-btn sr-btn--primary" onClick={mode.onBeat}>
+                            {labels.beatIt}
+                        </button>
+                        <button type="button" className="sr-btn sr-btn--ghost" onClick={mode.onMenu}>
+                            {labels.backToRange}
+                        </button>
+                    </>
+                )}
                 <ShareButton text={shareText} label={labels.share} copied={labels.shareCopied} />
                 {returnLink}
+            </div>
+        </div>
+    );
+}
+
+/** A `#r=` link that does not hold a legal session (truncated, or made under older rules). */
+export function InvalidRun({ labels, onMenu }: { labels: SageRangeLabels; onMenu: () => void }) {
+    return (
+        <div className="sr-screen sr-results">
+            <h1 className="sr-heading sr-heading--xl">{labels.sharedTitle}</h1>
+            <p className="sr-lead">{labels.sharedInvalid}</p>
+            <div className="sr-actions">
+                <button type="button" className="sr-btn sr-btn--primary" onClick={onMenu}>
+                    {labels.backToRange}
+                </button>
             </div>
         </div>
     );
@@ -240,6 +298,7 @@ function SubmitScore({
     leaderboard,
     onBoards,
     onName,
+    onSubmitted,
 }: {
     labels: SageRangeLabels;
     locale: string;
@@ -248,6 +307,7 @@ function SubmitScore({
     leaderboard: SageRangeLeaderboard;
     onBoards: (b: Boards) => void;
     onName: (name: string) => void;
+    onSubmitted: (name: string) => void;
 }) {
     const [name, setName] = useState(initialName);
     const [status, setStatus] = useState<
@@ -266,13 +326,19 @@ function SubmitScore({
         onName(checked.name);
         const result = await leaderboard.submit(toPayload(game, checked.name)).catch(() => null);
         if (!result || !result.ok) {
-            const message = result?.error === "name" ? labels.nameError.blocked : labels.submitError;
+            const message =
+                result?.error === "name"
+                    ? labels.nameError.blocked
+                    : result?.error === "duplicate"
+                      ? labels.submitDuplicate
+                      : labels.submitError;
             setStatus({ kind: "error", message });
             return;
         }
         setEntries(result.boards);
         onBoards(result.boards);
         setStatus({ kind: "done", rank: result.rank });
+        onSubmitted(checked.name);
     };
 
     if (status.kind === "done") {

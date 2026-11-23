@@ -21,6 +21,7 @@ a leaderboard adapter, the backdrop URL and a `renderReturnLink` for the host's 
 | `core/submission.ts`         | Leaderboard payload (seed + accepted shot log), validation, `replay`, `verify`             |
 | `core/leaderboard.ts`        | Boards per difficulty: parse, rank, insert (one line per tag)                              |
 | `core/names.ts`              | Tag validation and the multilingual insult filter                                          |
+| `core/share.ts`              | Session ↔ URL code (`#r=`), run fingerprint (`runId`, one board line per run)              |
 | `core/saved.ts`, `format.ts` | Browser-saved data (bests, last tag); tiny formatting helpers                              |
 | `render/`                    | Canvas drawing and effects (render-only, real time, never part of a replay)                |
 | `ui/`                        | React: start screen, `PlayField` (rAF loop + HUD), pause, results, touch notice            |
@@ -34,14 +35,26 @@ server must replay the same session bit for bit.
 
 ## Gameplay and scoring
 
-A target rises (unreadable), holds while a dashed ring fills (identity visible: orange = hostile,
-grey with a no-shoot mark = decoy), opens (solid ring draining), then sinks. Hostile: two body
+A range silhouette (bust: head, torso; hit zones match the drawing) rises (unreadable), holds while
+a dashed ring fills (identity visible: orange = hostile, grey with a no-shoot mark = decoy), waits a
+HIDDEN extra hold (the opening cannot be anticipated: reaction time stays a reaction), opens (solid
+ring draining), then sinks. Openings are staggered (`maxOpen`, `openGapTicks`) so every window stays
+humanly reachable; windows are 1.2 s / 0.95 s / 0.7 s. The server refuses sessions whose average
+reaction time is below `MIN_HUMAN_REACTION_MS` over enough targets. Hostile: two body
 hits or one head hit. Shooting before it opens = early shot; shooting a decoy = heavy penalty;
 letting a decoy go = points; letting a hostile go = streak lost. Kill points = base + head bonus +
 speed bonus (falls to 0 at the end of the window), times the streak multiplier; the end bonus
 rewards accuracy and head precision. Mimic decoys (Regular, Elite) look hostile until they open:
 patience is the skill. Values live in `core/config.ts`; changing them changes scores, so bump
 `RULES_VERSION` (it also starts new boards).
+
+## Results in the URL
+
+A finished session pushes `#r=<code>` (seed + shots + optional tag, `core/share.ts`): Back returns
+to the results, a reload keeps them, and the address is the share link. Opening a code that this
+page load did not play replays it and shows it read-only ("shared session", "beat this score").
+The code holds no session length: a test-hook run (shortened) does not replay faithfully. Results
+buttons stay inert for 900 ms so a late in-game click cannot skip them.
 
 ## Host side (this site)
 
