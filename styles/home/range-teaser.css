@@ -1,0 +1,145 @@
+/* ===== Sage Range teaser (components/home/RangeTeaser.tsx) ===== */
+/* Full-bleed band closing the home page: the indoor-range picture on the right, darkened towards
+   the copy on the left. The picture is dark in both themes, so the band keeps its own dark-mode
+   colours (local custom properties) instead of following the light theme tokens. */
+.range-teaser {
+    --rt-fg: #f4f1ea;
+    --rt-fg-2: #cfc9bf;
+    --rt-shade: #0b0b0b;
+    --rt-accent-1: #f97316;
+    --rt-accent-2: #ffbf55;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    /* Under the sticky header (64px) when reached from a #range link. */
+    scroll-margin-top: 64px;
+    color: var(--rt-fg);
+    background: var(--rt-shade);
+    border-block: 1px solid color-mix(in oklab, var(--rt-accent-1) 30%, transparent);
+}
+.range-teaser::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(
+            90deg,
+            var(--rt-shade) 0%,
+            color-mix(in oklab, var(--rt-shade) 88%, transparent) 35%,
+            color-mix(in oklab, var(--rt-shade) 35%, transparent) 70%,
+            transparent 100%
+        ),
+        url("/images/range-band.webp") right center / cover no-repeat;
+}
+.range-teaser__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 40px;
+    width: 100%;
+    max-width: min(1280px, 100%);
+    min-height: 150px;
+    margin-inline: auto;
+    padding: 32px 20px;
+}
+.range-teaser__copy {
+    min-width: 0;
+}
+.range-teaser__title {
+    margin: 0;
+    font-family: var(--font-brush);
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    transform-origin: left bottom;
+    text-shadow: 0 4px 22px rgba(0, 0, 0, 0.7);
+}
+.range-teaser__title-accent {
+    background: linear-gradient(100deg, var(--rt-accent-1), var(--rt-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.range-teaser__text {
+    max-width: 46ch;
+    margin: 10px 0 0;
+    font-size: 1.02rem;
+    color: var(--rt-fg-2);
+}
+.range-teaser__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 0 26px;
+    font: inherit;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rt-accent-2);
+    background: color-mix(in oklab, var(--rt-shade) 70%, transparent);
+    border: 2px solid var(--rt-accent-1);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 22px color-mix(in oklab, var(--rt-accent-1) 35%, transparent);
+    transition:
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+a.range-teaser__cta:hover {
+    color: #101010;
+    background: var(--rt-accent-1);
+    box-shadow: 0 0 32px color-mix(in oklab, var(--rt-accent-1) 60%, transparent);
+}
+.range-teaser__crosshair {
+    flex: none;
+    color: var(--rt-accent-1);
+}
+a.range-teaser__cta:hover .range-teaser__crosshair {
+    color: currentColor;
+}
+/* Not playable yet: visibly disabled (muted border, no glow, not-allowed cursor), label kept. */
+.range-teaser__cta--soon {
+    cursor: not-allowed;
+    color: var(--rt-fg-2);
+    border-color: color-mix(in oklab, var(--rt-accent-1) 45%, #555);
+    border-style: dashed;
+    box-shadow: none;
+}
+.range-teaser__cta--soon .range-teaser__crosshair {
+    color: color-mix(in oklab, var(--rt-accent-1) 60%, #777);
+}
+.range-teaser__soon {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--rt-shade);
+    background: var(--rt-accent-2);
+    border-radius: 999px;
+}
+@media (max-width: 640px) {
+    /* Stacked: the shade covers the whole picture so the copy stays readable on top of it. */
+    .range-teaser::before {
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in oklab, var(--rt-shade) 92%, transparent) 0%,
+                color-mix(in oklab, var(--rt-shade) 70%, transparent) 100%
+            ),
+            url("/images/range-band.webp") center / cover no-repeat;
+    }
+    .range-teaser__cta {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding-block: 10px;
+        font-size: 0.95rem;
+    }
+}
