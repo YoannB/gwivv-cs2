@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import {
     CLIPS,
     CLIPS_ON_HOME,
+    HEADER_SECTIONS,
     HIGHLIGHTS,
     LOADOUT,
     SEASONS,
@@ -96,6 +97,24 @@ test.describe("Home — structural smoke", () => {
         await expect(loadout.locator(".loadout__row").filter({ hasText: "eDPI" }).locator("dd")).toHaveText(
             String(Math.round(LOADOUT.settings.dpi * LOADOUT.settings.sensitivity)),
         );
+    });
+
+    test("the header links to every home section and marks the one reached", async ({ page }) => {
+        await page.goto("/");
+
+        const nav = page.getByRole("navigation", { name: "Main" });
+        const links = nav.getByRole("link");
+        await expect(links).toHaveCount(HEADER_SECTIONS.length);
+        for (const [i, section] of HEADER_SECTIONS.entries()) {
+            await expect(links.nth(i)).toHaveAttribute("href", new RegExp(`#${section.id}$`));
+            await expect(page.locator(`#${section.id}`)).toHaveCount(1);
+        }
+
+        const loadout = nav.getByRole("link", { name: "Loadout" });
+        if (!(await loadout.isVisible())) await page.locator(".menu-toggle").click();
+        await loadout.click();
+        await expect(page).toHaveURL(/#loadout$/);
+        await expect(loadout).toHaveAttribute("aria-current", "location");
     });
 
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {

@@ -91,6 +91,13 @@ footer). Optional messages: `nav.tagline` (+ `nav.taglineSub`) render a two-line
 the brand (`.brand-tagline`, hidden below 760px); `footer.poweredBy` (rich tags `<next>`,
 `<netlify>`) adds a credits line in the footer meta column. Absent keys render nothing (`t.has`).
 
+Header links: `HEADER_SECTIONS` (anchors `/#<id>` to the home sections, labels `nav.<key>`) come
+first, then the pages of `HEADER_NAV` (here none: every page is `header: false` and lives in the
+footer and the HTML sitemap). On the home, `hooks/use-active-section.ts` marks the section in view
+(`is-active` + `aria-current="location"`), an external store over scroll, resize and hash changes.
+Each anchored section sets `scroll-margin-top` to clear the sticky header; `html` scrolls smoothly
+unless the reader prefers reduced motion.
+
 ## Mobile guards
 
 `html, body { overflow-x: clip }` (clip, NOT hidden: hidden creates a scroll container that

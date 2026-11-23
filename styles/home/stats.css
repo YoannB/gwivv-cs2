@@ -2,6 +2,7 @@
 /* A tactical card that overlaps the bottom of the hero, as in the mockups. */
 .stats {
     position: relative;
+    scroll-margin-top: 88px;
     z-index: 2;
     margin: -96px 0 40px;
     padding: 18px 22px 14px;

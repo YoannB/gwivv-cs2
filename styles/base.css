@@ -12,6 +12,12 @@ body {
 html {
     overflow-x: clip;
 }
+/* Header anchors (Profile, Statistics, …) glide to their section, unless motion is reduced. */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
 body {
     overflow-x: clip;
     display: flex;
