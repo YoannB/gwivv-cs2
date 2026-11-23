@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test";
-import { CLIPS, CLIPS_ON_HOME, SEASONS, SITE_NAME, SOCIAL_LINKS, STEAM64_ID } from "../../constants/site";
+import {
+    CLIPS,
+    CLIPS_ON_HOME,
+    HIGHLIGHTS,
+    LOADOUT,
+    SEASONS,
+    SITE_NAME,
+    SOCIAL_LINKS,
+    STEAM64_ID,
+} from "../../constants/site";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
 
@@ -55,6 +64,38 @@ test.describe("Home — structural smoke", () => {
         await expect(first.locator("iframe")).toHaveCount(0);
         await first.locator("button.clip-player__poster").click();
         await expect(first.locator("iframe")).toHaveAttribute("src", CLIPS[0].embed);
+    });
+
+    test("the highlights show every YouTube montage and play it only after a click", async ({ page }) => {
+        await page.goto("/");
+
+        const items = page.locator("#highlights .highlights__item");
+        await expect(items).toHaveCount(HIGHLIGHTS.length);
+        for (const [i, video] of HIGHLIGHTS.entries()) {
+            await expect(items.nth(i).getByRole("heading", { level: 3 })).toHaveText(video.title);
+            await expect(items.nth(i).getByRole("link", { name: "Watch on YouTube" })).toHaveAttribute(
+                "href",
+                `https://www.youtube.com/watch?v=${video.id}`,
+            );
+        }
+        const first = items.first();
+        await expect(first.locator("iframe")).toHaveCount(0);
+        await first.locator("button.clip-player__poster").click();
+        await expect(first.locator("iframe")).toHaveAttribute(
+            "src",
+            `https://www.youtube-nocookie.com/embed/${HIGHLIGHTS[0].id}?autoplay=1`,
+        );
+    });
+
+    test("the loadout lists the hardware and the settings with the computed eDPI", async ({ page }) => {
+        await page.goto("/");
+
+        const loadout = page.locator("#loadout");
+        await expect(loadout).toContainText(LOADOUT.hardware.cpu);
+        await expect(loadout).toContainText(LOADOUT.hardware.gpu);
+        await expect(loadout.locator(".loadout__row").filter({ hasText: "eDPI" }).locator("dd")).toHaveText(
+            String(Math.round(LOADOUT.settings.dpi * LOADOUT.settings.sensitivity)),
+        );
     });
 
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {

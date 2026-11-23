@@ -36,6 +36,7 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 | `home/hero.css`            | `.hero`, `.pill`, `.scroll-cue`                                                                                                                          |
 | `home/clips.css`           | `.home-sections`, `.section-heading`, `.clips`, `.clip-player` (latest clips, click-to-play)                                                             |
 | `home/stats.css`           | `.stats` statistics strip (overlaps the hero bottom), cards, Leetify credit, live status, `.seasons` history                                             |
+| `home/panels.css`          | `.home-row`, `.panel` (Highlights and Loadout side by side), `.highlights` video cards, `.loadout` equipment sheet                                       |
 | `home/roulette.css`        | `.roulette` (rotating hero word)                                                                                                                         |
 | `home/showcase.css`        | `.showcase`, `.sg-*` generator mock, `.fld`, `.term-demo`                                                                                                |
 | `ui/gauge.css`             | `.gauge`                                                                                                                                                 |

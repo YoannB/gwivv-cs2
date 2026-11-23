@@ -52,6 +52,26 @@
         "range": "{min} – {max}",
         "levels": "{min} → {max}"
     },
+    "highlights": {
+        "title": "Highlights",
+        "channel": "YouTube channel",
+        "play": "Play the video {title}",
+        "watch": "Watch on YouTube"
+    },
+    "loadout": {
+        "title": "Loadout",
+        "hardware": "Hardware",
+        "settings": "Game settings",
+        "cpu": "Processor",
+        "gpu": "Graphics card",
+        "ram": "Memory",
+        "ramValue": "{gb} GB",
+        "monitor": "Monitor",
+        "monitorValue": "{hz} Hz",
+        "dpi": "DPI",
+        "sensitivity": "CS2 sensitivity",
+        "edpi": "eDPI"
+    },
     "clips": {
         "title": "Latest clips",
         "play": "Play the clip {title}",
