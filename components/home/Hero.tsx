@@ -1,62 +1,51 @@
-"use client";
-import { Button, Icon, ScrollCue } from "@/components/ui";
-import { useTranslations } from "next-intl";
-import { ComponentShowcase } from "./ComponentShowcase";
-import { HeroRoulette } from "./HeroRoulette";
+import { BRAND_ACCENT_FROM, SITE_NAME, SOCIAL_LINKS } from "@/constants/site";
+import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 
-// hero__grid is NO LONGER a .container: the page is already wrapped in PageShell's
-// Container. A double .container (max-width + padding applied twice) squashed the
-// available width -> hero/feature-strip too narrow. A single container layer.
-export function Hero() {
-    const t = useTranslations("hero");
-    const rotating = t.raw("rotating") as string[];
-    const techs = [
-        { icon: "code" as const, k: "next", s: "nextSub" },
-        { icon: "box" as const, k: "ts", s: "tsSub" },
-        { icon: "palette" as const, k: "mui", s: "muiSub" },
-        { icon: "sparkles" as const, k: "or", s: "orSub" },
-    ];
+// Player identity: eyebrow, brand word, signature, short intro and the platform links, over the
+// scene (styles/home/hero.css) with the player illustration on the right (public/images/).
+// Server Component: static, no interaction.
+export async function Hero({ locale }: { locale: string }) {
+    const t = await getTranslations({ locale, namespace: "hero" });
     return (
-        <section className="hero">
-            <div className="hero__grid">
+        <section className="hero" aria-labelledby="hero-title">
+            <div className="hero__inner">
                 <div className="hero__copy">
-                    <span className="pill">
-                        <Icon name="sparkles" size={15} animated /> {t("badge")}
-                    </span>
-                    <h1 className="hero__title">
-                        {t("titleLead")} <HeroRoulette words={rotating} />
+                    <p className="hero__eyebrow">{t("eyebrow")}</p>
+                    <h1 id="hero-title" className="hero__title">
+                        {SITE_NAME.slice(0, BRAND_ACCENT_FROM)}
+                        <span className="hero__title-accent">{SITE_NAME.slice(BRAND_ACCENT_FROM)}</span>
                     </h1>
-                    <p className="hero__sub">{t("subtitle")}</p>
-                    <ul className="hero__tech">
-                        {techs.map((x) => (
-                            <li key={x.k}>
-                                <span className="hero__tech-ico">
-                                    <Icon name={x.icon} size={18} />
-                                </span>
-                                <span>
-                                    <b>{t(`tech.${x.k}`)}</b>
-                                    <em>{t(`tech.${x.s}`)}</em>
-                                </span>
+                    {/* The signature is the same French line in every locale. */}
+                    <p className="hero__motto" lang="fr">
+                        {t("motto")}
+                    </p>
+                    <p className="hero__intro">{t("intro")}</p>
+                    <ul className="hero__social" aria-label={t("socialLabel")}>
+                        {SOCIAL_LINKS.map((link) => (
+                            <li key={link.id}>
+                                <a
+                                    className={`hero__social-link hero__social-link--${link.id}`}
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {link.label}
+                                </a>
                             </li>
                         ))}
                     </ul>
-                    <div className="hero__cta">
-                        <Button
-                            variant="primary"
-                            size="lg"
-                            iconRight={<Icon name="rocket" size={16} />}
-                            onClick={() => document.getElementById("showcase")?.scrollIntoView({ behavior: "smooth" })}
-                        >
-                            {t("ctaDemo")}
-                        </Button>
-                        <Button variant="secondary" size="lg" href="/sitemap">
-                            {t("ctaPlan")}
-                        </Button>
-                    </div>
-                    <ScrollCue />
                 </div>
-                <div className="hero__demo">
-                    <ComponentShowcase />
+                <div className="hero__figure">
+                    <Image
+                        className="hero__character"
+                        src="/images/hero-character.webp"
+                        alt={t("illustrationAlt")}
+                        width={1536}
+                        height={1024}
+                        sizes="(max-width: 900px) 100vw, 60vw"
+                        priority
+                    />
                 </div>
             </div>
         </section>

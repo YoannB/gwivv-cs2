@@ -1,15 +1,20 @@
 import { expect, test } from "@playwright/test";
+import { SITE_NAME, SOCIAL_LINKS } from "../../constants/site";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
 
 test.describe("Home — structural smoke", () => {
-    test("shows the hero, the component library, the SEO section and the FAQ", async ({ page }) => {
+    test("shows the player hero: brand title, illustration and the six platform links", async ({ page }) => {
         await page.goto("/");
 
-        await expect(page.locator("h1")).toBeVisible();
-        await expect(page.locator("#showcase")).toBeVisible();
-        await expect(page.locator("#seo")).toBeVisible();
-        await expect(page.locator("#faq")).toBeVisible();
+        await expect(page.getByRole("heading", { level: 1, name: SITE_NAME })).toBeVisible();
+        await expect(page.locator(".hero__character")).toBeVisible();
+        const links = page.locator(".hero__social a");
+        await expect(links).toHaveCount(SOCIAL_LINKS.length);
+        for (const [i, link] of SOCIAL_LINKS.entries()) {
+            await expect(links.nth(i)).toHaveAttribute("href", link.href);
+            await expect(links.nth(i)).toHaveAttribute("rel", "noopener noreferrer");
+        }
     });
 
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {

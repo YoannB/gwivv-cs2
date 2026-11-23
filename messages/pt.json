@@ -10,24 +10,13 @@
         "menu": "Menu"
     },
     "hero": {
-        "badge": "Seu assistente de IA, pronto num clique",
-        "titleLead": "O boilerplate Next.js para os seus ",
-        "rotating": ["agentes de IA", "sites SEO", "apps Next.js", "demos OpenRouter"],
-        "subtitle": "Uma base moderna, rápida e otimizada para SEO para criar facilmente aplicações web com IA. Componentes prontos a usar, multilingue, implantável na Netlify.",
-        "ctaDemo": "Ver a demo",
-        "ctaPlan": "Mapa do site",
+        "eyebrow": "Jogador de Counter-Strike 2",
+        "motto": "La patience est une arme.",
+        "intro": "Apaixonado por Counter-Strike 2, sempre em busca da precisão e do momento certo.",
+        "socialLabel": "GWIVV nas plataformas de jogos e vídeo",
+        "illustrationAlt": "Ilustração de GWIVV com equipamento tático, segurando um fuzil",
         "scrollCue": "Percorra para baixo",
-        "limitSuffix": "Limitado: {count} chamadas de IA / dia",
-        "tech": {
-            "next": "Next.js 16+",
-            "nextSub": "App Router",
-            "ts": "TypeScript",
-            "tsSub": "Segurança e estabilidade",
-            "mui": "Material UI 9+",
-            "muiSub": "Componentes modernos",
-            "or": "OpenRouter",
-            "orSub": "IA gratuita"
-        }
+        "limitSuffix": "Limitado: {count} chamadas de IA / dia"
     },
     "showcase": {
         "title": "Biblioteca de componentes",
@@ -126,43 +115,6 @@
             "source": "Tech Insider",
             "duration": "10 min"
         }
-    },
-    "features": {
-        "multilang": "Multilíngue",
-        "multilangSub": "FR, EN, ES, DE, IT, PT",
-        "theme": "Modo claro / escuro",
-        "themeSub": "De acordo com o seu sistema",
-        "cookies": "Cookies",
-        "cookiesSub": "Gestão do consentimento",
-        "storage": "Armazenamento local",
-        "storageSub": "Os seus dados ficam locais",
-        "security": "Seguro",
-        "securitySub": "Proteção anti-bots"
-    },
-    "faq": {
-        "title": "Perguntas frequentes",
-        "items": [
-            {
-                "q": "O que é o Axons?",
-                "a": "Um boilerplate Next.js 16 / React 19 focado em SEO e IA, implantável na Netlify, com uma biblioteca de componentes isolada (Material UI) e ligação OpenRouter através de um Route Handler."
-            },
-            {
-                "q": "A IA é paga?",
-                "a": "O modelo predefinido é um modelo gratuito da OpenRouter (openrouter/free). Uma quota diária limita as chamadas no browser; os erros são apresentados como toasts para que possa tentar novamente facilmente."
-            },
-            {
-                "q": "Os meus dados vão para algum lado?",
-                "a": "Não. O tema, o consentimento de cookies e o contador diário são armazenados localmente (cookie + localStorage). A chave OpenRouter permanece no servidor e nunca é exposta ao browser."
-            },
-            {
-                "q": "Como adiciono uma nova ação de IA?",
-                "a": "Coloque um ficheiro em capabilities/agents/ (ou uma pasta capabilities/skills/<id>/) e chame POST /api/run com { prompt, agentId?, skillId?, inputs? }. A rota mantém-se fina: composição, quota, timeout e erros vivem em lib/ai (run → composeRun + runPrompt)."
-            },
-            {
-                "q": "O site é indexável pelo Google?",
-                "a": "Sim: renderização no servidor, URLs localizadas, metadados, hreflang, sitemap XML e mapa do site HTML são fornecidos."
-            }
-        ]
     },
     "footer": {
         "tagline": "A sua base para apps de IA modernas",

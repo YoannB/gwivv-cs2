@@ -193,42 +193,30 @@ export interface SeoResource {
     sourceKey: string;
     durationKey: string;
 }
-export const SEO_RESOURCES: readonly SeoResource[] = [
-    {
-        id: "yt",
-        kind: "video",
-        url: "https://www.youtube.com/watch?v=jzdTBDmCAKE",
-        videoId: "jzdTBDmCAKE",
-        short: false,
-        mark: "YT",
-        titleKey: "seo.a1.title",
-        summaryKey: "seo.a1.summary",
-        sourceKey: "seo.a1.source",
-        durationKey: "seo.a1.duration",
-    },
-    {
-        id: "oc",
-        kind: "article",
-        url: "https://openclassrooms.com/fr/courses/8710351-creez-une-application-react-avec-next-js/8856186-demarrez-un-projet-next-js",
-        mark: "OC",
-        titleKey: "seo.a2.title",
-        summaryKey: "seo.a2.summary",
-        sourceKey: "seo.a2.source",
-        durationKey: "seo.a2.duration",
-    },
-    {
-        id: "ti",
-        kind: "article",
-        url: "https://tech-insider.org/fr/nextjs-16-tutoriel-app-full-stack-13-etapes-2026/",
-        mark: "TI",
-        titleKey: "seo.a3.title",
-        summaryKey: "seo.a3.summary",
-        sourceKey: "seo.a3.source",
-        durationKey: "seo.a3.duration",
-    },
-];
+// The SEO block (components/home/SeoResources.tsx) is not used by this site: empty => it renders nothing.
+export const SEO_RESOURCES: readonly SeoResource[] = [];
 /** Hero video of the SEO block; "" (with no SEO_RESOURCES either) removes the whole block. */
-export const HERO_VIDEO_ID: string = "jzdTBDmCAKE";
+export const HERO_VIDEO_ID: string = "";
+
+/** A profile of the player on a gaming or video platform (hero and footer links). */
+export interface SocialLink {
+    readonly id: "steam" | "twitch" | "youtube" | "faceit" | "leetify" | "allstar";
+    /** Platform name: the link's accessible label (a brand name, never translated). */
+    readonly label: string;
+    readonly href: string;
+}
+export const SOCIAL_LINKS: readonly SocialLink[] = [
+    { id: "steam", label: "Steam", href: "https://steamcommunity.com/profiles/76561198048679104" },
+    { id: "twitch", label: "Twitch", href: "https://www.twitch.tv/gwivv" },
+    { id: "youtube", label: "YouTube", href: "https://www.youtube.com/@gwivv" },
+    {
+        id: "faceit",
+        label: "FACEIT",
+        href: "https://www.faceit.com/en/players/Gwivv/cs2/matchmaking?season=822d32cb-174e-4ebf-ae28-5ef9b80fd007",
+    },
+    { id: "leetify", label: "Leetify", href: "https://leetify.com/app/profile/76561198048679104" },
+    { id: "allstar", label: "Allstar", href: "https://allstar.gg/u/Gwivv" },
+];
 
 // SYMMETRIC, THIN vertical rails (160x600): symmetry kept (the 160/300
 // asymmetry looked bad) AND breathing room in the center (~912px on a 1280 container) => the
