@@ -176,7 +176,8 @@
             "profilePlaceholder": "https://steamcommunity.com/id/…",
             "profileHint": "Your Steam name and avatar appear on the board, linked to your profile.",
             "profileInvalid": "This is not a Steam profile link we can read (steamcommunity.com/id/… or /profiles/…).",
-            "nameBlocked": "This Steam name is not allowed on the board."
+            "nameBlocked": "This Steam name is not allowed on the board.",
+            "steamUnavailable": "Steam did not answer to confirm your profile. Try again in a moment."
         }
     },
     "showcase": {

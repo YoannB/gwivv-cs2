@@ -176,7 +176,8 @@
             "profilePlaceholder": "https://steamcommunity.com/id/…",
             "profileHint": "Tu nombre y tu avatar de Steam aparecen en la clasificación, con un enlace a tu perfil.",
             "profileInvalid": "No es un enlace de perfil de Steam legible (steamcommunity.com/id/… o /profiles/…).",
-            "nameBlocked": "Este nombre de Steam no está permitido en la clasificación."
+            "nameBlocked": "Este nombre de Steam no está permitido en la clasificación.",
+            "steamUnavailable": "Steam no respondió para confirmar tu perfil. Inténtalo de nuevo en un momento."
         }
     },
     "showcase": {

@@ -328,6 +328,7 @@ function SubmitScore({
             const messages: Record<string, string> = {
                 identity: labels.profileInvalid,
                 name: labels.nameBlocked,
+                steam: labels.steamUnavailable,
                 duplicate: labels.submitDuplicate,
             };
             setStatus({ kind: "error", message: (result && messages[result.error]) || labels.submitError });

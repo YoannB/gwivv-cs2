@@ -19,7 +19,7 @@ const storage: SageRangeStorage = {
 };
 
 const API = "/api/range/scores";
-const SUBMIT_ERRORS = ["identity", "name", "rejected", "duplicate", "rate", "unavailable"] as const;
+const SUBMIT_ERRORS = ["identity", "steam", "name", "rejected", "duplicate", "rate", "unavailable"] as const;
 
 const leaderboard: SageRangeLeaderboard = {
     async load() {

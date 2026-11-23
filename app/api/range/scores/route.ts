@@ -14,19 +14,39 @@ const STEAM_TIMEOUT_MS = 6_000;
 
 const reply = (body: object, status = 200) => NextResponse.json(body, { status, headers: NO_STORE });
 
-/** The pasted Steam profile, read from its public XML view; null when it does not resolve. */
-async function resolveSteamProfile(identity: string): Promise<SteamProfile | null> {
+type Resolved = { ok: true; profile: SteamProfile } | { ok: false; error: "identity" | "steam"; detail: string };
+
+/**
+ * The pasted Steam profile, read from its public XML view. A bad link or an unknown profile is the
+ * player's error ("identity"); Steam not answering usably is not ("steam", retry later). `detail` is a
+ * short diagnostic code (no personal data), also logged.
+ */
+async function resolveSteamProfile(identity: string): Promise<Resolved> {
     const ref = parseProfileInput(identity);
-    if (!ref) return null;
+    if (!ref) return { ok: false, error: "identity", detail: "link" };
+    let res: Response;
     try {
-        const res = await fetch(profileXmlUrl(ref), {
+        res = await fetch(profileXmlUrl(ref), {
             cache: "no-store",
+            redirect: "follow",
+            headers: { Accept: "text/xml,application/xml", "User-Agent": "Mozilla/5.0 (compatible; SageRange/1.0)" },
             signal: AbortSignal.timeout(STEAM_TIMEOUT_MS),
         });
-        return res.ok ? parseProfileXml(await res.text()) : null;
-    } catch {
-        return null;
+    } catch (error) {
+        console.error(`[range] steam profile fetch failed — ${String(error)}`);
+        return { ok: false, error: "steam", detail: "network" };
     }
+    const body = await res.text().catch(() => "");
+    if (!res.ok) {
+        console.error(`[range] steam profile HTTP ${res.status}`);
+        return { ok: false, error: "steam", detail: `http-${res.status}` };
+    }
+    const profile = parseProfileXml(body);
+    if (profile) return { ok: true, profile };
+    if (body.includes("<error>")) return { ok: false, error: "identity", detail: "not-found" };
+    const head = body.slice(0, 48).replace(/[^A-Za-z0-9<>?=:. -]/g, "");
+    console.error(`[range] steam profile answer not readable (${body.length} bytes): ${head}`);
+    return { ok: false, error: "steam", detail: `unreadable-${body.length}-${head}` };
 }
 
 // SAGE RANGE global top scores. GET: the boards. POST: a session (seed + shot log + the player's
@@ -59,8 +79,14 @@ export async function POST(req: Request) {
     const summary = verify(submission);
     if (!isHuman(summary)) return reply({ status: "error", error: "rejected" }, 400);
 
-    const profile = await resolveSteamProfile(submission.identity);
-    if (!profile) return reply({ status: "error", error: "identity" }, 400);
+    const resolved = await resolveSteamProfile(submission.identity);
+    if (!resolved.ok) {
+        return reply(
+            { status: "error", error: resolved.error, detail: resolved.detail },
+            resolved.error === "steam" ? 502 : 400,
+        );
+    }
+    const { profile } = resolved;
     const name = cleanDisplayName(profile.name);
     if (name === null) return reply({ status: "error", error: "name" }, 400);
 
