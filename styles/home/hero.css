@@ -1,6 +1,9 @@
 /* ===== Hero: player identity ===== */
 /* Full-bleed band: the scene fills the width, the content follows the 1280px container. */
 .hero {
+    /* How far the statistics card (styles/home/stats.css, negative margin-top) overlaps the hero's
+       bottom: the copy keeps clear of it, only the illustration runs under the card. Keep in sync. */
+    --stats-overlap: 96px;
     position: relative;
     /* Under the sticky header (64px) when reached from the header's Profile link. */
     scroll-margin-top: 64px;
@@ -33,7 +36,7 @@
     width: 100%;
     max-width: min(1280px, 100%);
     margin-inline: auto;
-    padding: 48px 20px 32px;
+    padding: 48px 20px calc(32px + var(--stats-overlap));
 }
 .hero__copy {
     position: relative;
@@ -126,6 +129,7 @@
     position: relative;
     align-self: end;
     margin-right: -8%;
+    margin-bottom: calc(-1 * var(--stats-overlap));
 }
 .hero__character {
     width: 100%;
@@ -138,6 +142,7 @@
 /* Mobile: the illustration on top, the copy over its faded bottom. */
 @media (max-width: 900px) {
     .hero {
+        --stats-overlap: 40px;
         min-height: 0;
     }
     .hero::before {

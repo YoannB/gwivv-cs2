@@ -4,6 +4,7 @@
     position: relative;
     scroll-margin-top: 88px;
     z-index: 2;
+    /* Overlaps the hero's bottom by --stats-overlap (styles/home/hero.css): keep both in sync. */
     margin: -96px 0 40px;
     padding: 18px 22px 14px;
     border: 1px solid color-mix(in oklab, var(--accent-1) 35%, var(--border-2));
