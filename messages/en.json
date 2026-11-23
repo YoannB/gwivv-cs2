@@ -117,7 +117,7 @@
         }
     },
     "footer": {
-        "tagline": "Your base for modern AI apps",
+        "tagline": "Counter-Strike 2 player. Patience is a weapon.",
         "rights": "© {year} {site}. All rights reserved.",
         "builtWith": "Built with Next.js, Material UI, next-intl and OpenRouter"
     },

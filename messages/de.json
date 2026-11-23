@@ -117,7 +117,7 @@
         }
     },
     "footer": {
-        "tagline": "Deine Basis für moderne KI-Apps",
+        "tagline": "Counter-Strike-2-Spieler. Geduld ist eine Waffe.",
         "rights": "© {year} {site}. Alle Rechte vorbehalten.",
         "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter"
     },

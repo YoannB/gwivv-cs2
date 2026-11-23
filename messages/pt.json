@@ -117,7 +117,7 @@
         }
     },
     "footer": {
-        "tagline": "A sua base para apps de IA modernas",
+        "tagline": "Jogador de Counter-Strike 2. A paciência é uma arma.",
         "rights": "© {year} {site}. Todos os direitos reservados.",
         "builtWith": "Construído com Next.js, Material UI, next-intl e OpenRouter"
     },
