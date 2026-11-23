@@ -28,7 +28,7 @@ import { normalizeSiteUrl } from "../lib/site-url";
 
 export const SITE_NAME = "GWIVV CS2";
 /** Root metadata fallbacks (pages set their own localized title/description). */
-export const DEFAULT_TITLE = "GWIVV — Counter-Strike 2 player";
+export const DEFAULT_TITLE = "GWIVV CS2 — Counter-Strike 2 player";
 export const DEFAULT_DESCRIPTION =
     "GWIVV, Counter-Strike 2 player: profile, statistics, highlights, loadout and the Sage Range.";
 export const GITHUB_URL = "";
