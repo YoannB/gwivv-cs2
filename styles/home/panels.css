@@ -1,0 +1,154 @@
+/* ===== Highlights and Loadout panels (components/home/Highlights.tsx, Loadout.tsx) ===== */
+/* Side by side on wide screens, as in the mockups; stacked below. */
+.home-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+@media (min-width: 1100px) {
+    .home-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+.panel {
+    position: relative;
+    min-width: 0;
+    padding: 18px 20px 20px;
+    border: 1px solid color-mix(in oklab, var(--accent-1) 22%, var(--border-1));
+    border-radius: var(--radius-lg);
+    background: color-mix(in oklab, var(--surface-1) 86%, transparent);
+    scroll-margin-top: 88px;
+}
+.panel__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 16px;
+}
+.panel__head .section-heading {
+    margin-bottom: 14px;
+}
+.panel__more {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.panel__more:hover {
+    color: var(--accent-2);
+}
+
+/* Highlights: two large video cards. */
+.highlights__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.highlights__item {
+    min-width: 0;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--surface-2) 60%, transparent);
+    overflow: hidden;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.highlights__item:hover {
+    border-color: color-mix(in oklab, var(--accent-1) 55%, var(--border-2));
+    box-shadow: 0 0 22px color-mix(in oklab, var(--accent-1) 22%, transparent);
+}
+.highlights__item .clips__title {
+    font-size: 1rem;
+    line-height: 1.25;
+}
+.highlights__sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+.highlights__sub .brand-icon--youtube {
+    color: #ff0033;
+}
+
+/* Loadout: an equipment sheet, hardware and settings in two columns. */
+.loadout {
+    overflow: hidden;
+}
+/* A faint diagonal brush of the accent, echoing the mockup's tactical card. */
+.loadout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 58%,
+        color-mix(in oklab, var(--accent-1) 14%, transparent) 72%,
+        transparent 86%
+    );
+    pointer-events: none;
+}
+.loadout__groups {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: 20px 28px;
+}
+.loadout__heading {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+}
+.loadout__list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+}
+.loadout__row {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    grid-template-areas:
+        "icon label"
+        "icon value";
+    column-gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--surface-2) 55%, transparent);
+}
+.loadout__icon {
+    grid-area: icon;
+    fill: none;
+    stroke: var(--accent-1);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.loadout__label {
+    grid-area: label;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.loadout__value {
+    grid-area: value;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--text-1);
+    overflow-wrap: anywhere;
+}
