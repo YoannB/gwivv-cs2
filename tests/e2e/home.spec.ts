@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import {
     CLIPS,
     CLIPS_ON_HOME,
+    HEADER_NAV,
     HEADER_SECTIONS,
     HIGHLIGHTS,
     LOADOUT,
@@ -116,12 +117,13 @@ test.describe("Home — structural smoke", () => {
         }
     });
 
-    test("the header links to every home section and marks the one reached", async ({ page }) => {
+    test("the header links to every home section, then its pages, and marks the one reached", async ({ page }) => {
         await page.goto("/");
 
         const nav = page.getByRole("navigation", { name: "Main" });
         const links = nav.getByRole("link");
-        await expect(links).toHaveCount(HEADER_SECTIONS.length);
+        // Section anchors first, then the pages kept in the header (HEADER_NAV, e.g. the game).
+        await expect(links).toHaveCount(HEADER_SECTIONS.length + HEADER_NAV.length);
         for (const [i, section] of HEADER_SECTIONS.entries()) {
             await expect(links.nth(i)).toHaveAttribute("href", new RegExp(`#${section.id}$`));
             await expect(page.locator(`#${section.id}`)).toHaveCount(1);

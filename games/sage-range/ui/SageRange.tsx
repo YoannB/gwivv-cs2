@@ -15,6 +15,7 @@ import { DEFAULT_SETTINGS, type Settings } from "../core/settings";
 import { replay } from "../core/submission";
 import { summarize, type Summary } from "../core/summary";
 import { PlayField } from "./PlayField";
+import { SettingsPanel } from "./SettingsPanel";
 import { InvalidRun, MobileNotice, ResultsScreen, StartScreen } from "./screens";
 import type { SageRangeProps, SageRangeStorage, SageRangeTestHook } from "./types";
 
@@ -212,6 +213,11 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
     const common = { labels, locale, saved, boards, leaderboard, onBoards: setBoards, returnLink };
     const onIdentity = (identity: string) => store.set({ ...store.get(), identity });
 
+    const onSettings = (update: (current: Settings) => Settings) => {
+        const current = store.get();
+        store.set({ ...current, settings: update(current.settings) });
+    };
+
     let phase: string;
     let body: ReactNode;
     if (screen.kind === "play") {
@@ -248,6 +254,12 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                                 {labels.quit}
                             </button>
                         </div>
+                        {/* Tune sensitivity and crosshair mid-session; Resume applies them at once. */}
+                        <SettingsPanel
+                            labels={labels}
+                            settings={saved?.settings ?? DEFAULT_SETTINGS}
+                            onChange={onSettings}
+                        />
                     </div>
                 ) : null}
             </PlayField>
@@ -306,10 +318,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 onIdentity={onIdentity}
                 onShowRun={(run) => goTo(`#r=${run}`)}
                 onBestSubmitted={(level, run) => store.set(markSubmitted(store.get(), level, run))}
-                onSettings={(update: (current: Settings) => Settings) => {
-                    const current = store.get();
-                    store.set({ ...current, settings: update(current.settings) });
-                }}
+                onSettings={onSettings}
             />
         );
     }
