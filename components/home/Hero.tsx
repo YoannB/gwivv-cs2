@@ -9,7 +9,7 @@ import Image from "next/image";
 export async function Hero({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: "hero" });
     return (
-        <section className="hero" aria-labelledby="hero-title">
+        <section id="profile" className="hero" aria-labelledby="hero-title">
             <div className="hero__inner">
                 <div className="hero__copy">
                     <p className="hero__eyebrow">{t("eyebrow")}</p>

@@ -17,7 +17,7 @@ export async function PlayerStats({ locale }: { locale: string }) {
         new Date(FACEIT_SNAPSHOT.date),
     );
     return (
-        <section className="stats" aria-labelledby="stats-title">
+        <section id="stats" className="stats" aria-labelledby="stats-title">
             <div className="stats__head">
                 <h2 id="stats-title" className="section-heading">
                     {t("title")}

@@ -6,22 +6,30 @@ import {
     GITHUB_URL,
     HEADER_NAV,
     HEADER_NAV_ENABLED,
+    HEADER_SECTIONS,
     SITE_NAME,
 } from "@/constants/site";
+import { useActiveSection } from "@/hooks/use-active-section";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+const SECTION_IDS = HEADER_SECTIONS.map((s) => s.id);
+
 // DOM order: burger (1st, on the left on mobile, display:none on desktop), brand, nav,
 // tools. The tools are pushed to the right by margin-left:auto (CSS), without an auto margin on
 // the brand, which would override the nav's flex:1 on desktop.
 // Optional chrome (constants/site.ts): HEADER_NAV_ENABLED (nav + burger), GITHUB_LINK_ENABLED,
-// BRAND_ACCENT_FROM; HEADER_NAV drops site entries declared `header: false`; and a brand tagline shown when messages define `nav.tagline` (+ `nav.taglineSub`).
+// BRAND_ACCENT_FROM; HEADER_SECTIONS (anchors to the home sections, the one in view marked active)
+// then HEADER_NAV, which drops site entries declared `header: false`; and a brand tagline shown when
+// messages define `nav.tagline` (+ `nav.taglineSub`).
 export function Header() {
     const t = useTranslations("nav");
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
+    // Scroll spy, on the home only: the section links are anchors into that page.
+    const activeSection = useActiveSection(SECTION_IDS, pathname === "/");
     const close = () => setOpen(false);
     const tagline = t.has("tagline") ? t("tagline") : null;
     const taglineSub = t.has("taglineSub") ? t("taglineSub") : null;
@@ -61,6 +69,17 @@ export function Header() {
 
                 {HEADER_NAV_ENABLED ? (
                     <nav id="site-nav" className={cn("site-nav", open && "is-open")} aria-label="Main">
+                        {HEADER_SECTIONS.map((s) => (
+                            <Link
+                                key={s.id}
+                                href={{ pathname: "/", hash: s.id }}
+                                className={cn("site-nav__link", activeSection === s.id && "is-active")}
+                                aria-current={activeSection === s.id ? "location" : undefined}
+                                onClick={close}
+                            >
+                                {t(s.key)}
+                            </Link>
+                        ))}
                         {HEADER_NAV.map((n) => (
                             <Link
                                 key={n.href}

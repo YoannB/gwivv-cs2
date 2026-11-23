@@ -131,25 +131,39 @@ export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
 export const ENABLED_COLLECTIONS = COLLECTIONS.filter((c) => c.enabled);
 
 // Footer + HTML sitemap: every entry, in this order (labels: messages `nav.<id>`). A disabled
-// collection drops its entry. Header: HEADER_NAV (an entry with `header: false` stays out of it,
-// keeping the header short).
+// collection drops its entry. Header: HEADER_SECTIONS first, then HEADER_NAV (an entry with
+// `header: false` stays out of it). Here every page is `header: false`: the header is the
+// profile's own navigation; the pages stay in the footer and the HTML sitemap.
 interface NavEntry {
     readonly href: string;
     readonly key: string;
     readonly header?: boolean;
 }
 const ALL_NAV = [
-    { href: "/", key: "nav.home" },
-    { href: "/articles", key: "nav.articles" },
-    { href: "/sitemap", key: "nav.sitemap" },
-    { href: "/legal", key: "nav.legal" },
-    { href: "/privacy", key: "nav.privacy" },
-    { href: "/cookies", key: "nav.cookies" },
+    { href: "/", key: "nav.home", header: false },
+    { href: "/articles", key: "nav.articles", header: false },
+    { href: "/sitemap", key: "nav.sitemap", header: false },
+    { href: "/legal", key: "nav.legal", header: false },
+    { href: "/privacy", key: "nav.privacy", header: false },
+    { href: "/cookies", key: "nav.cookies", header: false },
 ] as const satisfies readonly NavEntry[];
 export const NAV: readonly (NavEntry & (typeof ALL_NAV)[number])[] = ALL_NAV.filter(
     (n) => !HIDDEN_HREFS.includes(n.href),
 );
 export const HEADER_NAV = NAV.filter((n) => n.header !== false);
+
+/** A home section reachable from the header: its element id and its `nav.<key>` label. */
+export interface HeaderSection {
+    readonly id: string;
+    readonly key: string;
+}
+/** Header navigation (spec 4.1): anchors to the home sections, in page order. */
+export const HEADER_SECTIONS: readonly HeaderSection[] = [
+    { id: "profile", key: "profile" },
+    { id: "stats", key: "statistics" },
+    { id: "highlights", key: "highlights" },
+    { id: "loadout", key: "loadout" },
+];
 
 // Comments under collection entries (docs/articles.md → Comments). The shortname:
 // NEXT_PUBLIC_DISQUS_SHORTNAME (inlined at build) wins over COMMENTS_PROVIDER.shortname; none =>

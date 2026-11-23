@@ -1,5 +1,9 @@
 {
     "nav": {
+        "profile": "Profil",
+        "statistics": "Statistiken",
+        "highlights": "Highlights",
+        "loadout": "Loadout",
         "home": "Startseite",
         "articles": "Artikel",
         "sitemap": "Sitemap",

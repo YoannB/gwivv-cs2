@@ -2,6 +2,8 @@
 /* Full-bleed band: the scene fills the width, the content follows the 1280px container. */
 .hero {
     position: relative;
+    /* Under the sticky header (64px) when reached from the header's Profile link. */
+    scroll-margin-top: 64px;
     isolation: isolate;
     overflow: hidden;
     min-height: min(78vh, 760px);
