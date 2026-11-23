@@ -37,4 +37,15 @@ describe("activeSection", () => {
         expect(activeSection(IDS, document, "#loadout")).toBe("loadout");
         expect(activeSection(IDS, document, "#stats")).toBe("highlights");
     });
+
+    it("at the bottom of the page, prefers the hashed section, else the last one", () => {
+        page({ profile: -900, stats: -400, highlights: -100, loadout: 300 });
+        expect(activeSection(IDS, document, "", true)).toBe("loadout");
+        expect(activeSection(IDS, document, "#stats", true)).toBe("stats");
+        expect(activeSection(IDS, document, "#missing", true)).toBe("loadout");
+    });
+
+    it("ignores the bottom rule when no section is present", () => {
+        expect(activeSection(IDS, document, "#loadout", true)).toBeNull();
+    });
 });

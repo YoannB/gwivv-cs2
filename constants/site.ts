@@ -152,19 +152,6 @@ export const NAV: readonly (NavEntry & (typeof ALL_NAV)[number])[] = ALL_NAV.fil
 );
 export const HEADER_NAV = NAV.filter((n) => n.header !== false);
 
-/** A home section reachable from the header: its element id and its `nav.<key>` label. */
-export interface HeaderSection {
-    readonly id: string;
-    readonly key: string;
-}
-/** Header navigation (spec 4.1): anchors to the home sections, in page order. */
-export const HEADER_SECTIONS: readonly HeaderSection[] = [
-    { id: "profile", key: "profile" },
-    { id: "stats", key: "statistics" },
-    { id: "highlights", key: "highlights" },
-    { id: "loadout", key: "loadout" },
-];
-
 // Comments under collection entries (docs/articles.md → Comments). The shortname:
 // NEXT_PUBLIC_DISQUS_SHORTNAME (inlined at build) wins over COMMENTS_PROVIDER.shortname; none =>
 // off (COMMENTS null). COMMENTS_ENABLED = at least one enabled collection shows them (next.config.ts
@@ -247,6 +234,23 @@ export const CLIPS: readonly Clip[] = [
     },
 ];
 export const CLIPS_ON_HOME = 3;
+
+/** A home section reachable from the header: its element id and its `nav.<key>` label. */
+export interface HeaderSection {
+    readonly id: string;
+    readonly key: string;
+}
+/**
+ * Header navigation (spec 4.1): anchors to the home sections, in page order. Declared after CLIPS:
+ * the Clips entry exists only when the section renders (LatestClips renders nothing without clips).
+ */
+export const HEADER_SECTIONS: readonly HeaderSection[] = [
+    { id: "profile", key: "profile" },
+    { id: "stats", key: "statistics" },
+    { id: "highlights", key: "highlights" },
+    { id: "loadout", key: "loadout" },
+    ...(CLIPS.length > 0 ? [{ id: "clips", key: "clips" }] : []),
+];
 
 /**
  * Whether the Sage Range mini-game is served at `/range`. False until the game ships: the home

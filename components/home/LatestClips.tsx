@@ -11,7 +11,7 @@ export async function LatestClips({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: "clips" });
     const date = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" });
     return (
-        <section className="clips" aria-labelledby="clips-title">
+        <section id="clips" className="clips" aria-labelledby="clips-title">
             <h2 id="clips-title" className="section-heading">
                 {t("title")}
             </h2>

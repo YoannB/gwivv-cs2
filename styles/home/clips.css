@@ -20,6 +20,9 @@
 }
 
 /* ===== Latest clips (components/home/LatestClips.tsx, ClipPlayer.tsx) ===== */
+.clips {
+    scroll-margin-top: 88px;
+}
 .clips__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));

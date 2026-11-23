@@ -7,23 +7,34 @@ export const SECTION_THRESHOLD = 120;
 /**
  * Which of `ids` the reader is in: the reached section (top at or above the threshold) that starts
  * lowest. Sections starting at the same height (side by side) are told apart by the URL hash when it
- * names one of them, else the first one wins. Before any is reached: the first present one. None of
- * the ids in the page: null. PURE over the DOM, exported for the unit tests.
+ * names one of them, else the first one wins. Before any is reached: the first present one. At the
+ * bottom of the page, where the last sections can never scroll up to the threshold: the section the
+ * hash names, else the last present one. None of the ids in the page: null. PURE over the DOM,
+ * exported for the unit tests.
  */
-export function activeSection(ids: readonly string[], doc: Document, hash: string): string | null {
+export function activeSection(ids: readonly string[], doc: Document, hash: string, atBottom = false): string | null {
     let best: { id: string; top: number } | null = null;
     let first: string | null = null;
+    let last: string | null = null;
+    let hashed: string | null = null;
     for (const id of ids) {
         const el = doc.getElementById(id);
         if (!el) continue;
         first ??= id;
+        last = id;
+        if (hash === `#${id}`) hashed = id;
         const top = el.getBoundingClientRect().top;
         if (top > SECTION_THRESHOLD) continue;
         const tie = best !== null && Math.abs(top - best.top) < 2;
         if (!best || (tie ? hash === `#${id}` : top > best.top)) best = { id, top };
     }
+    if (atBottom && last) return hashed ?? last;
     return best?.id ?? first;
 }
+
+/** Is the window scrolled to the end of the document (within 2px)? */
+const scrolledToBottom = (): boolean =>
+    window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
 
 // Scroll spy over the page's sections, as an external store (scroll, resize and hash changes):
 // no setState in an effect. Server snapshot: null (nothing highlighted before hydration).
@@ -44,7 +55,7 @@ export function useActiveSection(ids: readonly string[], enabled = true): string
         [enabled],
     );
     const getSnap = useCallback(
-        () => (enabled ? activeSection(key.split(","), document, window.location.hash) : null),
+        () => (enabled ? activeSection(key.split(","), document, window.location.hash, scrolledToBottom()) : null),
         [key, enabled],
     );
     const getServerSnap = useCallback(() => null, []);
