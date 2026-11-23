@@ -5,6 +5,7 @@ import { POINTS, TICK_MS, isDifficulty } from "./config";
 import { createGame } from "./engine";
 import { fill, formatClock, formatNumber, formatPercent, utcDay } from "./format";
 import { chance, createRng, nextFloat, nextInt } from "./rng";
+import { DEFAULT_SETTINGS } from "./settings";
 import { EMPTY_SAVED, bestScore, isUnlocked, markSubmitted, parseSaved, recordScore } from "./saved";
 import { gradeFor, summarize } from "./summary";
 
@@ -119,8 +120,12 @@ describe("saved data", () => {
 
     it("reads stored data defensively", () => {
         expect(parseSaved(null)).toBe(EMPTY_SAVED);
-        expect(parseSaved({ best: null, identity: 4 })).toEqual({ best: {}, identity: "" });
-        expect(parseSaved({ best: {}, identity: "x".repeat(301) })).toEqual({ best: {}, identity: "" });
+        expect(parseSaved({ best: null, identity: 4 })).toEqual({ best: {}, identity: "", settings: DEFAULT_SETTINGS });
+        expect(parseSaved({ best: {}, identity: "x".repeat(301) })).toEqual({
+            best: {},
+            identity: "",
+            settings: DEFAULT_SETTINGS,
+        });
         expect(
             parseSaved({
                 best: {
@@ -131,7 +136,11 @@ describe("saved data", () => {
                 },
                 identity: " steamcommunity.com/id/ace ",
             }),
-        ).toEqual({ best: { recruit: run(120, "AbC", true) }, identity: "steamcommunity.com/id/ace" });
+        ).toEqual({
+            best: { recruit: run(120, "AbC", true) },
+            identity: "steamcommunity.com/id/ace",
+            settings: DEFAULT_SETTINGS,
+        });
         expect(parseSaved({ best: { recruit: 120, regular: { score: 2.5, code: "A" } } }).best).toEqual({});
         expect(parseSaved({ best: { recruit: { score: 5, code: "A".repeat(8001) } } }).best).toEqual({});
         expect(parseSaved({ best: { recruit: { score: 5, code: 7 } } }).best).toEqual({});
@@ -142,7 +151,10 @@ describe("saved data", () => {
 
     it("keeps the best run per difficulty, not yet submitted", () => {
         const first = recordScore(EMPTY_SAVED, "elite", 300, "Run1");
-        expect(first).toEqual({ saved: { best: { elite: run(300, "Run1") }, identity: "" }, newBest: true });
+        expect(first).toEqual({
+            saved: { best: { elite: run(300, "Run1") }, identity: "", settings: DEFAULT_SETTINGS },
+            newBest: true,
+        });
         expect(recordScore(first.saved, "elite", 300, "Run2")).toEqual({ saved: first.saved, newBest: false });
         expect(recordScore(first.saved, "elite", 0, "Run3").newBest).toBe(false);
         expect(bestScore(first.saved, "elite")).toBe(300);
@@ -150,7 +162,7 @@ describe("saved data", () => {
     });
 
     it("marks the best run as submitted only when it still is the best", () => {
-        const saved = { best: { elite: run(300, "Run1") }, identity: "" };
+        const saved = { best: { elite: run(300, "Run1") }, identity: "", settings: DEFAULT_SETTINGS };
         expect(markSubmitted(saved, "elite", "Run1").best.elite).toEqual(run(300, "Run1", true));
         expect(markSubmitted(saved, "elite", "Old")).toBe(saved);
         expect(markSubmitted(saved, "recruit", "Run1")).toBe(saved);
@@ -161,9 +173,11 @@ describe("saved data", () => {
     it("opens the levels one after the other", () => {
         expect(isUnlocked(EMPTY_SAVED, "recruit")).toBe(true);
         expect(isUnlocked(EMPTY_SAVED, "regular")).toBe(false);
-        const recruit = { best: { recruit: run(40) }, identity: "" };
+        const recruit = { best: { recruit: run(40) }, identity: "", settings: DEFAULT_SETTINGS };
         expect(isUnlocked(recruit, "regular")).toBe(true);
         expect(isUnlocked(recruit, "elite")).toBe(false);
-        expect(isUnlocked({ best: { regular: run(10) }, identity: "" }, "elite")).toBe(true);
+        expect(isUnlocked({ best: { regular: run(10) }, identity: "", settings: DEFAULT_SETTINGS }, "elite")).toBe(
+            true,
+        );
     });
 });

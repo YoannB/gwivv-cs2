@@ -2,6 +2,7 @@
 // optional backdrop picture can sit under the drawing). Reads the engine state, never changes it.
 import { ARENA_HEIGHT, ARENA_WIDTH, EMERGE_TICKS, RAILS, RETREAT_TICKS } from "../core/config";
 import { looksValid, type GameState, type Target } from "../core/engine";
+import { crosshairGeometry, type CrosshairSettings } from "../core/settings";
 import { drawFx, type Fx } from "./fx";
 import { PALETTE } from "./palette";
 
@@ -50,6 +51,7 @@ export interface FrameInput {
     font: string;
     /** Countdown digit to show (3, 2, 1), or null. */
     countdown: number | null;
+    crosshair: CrosshairSettings;
     nowMs: number;
 }
 
@@ -84,7 +86,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, input: FrameInput): voi
     ctx.restore();
 
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
-    if (input.pointer) drawCrosshair(ctx, input.pointer.x, input.pointer.y, fx.recoil);
+    if (input.pointer) drawCrosshair(ctx, input.pointer.x, input.pointer.y, fx.recoil, input.crosshair);
 }
 
 function drawRange(ctx: CanvasRenderingContext2D, { backdrop, state, font, nowMs }: FrameInput): void {
@@ -344,26 +346,53 @@ function drawCountdown(ctx: CanvasRenderingContext2D, digit: number, font: strin
     ctx.shadowBlur = 0;
 }
 
-/** A plain four-line crosshair with a centre dot, opening slightly on each shot. */
-function drawCrosshair(ctx: CanvasRenderingContext2D, x: number, y: number, recoil: number): void {
-    const gap = 5 + recoil * 6;
-    const len = 9;
-    const lines = (color: string, width: number) => {
+/**
+ * The player's crosshair (style, colour, size from the settings), with a dark outline so it reads on
+ * any background; its gap opens slightly on each shot. Exported for the settings preview.
+ */
+export function drawCrosshair(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    recoil: number,
+    settings: CrosshairSettings,
+): void {
+    const g = crosshairGeometry(settings.size);
+    const gap = g.gap + recoil * 5;
+    const arms = settings.style === "t" ? ["left", "right", "down"] : ["left", "right", "up", "down"];
+    const withLines = settings.style === "cross" || settings.style === "crossDot" || settings.style === "t";
+    const withDot = settings.style === "crossDot" || settings.style === "dot";
+
+    const stroke = (color: string, extra: number) => {
         ctx.strokeStyle = color;
-        ctx.lineWidth = width;
+        ctx.lineWidth = g.thickness + extra;
+        ctx.lineCap = "butt";
         ctx.beginPath();
-        ctx.moveTo(x - gap - len, y);
-        ctx.lineTo(x - gap, y);
-        ctx.moveTo(x + gap, y);
-        ctx.lineTo(x + gap + len, y);
-        ctx.moveTo(x, y - gap - len);
-        ctx.lineTo(x, y - gap);
-        ctx.moveTo(x, y + gap);
-        ctx.lineTo(x, y + gap + len);
+        if (withLines) {
+            for (const arm of arms) {
+                const [dx, dy] = arm === "left" ? [-1, 0] : arm === "right" ? [1, 0] : arm === "up" ? [0, -1] : [0, 1];
+                ctx.moveTo(x + dx * gap, y + dy * gap);
+                ctx.lineTo(x + dx * (gap + g.length), y + dy * (gap + g.length));
+            }
+        }
+        if (settings.style === "circle") {
+            ctx.moveTo(x + gap + g.length * 0.6, y);
+            ctx.arc(x, y, gap + g.length * 0.6, 0, Math.PI * 2);
+        }
         ctx.stroke();
     };
-    lines("rgba(7,7,7,0.85)", 4);
-    lines(PALETTE.offWhite, 2);
-    ctx.fillStyle = PALETTE.orange;
-    ctx.fillRect(x - 1.5, y - 1.5, 3, 3);
+    stroke("rgba(7,7,7,0.85)", 2);
+    stroke(settings.color, 0);
+
+    if (withDot || settings.style === "circle") {
+        const r = settings.style === "circle" ? Math.max(1, g.dot * 0.5) : g.dot;
+        ctx.fillStyle = "rgba(7,7,7,0.85)";
+        ctx.beginPath();
+        ctx.arc(x, y, r + 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = settings.color;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }

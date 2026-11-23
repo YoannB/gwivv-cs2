@@ -9,7 +9,9 @@ import { EMPTY_SAVED, IDENTITY_MAX, bestScore, isUnlocked, type SavedData } from
 import { decodeRun, payloadFromRun } from "../core/share";
 import { toPayload, type SubmissionPayload } from "../core/submission";
 import type { Summary } from "../core/summary";
+import { DEFAULT_SETTINGS, type Settings } from "../core/settings";
 import { Board, DifficultyPicker, ShareButton, TargetIcon } from "./parts";
+import { SettingsPanel } from "./SettingsPanel";
 import type { SageRangeLabels, SageRangeLeaderboard } from "./types";
 
 type BoardsState = Boards | null | undefined;
@@ -27,6 +29,7 @@ export function StartScreen({
     onIdentity,
     onShowRun,
     onBestSubmitted,
+    onSettings,
 }: {
     labels: SageRangeLabels;
     locale: string;
@@ -41,6 +44,7 @@ export function StartScreen({
     /** Opens a stored run (its replayed results). */
     onShowRun: (code: string) => void;
     onBestSubmitted: (difficulty: Difficulty, code: string) => void;
+    onSettings: (update: (current: Settings) => Settings) => void;
 }) {
     const best = saved?.best[difficulty];
     // The stored best can be sent to the leaderboard at any time, after as many tries as wanted.
@@ -88,6 +92,8 @@ export function StartScreen({
                 <button type="button" className="sr-btn sr-btn--primary sr-start__go" onClick={onStart}>
                     {labels.start}
                 </button>
+
+                <SettingsPanel labels={labels} settings={saved?.settings ?? DEFAULT_SETTINGS} onChange={onSettings} />
             </div>
 
             <aside className="sr-start__side">

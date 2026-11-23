@@ -3,6 +3,7 @@
 // to the leaderboard later — and the last identity typed for the leaderboard (this site: a Steam
 // profile link), so the next submission is one click.
 import { DIFFICULTIES, type Difficulty } from "./config";
+import { DEFAULT_SETTINGS, parseSettings, type Settings } from "./settings";
 
 /** Longest identity kept (a profile URL is far shorter). */
 export const IDENTITY_MAX = 300;
@@ -21,9 +22,10 @@ export interface BestRun {
 export interface SavedData {
     readonly best: Readonly<Partial<Record<Difficulty, BestRun>>>;
     readonly identity: string;
+    readonly settings: Settings;
 }
 
-export const EMPTY_SAVED: SavedData = { best: {}, identity: "" };
+export const EMPTY_SAVED: SavedData = { best: {}, identity: "", settings: DEFAULT_SETTINGS };
 
 function parseBest(raw: unknown): BestRun | null {
     if (typeof raw !== "object" || raw === null) return null;
@@ -46,7 +48,7 @@ export function parseSaved(raw: unknown): SavedData {
         }
     }
     const identity = typeof r.identity === "string" && r.identity.length <= IDENTITY_MAX ? r.identity.trim() : "";
-    return { best, identity };
+    return { best, identity, settings: parseSettings(r.settings) };
 }
 
 /** Personal best score of a level, 0 without one. */

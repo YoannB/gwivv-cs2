@@ -32,7 +32,14 @@ export interface Target {
     readonly homeX: number;
     x: number;
     readonly y: number;
-    vx: number;
+    /** Position in 1/100 arena units (movement is integer maths at a finer grain); x = xq / 100. */
+    xq: number;
+    /** Current horizontal speed, 1/100 arena units per tick. */
+    vq: number;
+    /** Top speed of this target, 1/100 arena units per tick (0 = still). */
+    readonly maxSpeed: number;
+    /** Direction it is accelerating towards. */
+    dir: 1 | -1;
     readonly size: number;
     /** Torso: a rounded rectangle, half-width bodyA (shoulders), half-height bodyB, corner radius. */
     readonly bodyA: number;
@@ -314,7 +321,7 @@ function advanceTargets(state: GameState, events: GameEvent[]): void {
             state.lastOpenTick = state.tick;
         } else if (target.phase === "open") {
             if (elapsed >= target.openTicks) expire(state, target, events);
-            else strafe(target);
+            else strafe(target, state.config.accel);
         } else if (target.phase === "retreat" && elapsed >= RETREAT_TICKS) {
             continue;
         }
@@ -329,17 +336,24 @@ function canOpen(state: GameState): boolean {
     return state.targets.filter((t) => t.phase === "open").length < state.config.maxOpen;
 }
 
-function strafe(target: Target): void {
-    target.x += target.vx;
-    const max = target.homeX + target.travel;
-    const min = target.homeX - target.travel;
-    if (target.x > max) {
-        target.x = max;
-        target.vx = -target.vx;
-    } else if (target.x < min) {
-        target.x = min;
-        target.vx = -target.vx;
+/**
+ * Strafing like a player: speed builds up by `accel` per tick to the target's top speed, and at the
+ * end of its lane it brakes and comes back (the same acceleration, so it pauses briefly at the edge).
+ */
+function strafe(target: Target, accel: number): void {
+    const goal = target.dir * target.maxSpeed;
+    target.vq = target.vq < goal ? Math.min(goal, target.vq + accel) : Math.max(goal, target.vq - accel);
+    target.xq += target.vq;
+    const max = (target.homeX + target.travel) * 100;
+    const min = (target.homeX - target.travel) * 100;
+    if (target.xq >= max) {
+        target.xq = max;
+        target.dir = -1;
+    } else if (target.xq <= min) {
+        target.xq = min;
+        target.dir = 1;
     }
+    target.x = Math.trunc(target.xq / 100);
 }
 
 /** The open window closed untouched: a valid target escaped, a decoy was rightly left alone. */
@@ -368,8 +382,8 @@ function spawn(state: GameState): void {
     const rail = nextInt(rng, 0, RAILS.length - 1);
     const size = Math.round((cfg.size * RAILS[rail].scale) / 100);
     const bodyA = Math.round(size * 0.7);
-    const speed = nextInt(rng, cfg.speed[0], cfg.speed[1]);
-    const travel = speed > 0 ? cfg.travel : 0;
+    const maxSpeed = nextInt(rng, cfg.maxSpeed[0], cfg.maxSpeed[1]);
+    const travel = maxSpeed > 0 ? cfg.travel : 0;
     const half = bodyA + travel;
     for (let attempt = 0; attempt < PLACEMENT_ATTEMPTS; attempt += 1) {
         const x = nextInt(rng, ARENA_MARGIN_X + half, ARENA_WIDTH - ARENA_MARGIN_X - half);
@@ -386,8 +400,10 @@ function spawn(state: GameState): void {
             homeX: x,
             x,
             y: RAILS[rail].y,
-            // `0 - speed`, not `-speed`: a still target keeps +0, never -0.
-            vx: chance(rng, 0.5) ? speed : 0 - speed,
+            xq: x * 100,
+            vq: 0,
+            maxSpeed,
+            dir: chance(rng, 0.5) ? 1 : -1,
             size,
             bodyA,
             bodyB: size,

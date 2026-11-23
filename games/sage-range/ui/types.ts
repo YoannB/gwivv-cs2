@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import type { Difficulty } from "../core/config";
 import type { Boards } from "../core/leaderboard";
+import type { CrosshairStyle } from "../core/settings";
 import type { SubmissionPayload } from "../core/submission";
 
 /** Every visible string of the game, already translated. `{placeholders}` are filled by the game. */
@@ -20,6 +21,15 @@ export interface SageRangeLabels {
     difficultyHint: Record<Difficulty, string>;
     /** `{level}`: the level below, which needs a score first. */
     difficultyLocked: string;
+    settingsTitle: string;
+    sensitivity: string;
+    sensitivityHint: string;
+    crosshair: string;
+    crosshairStyle: string;
+    crosshairStyles: Record<CrosshairStyle, string>;
+    crosshairColor: string;
+    crosshairSize: string;
+    settingsReset: string;
     start: string;
     controlsTitle: string;
     controlAim: string;
@@ -125,4 +135,6 @@ export interface SageRangeTestHook {
     seed?: number;
     durationTicks?: number;
     countdownMs?: number;
+    /** false: no mouse capture (headless browsers), the plain cursor position is used. */
+    pointerLock?: boolean;
 }

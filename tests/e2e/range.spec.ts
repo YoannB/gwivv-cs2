@@ -17,6 +17,7 @@ test.describe("Sage Range", () => {
                 seed: 7,
                 durationTicks: 120,
                 countdownMs: 0,
+                pointerLock: false,
             };
         });
         await page.goto(RANGE);

@@ -2,7 +2,7 @@
 // reads is an integer (arena units, ticks), so a session replays bit for bit from its seed and its
 // shot log. Bumping RULES_VERSION retires every leaderboard entry made under the previous rules.
 
-export const RULES_VERSION = 3;
+export const RULES_VERSION = 4;
 
 /** Simulation rate: one tick = 1/60 s. */
 export const TICKS_PER_SECOND = 60;
@@ -75,8 +75,10 @@ export interface DifficultyConfig {
     readonly maxOpen: number;
     /** Minimum ticks between two openings. */
     readonly openGapTicks: number;
-    /** Strafe speed while open, arena units per tick, drawn in [min, max]. */
-    readonly speed: readonly [number, number];
+    /** Top strafe speed while open, 1/100 arena units per tick, drawn in [min, max] (0 = still). */
+    readonly maxSpeed: readonly [number, number];
+    /** Speed gained (or lost when braking) per tick, 1/100 arena units per tick. */
+    readonly accel: number;
     /** Strafe amplitude around the spawn point, arena units. */
     readonly travel: number;
     /** Armour of hostile targets: a vest makes body hits take two, a helmet does the same for the head. */
@@ -97,7 +99,8 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         openTicks: 72,
         maxOpen: 1,
         openGapTicks: 30,
-        speed: [0, 0],
+        maxSpeed: [0, 0],
+        accel: 0,
         travel: 0,
         armor: { vest: false, helmet: false },
     },
@@ -114,8 +117,9 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         openTicks: 57,
         maxOpen: 1,
         openGapTicks: 24,
-        speed: [0, 3],
-        travel: 90,
+        maxSpeed: [0, 110],
+        accel: 6,
+        travel: 70,
         armor: { vest: true, helmet: false },
     },
     elite: {
@@ -125,14 +129,15 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         maxLive: 4,
         decoyPercent: 45,
         mimicPercent: 35,
-        size: 40,
+        size: 44,
         guardTicks: [18, 60],
         holdTicks: [0, 36],
         openTicks: 42,
         maxOpen: 2,
         openGapTicks: 24,
-        speed: [2, 5],
-        travel: 130,
+        maxSpeed: [50, 160],
+        accel: 8,
+        travel: 100,
         armor: { vest: true, helmet: true },
     },
 };

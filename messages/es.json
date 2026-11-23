@@ -183,7 +183,22 @@
             "bestSubmitted": "Enviado a la clasificación.",
             "bestNotSubmitted": "Aún no enviado a la clasificación: envíalo cuando quieras.",
             "bestShow": "Ver esta partida",
-            "bestSend": "Enviar mi récord"
+            "bestSend": "Enviar mi récord",
+            "settingsTitle": "Ajustes",
+            "sensitivity": "Sensibilidad",
+            "sensitivityHint": "Se aplica cuando el juego captura el ratón (al empezar una sesión; Esc lo libera). 1,00 = la velocidad de tu cursor habitual.",
+            "crosshair": "Mira",
+            "crosshairStyle": "Estilo de la mira",
+            "crosshairStyles": {
+                "crossDot": "Cruz + punto",
+                "cross": "Cruz",
+                "dot": "Punto",
+                "t": "T",
+                "circle": "Círculo"
+            },
+            "crosshairColor": "Color de la mira",
+            "crosshairSize": "Tamaño",
+            "settingsReset": "Restablecer"
         }
     },
     "showcase": {

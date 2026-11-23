@@ -86,6 +86,18 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
 - Tests: `tests/e2e/range.spec.ts` uses the test hook `window.__SAGE_RANGE_TEST__` (seed, short
   session, no countdown); hooked runs never offer the leaderboard.
 
+## Movement, sensitivity, crosshair
+
+Moving targets strafe like a player (`strafe` in `core/engine.ts`): speed builds up by `accel` per
+tick to the target's `maxSpeed`, and at the end of its lane it brakes with the same acceleration and
+comes back. Speeds are 1/100 arena units per tick so the maths stays integer.
+
+Settings (`core/settings.ts`, saved with the bests): sensitivity 0.10–5.00 (two decimals; 1.00 =
+the desktop cursor speed) and the crosshair (style, colour, size 1–10). During a session the canvas
+captures the mouse (Pointer Lock, raw input where the browser offers it) and the crosshair moves by
+`movementX/Y × sensitivity`; Esc releases the capture and pauses, Resume captures it again. Without
+capture (refused, or `pointerLock: false` in the test hook) the plain cursor position is used.
+
 ## Personal best, sent whenever the player wants
 
 The browser keeps, per level, the best session's score AND its share code (`core/saved.ts`). The

@@ -183,7 +183,22 @@
             "bestSubmitted": "An die Rangliste gesendet.",
             "bestNotSubmitted": "Noch nicht an die Rangliste gesendet: sende ihn, wann du willst.",
             "bestShow": "Diese Runde ansehen",
-            "bestSend": "Rekord senden"
+            "bestSend": "Rekord senden",
+            "settingsTitle": "Einstellungen",
+            "sensitivity": "Empfindlichkeit",
+            "sensitivityHint": "Gilt, solange das Spiel die Maus einfängt (beim Start einer Sitzung; Esc gibt sie frei). 1,00 = deine normale Zeigergeschwindigkeit.",
+            "crosshair": "Fadenkreuz",
+            "crosshairStyle": "Fadenkreuz-Stil",
+            "crosshairStyles": {
+                "crossDot": "Kreuz + Punkt",
+                "cross": "Kreuz",
+                "dot": "Punkt",
+                "t": "T",
+                "circle": "Kreis"
+            },
+            "crosshairColor": "Fadenkreuzfarbe",
+            "crosshairSize": "Größe",
+            "settingsReset": "Zurücksetzen"
         }
     },
     "showcase": {

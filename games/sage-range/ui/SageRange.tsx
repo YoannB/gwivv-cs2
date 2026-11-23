@@ -5,19 +5,20 @@
 // Results live in the URL (`#r=<code>`, core/share.ts): a finished session pushes a history entry,
 // so Back returns to it, a reload keeps it, and the address IS the share link. Opening someone
 // else's link replays the session in the browser and shows it read-only.
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { Difficulty } from "../core/config";
 import { createGame, type GameState } from "../core/engine";
 import type { Boards } from "../core/leaderboard";
 import { EMPTY_SAVED, isUnlocked, markSubmitted, parseSaved, recordScore, type SavedData } from "../core/saved";
 import { decodeRun, encodeRun, runCodeFromHash, runFromGame } from "../core/share";
+import { DEFAULT_SETTINGS, type Settings } from "../core/settings";
 import { replay } from "../core/submission";
 import { summarize, type Summary } from "../core/summary";
 import { PlayField } from "./PlayField";
 import { InvalidRun, MobileNotice, ResultsScreen, StartScreen } from "./screens";
 import type { SageRangeProps, SageRangeStorage, SageRangeTestHook } from "./types";
 
-type Screen = { kind: "idle" } | { kind: "play"; game: GameState; countdownMs: number };
+type Screen = { kind: "idle" } | { kind: "play"; game: GameState; countdownMs: number; pointerLock: boolean };
 
 /** A session played in this page load: the live game is needed to submit it. */
 interface OwnRun {
@@ -132,6 +133,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                     durationTicks: hook?.durationTicks,
                 }),
                 countdownMs: hook?.countdownMs ?? COUNTDOWN_MS,
+                pointerLock: hook?.pointerLock !== false,
             });
         },
         [difficulty],
@@ -173,12 +175,20 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
 
     const playing = screen.kind === "play";
 
+    const lockLostAt = useRef(-Infinity);
+    const lockLost = useCallback(() => {
+        lockLostAt.current = performance.now();
+        setPaused(true);
+    }, []);
+
     // Esc pauses and resumes; leaving the tab or the window pauses; Back ends the session.
     useEffect(() => {
         if (!playing) return;
         const onKey = (e: KeyboardEvent) => {
             if (e.key !== "Escape") return;
             e.preventDefault();
+            // The Esc that released the captured mouse already paused (lock lost): do not undo it.
+            if (performance.now() - lockLostAt.current < 400) return;
             setPaused((p) => !p);
         };
         const onHide = () => setPaused(true);
@@ -215,6 +225,9 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 labels={labels}
                 locale={locale}
                 backdropSrc={backdropSrc}
+                settings={saved?.settings ?? DEFAULT_SETTINGS}
+                pointerLock={screen.pointerLock}
+                onLockLost={lockLost}
                 onEnd={finish}
             >
                 {paused ? (
@@ -293,6 +306,10 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 onIdentity={onIdentity}
                 onShowRun={(run) => goTo(`#r=${run}`)}
                 onBestSubmitted={(level, run) => store.set(markSubmitted(store.get(), level, run))}
+                onSettings={(update: (current: Settings) => Settings) => {
+                    const current = store.get();
+                    store.set({ ...current, settings: update(current.settings) });
+                }}
             />
         );
     }

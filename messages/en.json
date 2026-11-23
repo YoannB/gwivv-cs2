@@ -183,7 +183,22 @@
             "bestSubmitted": "Sent to the leaderboard.",
             "bestNotSubmitted": "Not sent to the leaderboard yet: send it whenever you like.",
             "bestShow": "See this run",
-            "bestSend": "Send my best"
+            "bestSend": "Send my best",
+            "settingsTitle": "Settings",
+            "sensitivity": "Sensitivity",
+            "sensitivityHint": "Applied while the game holds your mouse (it is captured when a session starts; Esc frees it). 1.00 = your desktop cursor speed.",
+            "crosshair": "Crosshair",
+            "crosshairStyle": "Crosshair style",
+            "crosshairStyles": {
+                "crossDot": "Cross + dot",
+                "cross": "Cross",
+                "dot": "Dot",
+                "t": "T",
+                "circle": "Circle"
+            },
+            "crosshairColor": "Crosshair colour",
+            "crosshairSize": "Size",
+            "settingsReset": "Reset settings"
         }
     },
     "showcase": {

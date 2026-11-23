@@ -12,7 +12,10 @@ function target(over: Partial<Target> = {}): Target {
         homeX: 800,
         x: 800,
         y: 600,
-        vx: 0,
+        xq: 80000,
+        vq: 0,
+        maxSpeed: 0,
+        dir: 1,
         size: 50,
         bodyA: 31,
         bodyB: 50,
@@ -329,17 +332,33 @@ describe("target phases", () => {
         expect(state.streak).toBe(0);
     });
 
-    it("strafes inside its travel and bounces at both ends", () => {
-        const t = target({ vx: 4, travel: 6 });
+    it("accelerates to its top speed, then holds it", () => {
+        const t = target({ maxSpeed: 10, travel: 50, openTicks: 1000 });
         const state = arena(t);
+        const accel = DIFFICULTY_CONFIGS.regular.accel;
         stepGame(state, []);
-        expect(t.x).toBe(804);
+        expect(t.vq).toBe(accel);
         stepGame(state, []);
-        expect([t.x, t.vx]).toEqual([806, -4]);
-        for (let i = 0; i < 3; i += 1) stepGame(state, []);
-        expect([t.x, t.vx]).toEqual([794, -4]);
+        expect(t.vq).toBe(10);
         stepGame(state, []);
-        expect([t.x, t.vx]).toEqual([794, 4]);
+        expect([t.vq, t.xq]).toEqual([10, 80000 + accel + 20]);
+    });
+
+    it("brakes at the end of its lane, comes back, and turns again at the other end", () => {
+        const t = target({ maxSpeed: 400, travel: 1, openTicks: 1000 });
+        const state = arena(t);
+        const seen: number[] = [];
+        let turnedBack = false;
+        for (let i = 0; i < 200; i += 1) {
+            stepGame(state, []);
+            seen.push(t.x);
+            if (t.dir === -1) turnedBack = true;
+            if (turnedBack && t.dir === 1) break;
+        }
+        expect(turnedBack).toBe(true);
+        expect(t.dir).toBe(1);
+        expect(Math.max(...seen)).toBe(801);
+        expect(Math.min(...seen)).toBe(799);
     });
 });
 
@@ -359,7 +378,7 @@ describe("spawning", () => {
     it("keeps still targets without travel", () => {
         const state = createGame({ difficulty: "recruit", seed: 42 });
         for (let i = 0; i < 31; i += 1) stepGame(state, []);
-        expect(state.targets[0]).toMatchObject({ travel: 0, vx: 0 });
+        expect(state.targets[0]).toMatchObject({ travel: 0, maxSpeed: 0 });
     });
 
     it("never exceeds the live cap and retries when there is no room", () => {
@@ -393,7 +412,7 @@ describe("spawning", () => {
         expect(a.seen.some((t) => t.kind === "valid")).toBe(true);
         expect(a.seen.some((t) => t.kind === "decoy" && !t.mimic)).toBe(true);
         expect(a.seen.some((t) => t.mimic)).toBe(true);
-        expect(a.seen.some((t) => t.vx > 0) && a.seen.some((t) => t.vx < 0)).toBe(true);
+        expect(a.seen.some((t) => t.dir > 0) && a.seen.some((t) => t.dir < 0)).toBe(true);
         expect(a.state.stats.escaped + a.state.stats.rejected).toBeGreaterThan(20);
     });
 });

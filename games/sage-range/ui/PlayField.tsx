@@ -7,6 +7,7 @@ import { stepGame, type GameState } from "../core/engine";
 import { formatClock, formatPercent } from "../core/format";
 import { computeView, drawFrame, toArena, type View } from "../render/draw";
 import { applyEvents, createFx, onShot, updateFx } from "../render/fx";
+import type { Settings } from "../core/settings";
 import type { SageRangeLabels } from "./types";
 
 interface Hud {
@@ -47,6 +48,9 @@ export function PlayField({
     labels,
     locale,
     backdropSrc,
+    settings,
+    pointerLock,
+    onLockLost,
     onEnd,
     children,
 }: {
@@ -56,20 +60,33 @@ export function PlayField({
     labels: SageRangeLabels;
     locale: string;
     backdropSrc?: string;
+    settings: Settings;
+    /** Capture the mouse (sensitivity applies); false keeps the plain cursor position (tests). */
+    pointerLock: boolean;
+    /** The capture was released (Esc, focus lost): the parent pauses. */
+    onLockLost: () => void;
     onEnd: (game: GameState) => void;
     children?: ReactNode;
 }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const pausedRef = useRef(paused);
     const onEndRef = useRef(onEnd);
+    const onLockLostRef = useRef(onLockLost);
+    const settingsRef = useRef(settings);
+    const relockRef = useRef<() => void>(() => {});
     const [hud, setHud] = useState<Hud>(() => readHud(game));
 
     useEffect(() => {
         pausedRef.current = paused;
+        // Paused: free the mouse for the menu. Resumed (a click, so a user gesture): capture it again.
+        if (paused) document.exitPointerLock?.();
+        else relockRef.current();
     }, [paused]);
     useEffect(() => {
         onEndRef.current = onEnd;
-    }, [onEnd]);
+        onLockLostRef.current = onLockLost;
+        settingsRef.current = settings;
+    }, [onEnd, onLockLost, settings]);
 
     useEffect(() => {
         const canvas = canvasRef.current as HTMLCanvasElement;
@@ -85,6 +102,9 @@ export function PlayField({
         let endedAt: number | null = null;
         let lastHud = readHud(game);
         let raf = 0;
+        // Pointer lock: the crosshair moves by the mouse's raw movement times the sensitivity.
+        let lockUsable = pointerLock && typeof canvas.requestPointerLock === "function";
+        const locked = () => document.pointerLockElement === canvas;
         const font = getComputedStyle(canvas).getPropertyValue("--sr-font-display").trim() || "sans-serif";
 
         let backdrop: HTMLImageElement | null = null;
@@ -104,29 +124,75 @@ export function PlayField({
         const observer = new ResizeObserver(resize);
         observer.observe(canvas);
 
+        const lock = () => {
+            if (!lockUsable || locked()) return;
+            const fail = () => {
+                lockUsable = false;
+            };
+            try {
+                // Raw input (no OS acceleration) where supported, plain capture otherwise.
+                const request = canvas.requestPointerLock({ unadjustedMovement: true }) as Promise<void> | undefined;
+                request?.catch(() => {
+                    const plain = canvas.requestPointerLock() as Promise<void> | undefined;
+                    plain?.catch(fail);
+                });
+            } catch {
+                fail();
+            }
+        };
+        relockRef.current = lock;
+
         const local = (e: PointerEvent) => {
             const rect = canvas.getBoundingClientRect();
             return { x: e.clientX - rect.left, y: e.clientY - rect.top };
         };
         const onMove = (e: PointerEvent) => {
-            pointer = local(e);
+            if (!locked()) {
+                pointer = local(e);
+                return;
+            }
+            const from = pointer ?? { x: view.width / 2, y: view.height / 2 };
+            const sens = settingsRef.current.sensitivity;
+            pointer = {
+                x: Math.min(view.width, Math.max(0, from.x + e.movementX * sens)),
+                y: Math.min(view.height, Math.max(0, from.y + e.movementY * sens)),
+            };
         };
         const onLeave = () => {
-            pointer = null;
+            if (!locked()) pointer = null;
         };
         const onDown = (e: PointerEvent) => {
             if (e.button !== 0) return;
             e.preventDefault();
-            pointer = local(e);
-            if (pausedRef.current || countdownLeft > 0 || endedAt !== null) return;
+            if (pausedRef.current || endedAt !== null) return;
+            if (!locked() && lockUsable) {
+                // First click after the capture was lost only takes the mouse back.
+                lock();
+                return;
+            }
+            if (!locked()) pointer = local(e);
+            if (countdownLeft > 0 || !pointer) return;
             const point = toArena(view, pointer.x, pointer.y);
             if (!point) return;
             queue.push(point);
             onShot(fx);
         };
+        const onLockChange = () => {
+            if (locked()) {
+                pointer ??= { x: view.width / 2, y: view.height / 2 };
+            } else if (!pausedRef.current && endedAt === null) {
+                onLockLostRef.current();
+            }
+        };
+        const onLockError = () => {
+            lockUsable = false;
+        };
         canvas.addEventListener("pointermove", onMove);
         canvas.addEventListener("pointerleave", onLeave);
         canvas.addEventListener("pointerdown", onDown);
+        document.addEventListener("pointerlockchange", onLockChange);
+        document.addEventListener("pointerlockerror", onLockError);
+        lock();
 
         const frame = (now: number) => {
             const dt = Math.min(100, now - last);
@@ -144,7 +210,10 @@ export function PlayField({
                         steps += 1;
                     }
                     if (steps === MAX_STEPS) acc = 0;
-                    if (game.over) endedAt = now;
+                    if (game.over) {
+                        endedAt = now;
+                        document.exitPointerLock?.();
+                    }
                 }
                 updateFx(fx, dt);
             } else {
@@ -158,6 +227,7 @@ export function PlayField({
                 backdrop,
                 font,
                 countdown: countdownLeft > 0 ? Math.ceil(countdownLeft / (countdownMs / 3)) : null,
+                crosshair: settingsRef.current.crosshair,
                 nowMs: now,
             });
             const next = readHud(game);
@@ -179,8 +249,12 @@ export function PlayField({
             canvas.removeEventListener("pointermove", onMove);
             canvas.removeEventListener("pointerleave", onLeave);
             canvas.removeEventListener("pointerdown", onDown);
+            document.removeEventListener("pointerlockchange", onLockChange);
+            document.removeEventListener("pointerlockerror", onLockError);
+            relockRef.current = () => {};
+            if (locked()) document.exitPointerLock?.();
         };
-    }, [game, countdownMs, backdropSrc]);
+    }, [game, countdownMs, backdropSrc, pointerLock]);
 
     return (
         <div className="sr-stage">
