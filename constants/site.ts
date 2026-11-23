@@ -26,7 +26,7 @@ import { normalizeSiteUrl } from "../lib/site-url";
 // messages/<locale>.json, the colour tokens in styles/tokens.css, the favicon in app/icon.svg and
 // the logo drawing in components/ui/Logo.tsx.
 
-export const SITE_NAME = "GWIVV";
+export const SITE_NAME = "GWIVV CS2";
 /** Root metadata fallbacks (pages set their own localized title/description). */
 export const DEFAULT_TITLE = "GWIVV — Counter-Strike 2 player";
 export const DEFAULT_DESCRIPTION =
@@ -48,8 +48,8 @@ export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
 // still list every page) and the GitHub links.
 export const HEADER_NAV_ENABLED: boolean = true;
 export const GITHUB_LINK_ENABLED: boolean = false;
-/** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented. */
-export const BRAND_ACCENT_FROM: number = 2;
+/** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented ("GWIVV " white, "CS2" orange). */
+export const BRAND_ACCENT_FROM: number = 6;
 
 /** MUI colours of one theme mode (hex): primary/secondary main and the text drawn ON the primary. */
 export interface PaletteMode {
