@@ -18,6 +18,22 @@
         "scrollCue": "Nach unten scrollen",
         "limitSuffix": "Begrenzt: {count} KI-Aufrufe / Tag"
     },
+    "stats": {
+        "title": "Spielerstatistiken",
+        "premier": "Premier",
+        "unranked": "Keine aktuelle Wertung",
+        "leetifyRating": "Leetify Rating",
+        "aim": "Aim",
+        "winrate": "Siegquote",
+        "matches": "Matches",
+        "faceitValue": "Level {level} · {elo} ELO",
+        "faceitAsOf": "Stand {date}",
+        "loading": "Statistiken werden geladen…",
+        "unavailable": "Statistiken sind derzeit nicht verfügbar.",
+        "fetchedAt": "Von Leetify gelesen am {time}",
+        "credit": "Data Provided by Leetify",
+        "viewOnLeetify": "View on Leetify"
+    },
     "clips": {
         "title": "Neueste Clips",
         "play": "Clip {title} abspielen",

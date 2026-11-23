@@ -234,6 +234,15 @@ export const CLIPS: readonly Clip[] = [
 ];
 export const CLIPS_ON_HOME = 3;
 
+/** The player's Steam64 ID: the Leetify profile the statistics strip reads. */
+export const STEAM64_ID = "76561198048679104";
+/**
+ * FACEIT level and ELO, typed by hand with the date they were read on the FACEIT profile: no API is
+ * available to this site (FACEIT developer keys need a verified identity), and Leetify only knows
+ * the FACEIT matches whose demos were uploaded. The strip shows the date next to the values.
+ */
+export const FACEIT_SNAPSHOT = { level: 5, elo: 1138, date: "2026-11-23" } as const;
+
 export const SOCIAL_LINKS: readonly SocialLink[] = [
     { id: "steam", label: "Steam", href: "https://steamcommunity.com/profiles/76561198048679104" },
     { id: "twitch", label: "Twitch", href: "https://www.twitch.tv/gwivv" },

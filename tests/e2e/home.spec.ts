@@ -17,6 +17,19 @@ test.describe("Home — structural smoke", () => {
         }
     });
 
+    test("the statistics strip shows the dated FACEIT card and a settled Leetify state", async ({ page }) => {
+        await page.goto("/");
+
+        const strip = page.locator(".stats");
+        await expect(strip.locator(".stats__card--faceit")).toBeVisible();
+        await expect(strip.getByRole("link", { name: "Data Provided by Leetify" })).toHaveAttribute(
+            "href",
+            "https://leetify.com/",
+        );
+        // Without LEETIFY_API_KEY (CI) the route answers 503: the strip says so, it shows no number.
+        await expect(strip.locator(".stats__status")).not.toHaveClass(/stats__status--loading/);
+    });
+
     test("the latest clips load the provider player only after a click", async ({ page }) => {
         test.skip(CLIPS.length === 0, "no clip declared in constants/site.ts");
         await page.goto("/");

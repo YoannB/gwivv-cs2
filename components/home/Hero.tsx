@@ -1,3 +1,4 @@
+import { BrandIcon } from "@/components/ui";
 import { BRAND_ACCENT_FROM, SITE_NAME, SOCIAL_LINKS } from "@/constants/site";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -30,7 +31,8 @@ export async function Hero({ locale }: { locale: string }) {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    {link.label}
+                                    <BrandIcon id={link.id} />
+                                    <span>{link.label}</span>
                                 </a>
                             </li>
                         ))}

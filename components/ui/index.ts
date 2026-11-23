@@ -3,6 +3,7 @@
 export { AdSlot } from "./AdSlot";
 export { AiNotice } from "./AiNotice";
 export { AppSplash } from "./AppSplash";
+export { BrandIcon } from "./BrandIcon";
 export { Breadcrumb } from "./Breadcrumb";
 export { Button } from "./Button";
 export { Card } from "./Card";
