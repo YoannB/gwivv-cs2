@@ -104,6 +104,10 @@ export function PlayField({
         let raf = 0;
         // Pointer lock: the crosshair moves by the mouse's raw movement times the sensitivity.
         let lockUsable = pointerLock && typeof canvas.requestPointerLock === "function";
+        // Once the capture worked, a refusal is transient (Chrome refuses a re-capture for about a
+        // second after Esc): the next click retries. Only a browser that never captured falls back to
+        // the plain cursor, where the sensitivity cannot apply.
+        let everLocked = false;
         const locked = () => document.pointerLockElement === canvas;
         const font = getComputedStyle(canvas).getPropertyValue("--sr-font-display").trim() || "sans-serif";
 
@@ -127,7 +131,7 @@ export function PlayField({
         const lock = () => {
             if (!lockUsable || locked()) return;
             const fail = () => {
-                lockUsable = false;
+                if (!everLocked) lockUsable = false;
             };
             try {
                 // Raw input (no OS acceleration) where supported, plain capture otherwise.
@@ -179,13 +183,14 @@ export function PlayField({
         };
         const onLockChange = () => {
             if (locked()) {
+                everLocked = true;
                 pointer ??= { x: view.width / 2, y: view.height / 2 };
             } else if (!pausedRef.current && endedAt === null) {
                 onLockLostRef.current();
             }
         };
         const onLockError = () => {
-            lockUsable = false;
+            if (!everLocked) lockUsable = false;
         };
         canvas.addEventListener("pointermove", onMove);
         canvas.addEventListener("pointerleave", onLeave);
