@@ -2,7 +2,7 @@
 // reads is an integer (arena units, ticks), so a session replays bit for bit from its seed and its
 // shot log. Bumping RULES_VERSION retires every leaderboard entry made under the previous rules.
 
-export const RULES_VERSION = 4;
+export const RULES_VERSION = 5;
 
 /**
  * Board season: bumping it starts empty leaderboards AND forgets every personal best kept in the
@@ -84,7 +84,7 @@ export interface DifficultyConfig {
     readonly maxOpen: number;
     /** Minimum ticks between two openings. */
     readonly openGapTicks: number;
-    /** Top strafe speed while open, 1/100 arena units per tick, drawn in [min, max] (0 = still). */
+    /** Top strafe speed (guarded and open), 1/100 arena units per tick, drawn in [min, max] (0 = still). */
     readonly maxSpeed: readonly [number, number];
     /** Speed gained (or lost when braking) per tick, 1/100 arena units per tick. */
     readonly accel: number;
@@ -139,12 +139,12 @@ export const DIFFICULTY_CONFIGS: Readonly<Record<Difficulty, DifficultyConfig>> 
         decoyPercent: 45,
         mimicPercent: 35,
         size: 44,
-        guardTicks: [18, 60],
-        holdTicks: [0, 36],
-        openTicks: 42,
+        guardTicks: [18, 42],
+        holdTicks: [0, 24],
+        openTicks: 60,
         maxOpen: 2,
         openGapTicks: 24,
-        maxSpeed: [50, 160],
+        maxSpeed: [40, 130],
         accel: 8,
         travel: 100,
         armor: { vest: true, helmet: true },

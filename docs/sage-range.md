@@ -39,7 +39,7 @@ A range silhouette (bust: head, torso; hit zones match the drawing) rises (unrea
 a dashed ring fills (identity visible: orange = hostile, grey with a no-shoot mark = decoy), waits a
 HIDDEN extra hold (the opening cannot be anticipated: reaction time stays a reaction), opens (solid
 ring draining), then sinks. Openings are staggered (`maxOpen`, `openGapTicks`) so every window stays
-humanly reachable; windows are 1.2 s / 0.95 s / 0.7 s. The server refuses sessions whose average
+humanly reachable; windows are 1.2 s / 0.95 s / 1.0 s (Elite keeps a full second: its targets move and take two hits). The server refuses sessions whose average
 reaction time is below `MIN_HUMAN_REACTION_MS` over enough targets. Hostile targets wear the
 difficulty's armour (`armor` in `core/config.ts`): none on Recruit (one hit anywhere), a vest on
 Regular (two body hits, one head hit), vest and helmet on Elite (two hits anywhere); a protected zone
@@ -90,7 +90,8 @@ buttons stay inert for 900 ms so a late in-game click cannot skip them.
 
 Moving targets strafe like a player (`strafe` in `core/engine.ts`): speed builds up by `accel` per
 tick to the target's `maxSpeed`, and at the end of its lane it brakes with the same acceleration and
-comes back. Speeds are 1/100 arena units per tick so the maths stays integer.
+comes back. A target already strafes while guarded and keeps the same motion when it opens: the
+player tracks it during the wait, and the opening is never a sudden jump. Speeds are 1/100 arena units per tick so the maths stays integer.
 
 Settings (`core/settings.ts`, saved with the bests): sensitivity 0.10–5.00 (two decimals; 1.00 =
 the desktop cursor speed) and the crosshair (style, colour, size 1–10). During a session the canvas

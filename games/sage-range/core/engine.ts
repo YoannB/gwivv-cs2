@@ -315,10 +315,15 @@ function advanceTargets(state: GameState, events: GameEvent[]): void {
             target.phase = "guard";
             target.phaseStart = state.tick;
         } else if (target.phase === "guard" && elapsed >= target.guardTicks + target.holdTicks && canOpen(state)) {
+            // Already moving: the opening changes nothing in the motion, a tracked target stays tracked.
+            strafe(target, state.config.accel);
             target.phase = "open";
             target.phaseStart = state.tick;
             target.openedAt = state.tick;
             state.lastOpenTick = state.tick;
+        } else if (target.phase === "guard") {
+            // A guarded target already strafes (a peeker is moving before it can be shot).
+            strafe(target, state.config.accel);
         } else if (target.phase === "open") {
             if (elapsed >= target.openTicks) expire(state, target, events);
             else strafe(target, state.config.accel);
