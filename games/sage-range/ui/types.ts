@@ -48,6 +48,8 @@ export interface SageRangeLabels {
     hudPenalty: string;
     pausedTitle: string;
     resume: string;
+    /** Shown on the canvas when a click must capture the mouse again. */
+    captureHint: string;
     quit: string;
     canvasLabel: string;
     resultsTitle: string;

@@ -758,3 +758,18 @@ a.sr-board__name:hover {
         animation: none;
     }
 }
+
+/* Capture hint: the mouse was released, a click on the canvas takes it back (never a shot). */
+.sr-capture {
+    position: absolute;
+    left: 50%;
+    bottom: 18%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: rgba(7, 7, 7, 0.78);
+    color: var(--sr-text);
+    font-size: 0.9rem;
+    pointer-events: none;
+}

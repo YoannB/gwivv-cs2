@@ -131,6 +131,7 @@
             "hudPenalty": "Strafe",
             "pausedTitle": "Pause",
             "resume": "Fortsetzen",
+            "captureHint": "Klicken, um die Maus wieder zu übernehmen",
             "quit": "Sitzung beenden",
             "canvasLabel": "Schießstand mit auftauchenden Zielen",
             "resultsTitle": "Sitzung beendet",

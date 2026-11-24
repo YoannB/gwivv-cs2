@@ -131,6 +131,7 @@
             "hudPenalty": "Penalización",
             "pausedTitle": "Pausa",
             "resume": "Reanudar",
+            "captureHint": "Haz clic para recuperar el ratón",
             "quit": "Abandonar la sesión",
             "canvasLabel": "Galería de tiro con blancos que se levantan",
             "resultsTitle": "Sesión terminada",

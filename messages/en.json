@@ -131,6 +131,7 @@
             "hudPenalty": "Penalty",
             "pausedTitle": "Paused",
             "resume": "Resume",
+            "captureHint": "Click to take the mouse back",
             "quit": "Quit session",
             "canvasLabel": "Shooting range with rising targets",
             "resultsTitle": "Session complete",

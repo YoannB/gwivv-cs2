@@ -66,7 +66,8 @@ export function SettingsPanel({
     const setCrosshair = (patch: Partial<CrosshairSettings>) =>
         onChange((current) => ({ ...current, crosshair: { ...current.crosshair, ...patch } }));
     const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") setSensitivity(e.currentTarget.value);
+        // Esc closes the pause menu: commit the typed value first, as Enter does.
+        if (e.key === "Enter" || e.key === "Escape") setSensitivity(e.currentTarget.value);
     };
 
     return (

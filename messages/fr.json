@@ -131,6 +131,7 @@
             "hudPenalty": "Pénalité",
             "pausedTitle": "Pause",
             "resume": "Reprendre",
+            "captureHint": "Cliquez pour reprendre la souris",
             "quit": "Abandonner la session",
             "canvasLabel": "Stand de tir avec des cibles qui se lèvent",
             "resultsTitle": "Session terminée",

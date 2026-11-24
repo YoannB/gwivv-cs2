@@ -176,6 +176,11 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
 
     const playing = screen.kind === "play";
 
+    const [captureOnResume, setCaptureOnResume] = useState(true);
+    const resume = (byClick: boolean) => {
+        setCaptureOnResume(byClick);
+        setPaused(false);
+    };
     const lockLostAt = useRef(-Infinity);
     const lockLost = useCallback(() => {
         lockLostAt.current = performance.now();
@@ -190,6 +195,8 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
             e.preventDefault();
             // The Esc that released the captured mouse already paused (lock lost): do not undo it.
             if (performance.now() - lockLostAt.current < 400) return;
+            // Esc resumes without a capture request (the next click on the canvas captures).
+            setCaptureOnResume(false);
             setPaused((p) => !p);
         };
         const onHide = () => setPaused(true);
@@ -233,6 +240,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                 backdropSrc={backdropSrc}
                 settings={saved?.settings ?? DEFAULT_SETTINGS}
                 pointerLock={screen.pointerLock}
+                captureOnResume={captureOnResume}
                 onLockLost={lockLost}
                 onEnd={finish}
             >
@@ -245,7 +253,7 @@ export function SageRange({ labels, locale, storage, leaderboard, backdropSrc, r
                             <button
                                 type="button"
                                 className="sr-btn sr-btn--primary"
-                                onClick={() => setPaused(false)}
+                                onClick={() => resume(true)}
                                 autoFocus
                             >
                                 {labels.resume}

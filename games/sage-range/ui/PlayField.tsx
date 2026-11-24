@@ -50,6 +50,7 @@ export function PlayField({
     backdropSrc,
     settings,
     pointerLock,
+    captureOnResume,
     onLockLost,
     onEnd,
     children,
@@ -63,6 +64,11 @@ export function PlayField({
     settings: Settings;
     /** Capture the mouse (sensitivity applies); false keeps the plain cursor position (tests). */
     pointerLock: boolean;
+    /**
+     * Resumed by a click (Resume): capture the mouse at once. Resumed by Esc: no capture request (a
+     * browser keeps Esc to release the mouse and grants no capture on it); the next click captures.
+     */
+    captureOnResume: boolean;
     /** The capture was released (Esc, focus lost): the parent pauses. */
     onLockLost: () => void;
     onEnd: (game: GameState) => void;
@@ -75,13 +81,15 @@ export function PlayField({
     const settingsRef = useRef(settings);
     const relockRef = useRef<() => void>(() => {});
     const [hud, setHud] = useState<Hud>(() => readHud(game));
+    /** The mouse must be captured again by a click: the canvas says so. */
+    const [needsClick, setNeedsClick] = useState(false);
 
     useEffect(() => {
         pausedRef.current = paused;
-        // Paused: free the mouse for the menu. Resumed (a click, so a user gesture): capture it again.
+        // Paused: free the mouse for the menu. Resumed by a click (a user gesture): capture it again.
         if (paused) document.exitPointerLock?.();
-        else relockRef.current();
-    }, [paused]);
+        else if (captureOnResume) relockRef.current();
+    }, [paused, captureOnResume]);
     useEffect(() => {
         onEndRef.current = onEnd;
         onLockLostRef.current = onLockLost;
@@ -132,6 +140,7 @@ export function PlayField({
             if (!lockUsable || locked()) return;
             const fail = () => {
                 if (!everLocked) lockUsable = false;
+                setNeedsClick(lockUsable);
             };
             try {
                 // Raw input (no OS acceleration) where supported, plain capture otherwise.
@@ -184,13 +193,16 @@ export function PlayField({
         const onLockChange = () => {
             if (locked()) {
                 everLocked = true;
+                setNeedsClick(false);
                 pointer ??= { x: view.width / 2, y: view.height / 2 };
-            } else if (!pausedRef.current && endedAt === null) {
-                onLockLostRef.current();
+            } else {
+                setNeedsClick(lockUsable && endedAt === null);
+                if (!pausedRef.current && endedAt === null) onLockLostRef.current();
             }
         };
         const onLockError = () => {
             if (!everLocked) lockUsable = false;
+            setNeedsClick(lockUsable);
         };
         canvas.addEventListener("pointermove", onMove);
         canvas.addEventListener("pointerleave", onLeave);
@@ -274,6 +286,7 @@ export function PlayField({
                 <HudItem label={labels.hudStreak} value={`×${hud.streak}`} />
                 <span className={hud.penalty ? "sr-hud__penalty is-on" : "sr-hud__penalty"}>{labels.hudPenalty}</span>
             </div>
+            {needsClick && !paused ? <p className="sr-capture">{labels.captureHint}</p> : null}
             {children}
         </div>
     );
