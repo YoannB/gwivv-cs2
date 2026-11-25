@@ -96,11 +96,17 @@ export function goToSection(id: string): boolean {
 /** How long to wait for a section to appear after arriving on the page, before giving up. */
 const ARRIVAL_TIMEOUT_MS = 3000;
 
+/** Reader input that takes over the scroll: the arrival hook stops correcting at the first one. */
+const READER_INPUT = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+
 /**
- * After arriving on the page from another one with a section hash (/range -> /#loadout), scroll to
- * that section once it is in the DOM: Next.js looks for the anchor before the new page has rendered
- * and then leaves the page at the top. Syncs with an external system (the scroll position) only,
- * no state. Runs again whenever `enabled` turns true, i.e. on each arrival.
+ * After arriving on the page from another one with a section hash (/range -> /#loadout), bring that
+ * section under the header: Next.js looks for the anchor before the new page has rendered and then
+ * leaves the page at the top. The section is waited for, then held in place (instant scroll, no
+ * animation) while the content above it still grows (images loading on a phone pushed it down
+ * after the first scroll), until ARRIVAL_TIMEOUT_MS or the reader's first own input. Syncs with an
+ * external system (the scroll position) only, no state. Runs again on each arrival (`enabled`
+ * turning true).
  */
 export function useScrollToHashOnArrival(ids: readonly string[], enabled: boolean): void {
     const key = ids.join(",");
@@ -110,12 +116,27 @@ export function useScrollToHashOnArrival(ids: readonly string[], enabled: boolea
         if (!id) return;
         const start = performance.now();
         let frame = 0;
-        const attempt = () => {
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ block: "start" });
-            else if (performance.now() - start < ARRIVAL_TIMEOUT_MS) frame = requestAnimationFrame(attempt);
+        let stopped = false;
+        const stop = () => {
+            stopped = true;
+            cancelAnimationFrame(frame);
         };
-        frame = requestAnimationFrame(attempt);
-        return () => cancelAnimationFrame(frame);
+        const hold = () => {
+            if (stopped || performance.now() - start > ARRIVAL_TIMEOUT_MS) return;
+            const el = document.getElementById(id);
+            if (el) {
+                const target = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+                if (Math.abs(el.getBoundingClientRect().top - target) > 2) {
+                    el.scrollIntoView({ block: "start", behavior: "instant" });
+                }
+            }
+            frame = requestAnimationFrame(hold);
+        };
+        frame = requestAnimationFrame(hold);
+        for (const type of READER_INPUT) window.addEventListener(type, stop, { passive: true, once: true });
+        return () => {
+            stop();
+            for (const type of READER_INPUT) window.removeEventListener(type, stop);
+        };
     }, [key, enabled]);
 }
