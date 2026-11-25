@@ -53,6 +53,14 @@ body::before {
         background-image: url("/images/bg-desktop-16x9.webp");
     }
 }
+/* Portrait screens (phones, tablets held upright): the portrait texture, whose quiet centre runs
+   the full height, instead of a landscape one cropped to a narrow strip. */
+@media (max-aspect-ratio: 3/4) {
+    body::before {
+        background-image: url("/images/bg-mobile-portrait.webp");
+        background-position: center bottom;
+    }
+}
 [data-theme="light"] body::before {
     display: none;
 }
