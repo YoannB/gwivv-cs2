@@ -115,7 +115,7 @@ stamp its period the same way.
 
 ## Resetting the leaderboard
 
-All boards (the three difficulties) are ONE blob: key `boards-<BOARD_ID>` (e.g. `boards-v4-s1`) in
+All boards (the three difficulties) are ONE blob: key `boards-<BOARD_ID>` (e.g. `boards-v5-s2`) in
 the Netlify Blobs store `sage-range`. The store is site-wide: deploy previews and production share it, so scores
 made while testing a preview stay on the production board until reset.
 

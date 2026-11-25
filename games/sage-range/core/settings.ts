@@ -29,7 +29,15 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 /** Ready-made colours offered next to the free colour picker. */
-export const CROSSHAIR_SWATCHES: readonly string[] = ["#f2f0eb", "#ffbf55", "#f97316", "#3df07a", "#2ee6ff", "#ff4fd8"];
+export const CROSSHAIR_SWATCHES: readonly string[] = [
+    "#f2f0eb",
+    "#ffbf55",
+    "#f97316",
+    "#ff2d2d",
+    "#3df07a",
+    "#2ee6ff",
+    "#ff4fd8",
+];
 
 const COLOR = /^#[0-9a-f]{6}$/;
 

@@ -8,7 +8,7 @@ export const RULES_VERSION = 5;
  * Board season: bumping it starts empty leaderboards AND forgets every personal best kept in the
  * players' browsers, without touching the rules (a reset after tests, a new season).
  */
-export const BOARD_SEASON = 1;
+export const BOARD_SEASON = 2;
 
 /** What a score belongs to: the rules it was played under and the board season it was made in. */
 export const BOARD_ID = `v${RULES_VERSION}-s${BOARD_SEASON}`;
