@@ -9,13 +9,15 @@ import {
     HEADER_SECTIONS,
     SITE_NAME,
 } from "@/constants/site";
-import { useActiveSection } from "@/hooks/use-active-section";
+import { goToSection, useActiveSection, useScrollToHashOnArrival } from "@/hooks/use-active-section";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 
 const SECTION_IDS = HEADER_SECTIONS.map((s) => s.id);
+/** A click the browser should handle itself (new tab or window, download, non-primary button). */
+const isModifiedClick = (e: MouseEvent) => e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
 
 // DOM order: burger (1st, on the left on mobile, display:none on desktop), brand, nav,
 // tools. The tools are pushed to the right by margin-left:auto (CSS), without an auto margin on
@@ -29,8 +31,18 @@ export function Header() {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
     // Scroll spy, on the home only: the section links are anchors into that page.
-    const activeSection = useActiveSection(SECTION_IDS, pathname === "/");
+    const onHome = pathname === "/";
+    const activeSection = useActiveSection(SECTION_IDS, onHome);
+    // Arriving on the home from another page with a section hash: scroll to it once it renders.
+    useScrollToHashOnArrival(SECTION_IDS, onHome);
     const close = () => setOpen(false);
+    // On the home, a section link scrolls in place (even to the section already in the URL); from
+    // another page, the Link navigates to /#<id> and the arrival hook above does the scrolling.
+    const onSectionClick = (e: MouseEvent, id: string) => {
+        close();
+        if (!onHome || isModifiedClick(e)) return;
+        if (goToSection(id)) e.preventDefault();
+    };
     const tagline = t.has("tagline") ? t("tagline") : null;
     const taglineSub = t.has("taglineSub") ? t("taglineSub") : null;
 
@@ -75,7 +87,7 @@ export function Header() {
                                 href={{ pathname: "/", hash: s.id }}
                                 className={cn("site-nav__link", activeSection === s.id && "is-active")}
                                 aria-current={activeSection === s.id ? "location" : undefined}
-                                onClick={close}
+                                onClick={(e) => onSectionClick(e, s.id)}
                             >
                                 {t(s.key)}
                             </Link>
