@@ -1,5 +1,5 @@
-import { activeSection, SECTION_THRESHOLD } from "@/hooks/use-active-section";
-import { afterEach, describe, expect, it } from "vitest";
+import { activeSection, goToSection, SECTION_THRESHOLD, sectionFromHash } from "@/hooks/use-active-section";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 // Sections with a fixed viewport top, in page order.
 function page(tops: Record<string, number>) {
@@ -14,6 +14,8 @@ const IDS = ["profile", "stats", "highlights", "loadout"];
 
 afterEach(() => {
     document.body.innerHTML = "";
+    window.history.replaceState(null, "", "/");
+    vi.restoreAllMocks();
 });
 
 describe("activeSection", () => {
@@ -47,5 +49,43 @@ describe("activeSection", () => {
 
     it("ignores the bottom rule when no section is present", () => {
         expect(activeSection(IDS, document, "#loadout", true)).toBeNull();
+    });
+});
+
+describe("sectionFromHash", () => {
+    it("returns the section a hash names, only among the known ids", () => {
+        expect(sectionFromHash("#loadout", IDS)).toBe("loadout");
+        expect(sectionFromHash("#elsewhere", IDS)).toBeNull();
+        expect(sectionFromHash("", IDS)).toBeNull();
+        expect(sectionFromHash("loadout", IDS)).toBeNull();
+    });
+});
+
+describe("goToSection", () => {
+    it("is false and leaves the URL alone when the section is not in the page", () => {
+        expect(goToSection("loadout")).toBe(false);
+        expect(window.location.hash).toBe("");
+    });
+
+    it("scrolls to the section, pushes its hash once and announces it", () => {
+        page({ loadout: 900 });
+        const el = document.getElementById("loadout")!;
+        el.scrollIntoView = vi.fn();
+        const push = vi.spyOn(window.history, "pushState");
+        const onHash = vi.fn();
+        window.addEventListener("hashchange", onHash);
+
+        expect(goToSection("loadout")).toBe(true);
+        expect(el.scrollIntoView).toHaveBeenCalledWith({ block: "start" });
+        expect(window.location.hash).toBe("#loadout");
+        expect(push).toHaveBeenCalledTimes(1);
+        expect(onHash).toHaveBeenCalledTimes(1);
+
+        // A second click on the same link scrolls again, without stacking the hash.
+        expect(goToSection("loadout")).toBe(true);
+        expect(el.scrollIntoView).toHaveBeenCalledTimes(2);
+        expect(push).toHaveBeenCalledTimes(1);
+        expect(window.location.hash).toBe("#loadout");
+        window.removeEventListener("hashchange", onHash);
     });
 });

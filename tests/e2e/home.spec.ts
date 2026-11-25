@@ -136,6 +136,30 @@ test.describe("Home — structural smoke", () => {
         await expect(loadout).toHaveAttribute("aria-current", "location");
     });
 
+    test("a header section link from another page scrolls there, and again on a second click", async ({ page }) => {
+        await page.goto("/range");
+
+        const nav = page.getByRole("navigation", { name: "Main" });
+        const loadout = nav.getByRole("link", { name: "Loadout" });
+        if (!(await loadout.isVisible())) await page.locator(".menu-toggle").click();
+        await loadout.click();
+        await expect(page).toHaveURL(/#loadout$/);
+        // The section reaches the top (under the sticky header) instead of the page staying at the top.
+        await expect
+            .poll(async () => page.locator("#loadout").evaluate((el) => el.getBoundingClientRect().top))
+            .toBeLessThan(200);
+        await expect(loadout).toHaveAttribute("aria-current", "location");
+
+        // Scroll away, then click the link already in the URL: it scrolls back, the hash stays single.
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+        if (!(await loadout.isVisible())) await page.locator(".menu-toggle").click();
+        await loadout.click();
+        await expect
+            .poll(async () => page.locator("#loadout").evaluate((el) => el.getBoundingClientRect().top))
+            .toBeLessThan(200);
+        expect(new URL(page.url()).hash).toBe("#loadout");
+    });
+
     test("the cookie banner appears then hides after acceptance", async ({ page }) => {
         await page.goto("/");
 
