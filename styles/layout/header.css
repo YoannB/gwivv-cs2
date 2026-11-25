@@ -49,6 +49,24 @@
     color: var(--text-1);
     border-color: var(--accent-1);
 }
+/* The game entry (HEADER_NAV `accent`): set apart after the section anchors, outlined in orange. */
+.site-nav__link--accent {
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid color-mix(in oklab, var(--accent-1) 70%, transparent);
+    border-radius: 999px;
+    color: var(--accent-2);
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.site-nav__link--accent:hover,
+.site-nav__link--accent.is-active {
+    color: var(--btn-fg);
+    background: var(--accent-1);
+    border-color: var(--accent-1);
+}
 .site-header__tools {
     display: flex;
     align-items: center;
@@ -131,6 +149,12 @@
     .site-nav__link {
         padding: 12px 0;
         border-bottom: 1px solid var(--border-1);
+    }
+    .site-nav__link--accent {
+        margin: 12px 0 4px;
+        padding: 10px 16px;
+        border: 1px solid var(--accent-1);
+        text-align: center;
     }
     .menu-toggle {
         display: flex;

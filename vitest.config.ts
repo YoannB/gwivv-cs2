@@ -21,6 +21,7 @@ export default defineConfig({
             "tests/**/*.{test,spec}.{ts,tsx}",
             "lib/**/*.{test,spec}.{ts,tsx}",
             "hooks/**/*.{test,spec}.{ts,tsx}",
+            "games/**/*.{test,spec}.{ts,tsx}",
         ],
         exclude: [
             "tests/e2e/**",

@@ -132,15 +132,19 @@ export const ENABLED_COLLECTIONS = COLLECTIONS.filter((c) => c.enabled);
 
 // Footer + HTML sitemap: every entry, in this order (labels: messages `nav.<id>`). A disabled
 // collection drops its entry. Header: HEADER_SECTIONS first, then HEADER_NAV (an entry with
-// `header: false` stays out of it). Here every page is `header: false`: the header is the
-// profile's own navigation; the pages stay in the footer and the HTML sitemap.
+// `header: false` stays out of it). Every page but the game is `header: false`: the header is the
+// profile's own navigation plus the Sage Range entry (`accent`: drawn apart, after the anchors);
+// the other pages stay in the footer and the HTML sitemap.
 interface NavEntry {
     readonly href: string;
     readonly key: string;
     readonly header?: boolean;
+    /** Drawn as a distinct call to action in the header (the game). */
+    readonly accent?: boolean;
 }
 const ALL_NAV = [
     { href: "/", key: "nav.home", header: false },
+    { href: "/range", key: "nav.range", header: true, accent: true },
     { href: "/articles", key: "nav.articles", header: false },
     { href: "/sitemap", key: "nav.sitemap", header: false },
     { href: "/legal", key: "nav.legal", header: false },
@@ -257,7 +261,7 @@ export const HEADER_SECTIONS: readonly HeaderSection[] = [
  * teaser (components/home/RangeTeaser.tsx) then shows a disabled "Coming soon" button instead of a
  * link to a missing page. Flip it in the same change that adds the route.
  */
-export const RANGE_ENABLED: boolean = false;
+export const RANGE_ENABLED: boolean = true;
 
 /**
  * A montage published on the player's YouTube channel. Copied from the video's public page; the

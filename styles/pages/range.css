@@ -1,0 +1,7 @@
+/* /range page: the host side of SAGE RANGE. The game styles itself (games/sage-range/sage-range.css);
+   here the site only hands it its fonts. */
+.range-page .sr {
+    --sr-font-display: var(--font-display);
+    --sr-font-brush: var(--font-brush);
+    --sr-font-text: var(--font-sans);
+}

@@ -25,9 +25,7 @@ export async function RangeTeaser({ locale }: { locale: string }) {
                     <p className="range-teaser__text">{t("text")}</p>
                 </div>
                 {RANGE_ENABLED ? (
-                    // `/range` joins i18n/pathnames.ts with the game; until then the cast keeps the
-                    // typed href happy (same pattern as the footer's dynamic hrefs).
-                    <Link href={"/range" as "/"} className="range-teaser__cta">
+                    <Link href="/range" className="range-teaser__cta">
                         {label}
                         <span aria-hidden="true">→</span>
                     </Link>

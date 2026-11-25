@@ -57,6 +57,30 @@ const config = [
             ],
         },
     },
+
+    {
+        // SAGE RANGE stays extractable into its own project: nothing from the host site, its
+        // framework or its UI kit (docs/sage-range.md). The host passes labels and adapters in.
+        name: "app/sage-range-boundary",
+        files: ["games/sage-range/**/*.{ts,tsx}"],
+        rules: {
+            "no-restricted-imports": [
+                "error",
+                {
+                    patterns: [
+                        {
+                            group: ["@/*", "@/**", "next", "next/*", "next-intl", "next-intl/*", "@mui/*", "@mui/**"],
+                            message: "games/sage-range is self-contained: import only React and its own modules.",
+                        },
+                        {
+                            group: ["../../*", "../../**"],
+                            message: "games/sage-range is self-contained: no relative import out of its folder.",
+                        },
+                    ],
+                },
+            ],
+        },
+    },
 ];
 
 export default config;
