@@ -178,7 +178,7 @@
             "profileHint": "Dein Steam-Name und dein Avatar erscheinen in der Rangliste, verlinkt mit deinem Profil.",
             "profileInvalid": "Das ist kein lesbarer Steam-Profillink (steamcommunity.com/id/… oder /profiles/…).",
             "nameBlocked": "Dieser Steam-Name ist in der Rangliste nicht erlaubt.",
-            "steamUnavailable": "Steam hat zur Bestätigung deines Profils nicht geantwortet. Versuche es gleich noch einmal.",
+            "steamUnavailable": "Steam hat zur Bestätigung deines Profils nicht geantwortet. Deine Bestleistung bleibt auf diesem Gerät gespeichert: Sende sie später über den Startbildschirm des Spiels.",
             "difficultyLocked": "Erziele eine Punktzahl in {level}, um die nächste Stufe freizuschalten.",
             "submitNotRanked": "Geprüft, aber diesmal nicht in den Top 10.",
             "bestSubmitted": "An die Rangliste gesendet.",

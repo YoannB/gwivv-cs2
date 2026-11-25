@@ -178,7 +178,7 @@
             "profileHint": "Tu nombre y tu avatar de Steam aparecen en la clasificación, con un enlace a tu perfil.",
             "profileInvalid": "No es un enlace de perfil de Steam legible (steamcommunity.com/id/… o /profiles/…).",
             "nameBlocked": "Este nombre de Steam no está permitido en la clasificación.",
-            "steamUnavailable": "Steam no respondió para confirmar tu perfil. Inténtalo de nuevo en un momento.",
+            "steamUnavailable": "Steam no respondió para confirmar tu perfil. Tu mejor puntuación queda guardada en este dispositivo: envíala más tarde desde la pantalla de inicio del juego.",
             "difficultyLocked": "Consigue una puntuación en {level} para desbloquear el nivel siguiente.",
             "submitNotRanked": "Verificado, pero fuera del top 10 esta vez.",
             "bestSubmitted": "Enviado a la clasificación.",
