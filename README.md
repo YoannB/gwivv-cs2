@@ -68,9 +68,15 @@ Releases are tagged (`vX.Y.Z`) and their notes list what changed and how to migr
 
 ```bash
 git checkout -b chore/upstream-vX.Y.Z
-git fetch upstream --tags
-git merge vX.Y.Z
+git fetch --no-tags upstream "refs/tags/vX.Y.Z:refs/tags/axons/vX.Y.Z"
+git merge axons/vX.Y.Z
 ```
+
+Only that one Axons tag is fetched, as `axons/vX.Y.Z`, so it never mixes with this site's own `vX.Y.Z`
+tags (Axons has a `v0.1.0` too). The `upstream` remote is set once with
+`git config remote.upstream.tagOpt --no-tags`, so a plain `git fetch upstream` imports no tag either.
+Never push the `axons/*` tags to `origin`: no `git push --tags`, push a site release by name
+(`git push origin v0.2.0`).
 
 Resolve every conflict on purpose: **identity** (the files of _Where things live_, content, deleted demo)
 keeps this site's version, then port by hand any new key or constant the release added;
